@@ -46,20 +46,19 @@ sub trie-merge(ML::TriesWithFrequencies::Trie $tr1,
 
     my ML::TriesWithFrequencies::Trie $res = ML::TriesWithFrequencies::Trie.new;
 
-    if not $tr1.defined {
+    if not ($tr1.defined and $tr1) {
 
         return $tr2;
 
-    } elsif not $tr2.defined {
+    } elsif not ($tr2.defined and $tr2) {
 
         return $tr1;
 
     } elsif $tr1.key ne $tr2.key {
 
-        $res.children = $res.children, $tr1.children;
-        $res.children = $res.children, $tr2.children;
-
-        return $res;
+        return trie-merge(
+                ML::TriesWithFrequencies::Trie.new("", $tr1.value, %("" => $tr1.children)),
+                ML::TriesWithFrequencies::Trie.new("", $tr2.value, %("" => $tr2.children)));
 
     } elsif $tr1.key eq $tr2.key {
 
@@ -147,8 +146,8 @@ sub trie-create(@words where $_.all ~~ Positional --> ML::TriesWithFrequencies::
     }
 
     return trie-merge(
-            trie-create(@words[^ceiling(words.elems / 2)]),
-            trie-create(@words[ceiling(words.elems / 2) .. (*- 1)]));
+            trie-create(@words[^ceiling(@words.elems / 2)]),
+            trie-create(@words[ceiling(@words.elems / 2) .. (@words.elems - 1)]));
 }
 
 #--------------------------------------------------------
@@ -194,4 +193,130 @@ sub nodeProbabilitiesRec(ML::TriesWithFrequencies::Trie $tr) {
     }
 
     return ML::TriesWithFrequencies::Trie.new($tr.key, $tr.value, %resChildren);
+}
+
+
+##=======================================================
+## Retrieval functions
+##=======================================================
+
+#--------------------------------------------------------
+#| @description Test is a trie object a leaf.
+sub trie-leafQ(ML::TriesWithFrequencies::Trie $tr --> Bool) {
+    return not ($tr.children.defined and $tr.children)
+}
+
+#--------------------------------------------------------
+#| @description Find the position of a given word (or part of it) in the trie.
+#| @param tr a trie object
+#| @param word a list of strings
+sub trie-position(ML::TriesWithFrequencies::Trie $tr,
+                  @word where $_.all ~~ Str
+        --> Positional) is export {
+    if not (@word.defined and @word) {
+        return Nil;
+    } else {
+        if not $tr.children.defined and $tr.children {
+            return Nil;
+        }
+
+        my Bool $pos = $tr.children{@word[0]}:exists;
+
+        if not $tr.children{@word[0]}:exists {
+            return Nil;
+        } else {
+            my @res;
+            @res.append(@word[0]);
+            my $rpos = trie-position($tr.children{@word[0]}, @word[1 .. (@word.elems - 1)]);
+
+            if not ($rpos.defined and $rpos) {
+                return @res;
+            } else {
+                @res.append(|$rpos);
+                return @res;
+            }
+        }
+    }
+}
+
+#--------------------------------------------------------
+#| @description Retrieval of a sub-trie corresponding to a "word".
+#| @param tr a trie object
+#| @param word a list of strings
+sub trie-retrieve(ML::TriesWithFrequencies::Trie $tr,
+                  @word where $_.all ~~ Str
+        --> ML::TriesWithFrequencies::Trie) is export {
+    if not so @word {
+        return $tr;
+    } else {
+        if not so $tr.children {
+            return $tr;
+        }
+
+        if not $tr.children{@word[0]}:exists {
+            return $tr;
+        } else {
+            return trie-retrieve($tr.children{@word[0]}, @word[1 .. (@word.elems - 1)]);
+        }
+    }
+}
+
+#--------------------------------------------------------
+#| @description For a given trie finds if the retrievable part of a word is complete match.
+#| @param tr a trie object
+#| @param word a list of strings
+#| @details Despite the name this function works on the part of the word that can be found in the trie.
+sub trie-has-complete-match(ML::TriesWithFrequencies::Trie $tr,
+                            @word where $_.all ~~ Str
+        --> Bool) is export {
+
+    if not so $tr { return False }
+
+    my ML::TriesWithFrequencies::Trie $subTr = trie-retrieve($tr, @word);
+
+    if not so $subTr.children {
+        return True;
+    } else {
+        my Numeric $chValue = 0.0;
+
+        for $subTr.children.values -> $ch {
+            $chValue += $ch.value
+        }
+
+        return $chValue < $subTr.value
+    }
+}
+
+#--------------------------------------------------------
+#| @description Does the trie object tr contains a word.
+#| @param tr a trie object
+#| @param word a word to be checked
+sub trie-contains(ML::TriesWithFrequencies::Trie $tr,
+                  @word where $_.all ~~ Str
+        --> Bool) is export {
+
+    my $pos = trie-position($tr, @word);
+
+    if not so $pos or $pos.elems < @word.elems {
+        return False;
+    } else {
+        return trie-has-complete-match($tr, $pos);
+    }
+}
+
+#--------------------------------------------------------
+#| @description Does the trie object tr has a word as key.
+#| @param tr a trie object
+#| @param word a word to be checked
+sub trie-is-key(ML::TriesWithFrequencies::Trie $tr,
+                @word where $_.all ~~ Str
+        --> Bool) is export {
+    
+    my $pos = trie-position($tr, @word);
+
+    if not so $pos or $pos.elems < @word.elems {
+        return False;
+    } else {
+        return True;
+    }
 }
