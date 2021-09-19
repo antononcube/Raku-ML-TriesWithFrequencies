@@ -1,9 +1,12 @@
 
 class ML::TriesWithFrequencies::Trie {
 
+    my Str $.trieRootLabel = 'TROOT';
+    my Str $.trieValueLabel = 'TVALUE';
     has Str $.key;
     has Numeric $.value;
     has ML::TriesWithFrequencies::Trie %.children{Str};
+
 
     #--------------------------------------------------------
     method getKey() {
@@ -50,14 +53,15 @@ class ML::TriesWithFrequencies::Trie {
             }
         }
 
-        my %res = %( '$TrieValue' => $!value), %chMap;
+        my %res = %( $.trieValueLabel => $!value), %chMap;
         return %( $!key => %res )
     }
 
     #--------------------------------------------------------
     #| To Map/Hash format
     method toWLFormat( --> Str ) {
-        '<|' ~ self.toWLFormatRec() ~ '|>'
+        my $res = '<|' ~ self.toWLFormatRec().subst('"' ~ $.trieRootLabel ~ '"', '$TrieRoot') ~ '|>';
+        $res.subst( $.trieValueLabel, '$TrieValue')
     }
 
     #| To Map/Hash format recursion
@@ -71,7 +75,7 @@ class ML::TriesWithFrequencies::Trie {
         }
 
         my $chRes = @chMap ?? ', ' ~ @chMap.join(', ') !! '';
-        my $res = '<|' ~ '$TrieValue -> ' ~ $!value ~ $chRes ~ '|>';
+        my $res = '<|' ~ $.trieValueLabel ~ ' -> ' ~ $!value ~ $chRes ~ '|>';
         return '"' ~ $!key ~ '" -> ' ~ $res
     }
 
