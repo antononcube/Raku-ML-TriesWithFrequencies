@@ -1,0 +1,29 @@
+{
+  "name": "ML::TriesWithFrequencies",
+  "description": "Tries with frequencies package.",
+  "version": "0.1.0",
+  "perl": "6.d",
+  "authors": [
+    "Anton Antonov"
+  ],
+  "auth": "github:antononcube",
+  "depends": [],
+  "build-depends": [],
+  "test-depends": [],
+  "provides": {
+    "ML::TriesWithFrequencies": "lib/ML/TriesWithFrequencies.rakumod",
+    "ML::TriesWithFrequencies::Trie": "lib/ML/TriesWithFrequencies/Trie.rakumod"
+  },
+  "resources": [],
+  "license": "Artistic-2.0",
+  "tags": [
+    "prefix tree",
+    "prefix trees",
+    "sequential mining",
+    "trie",
+    "tries",
+    "tries with frequencies"
+  ],
+  "api": "1",
+  "source-url": "https://github.com/antononcube/Raku-ML-TriesWithFrequencies.git"
+}
