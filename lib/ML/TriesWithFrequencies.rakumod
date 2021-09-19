@@ -2,6 +2,9 @@ use ML::TriesWithFrequencies::Trie;
 
 unit module ML::TriesWithFrequencies;
 
+constant $TrieRoot = ML::TriesWithFrequencies::Trie.trieRootLabel;
+constant $TrieValue = ML::TriesWithFrequencies::Trie.trieValueLabel;
+
 ##=======================================================
 ## Core functions -- creation, merging, insertion, node frequencies
 ##=======================================================
@@ -32,7 +35,7 @@ sub trie-make(@chars where $_.all ~~ Str,
         $res = ML::TriesWithFrequencies::Trie.new($c, $val, %children);
     }
 
-    my ML::TriesWithFrequencies::Trie $res2 = ML::TriesWithFrequencies::Trie.new("", $val);
+    my ML::TriesWithFrequencies::Trie $res2 = ML::TriesWithFrequencies::Trie.new($TrieRoot, $val);
     $res2.children.push: ($res.getKey() => $res);
 
     return $res2;
@@ -57,8 +60,8 @@ sub trie-merge(ML::TriesWithFrequencies::Trie $tr1,
     } elsif $tr1.key ne $tr2.key {
 
         return trie-merge(
-                ML::TriesWithFrequencies::Trie.new("", $tr1.value, %("" => $tr1.children)),
-                ML::TriesWithFrequencies::Trie.new("", $tr2.value, %("" => $tr2.children)));
+                ML::TriesWithFrequencies::Trie.new($TrieRoot, $tr1.value, %($TrieRoot => $tr1.children)),
+                ML::TriesWithFrequencies::Trie.new($TrieRoot, $tr2.value, %($TrieRoot => $tr2.children)));
 
     } elsif $tr1.key eq $tr2.key {
 
@@ -311,7 +314,7 @@ sub trie-contains(ML::TriesWithFrequencies::Trie $tr,
 sub trie-is-key(ML::TriesWithFrequencies::Trie $tr,
                 @word where $_.all ~~ Str
         --> Bool) is export {
-    
+
     my $pos = trie-position($tr, @word);
 
     if not so $pos or $pos.elems < @word.elems {
@@ -319,4 +322,36 @@ sub trie-is-key(ML::TriesWithFrequencies::Trie $tr,
     } else {
         return True;
     }
+}
+
+#--------------------------------------------------------
+#| Visualize
+sub trie-form( ML::TriesWithFrequencies::Trie $tr) is export {
+    .say for visualize-tree $tr.toMapFormat{$TrieRoot}:p, *.key, *.value.List;
+}
+
+## Adapted from here:
+##   https://titanwolf.org/Network/Articles/Article?AID=34018e5b-c0d5-4351-85b6-d72bd049c8c0
+sub visualize-tree($tree, &label, &children,
+                         :$indent = '',
+                         :@mid = ('├─', '│ '),
+                         :@end = ('└─', '  '),
+                         ) {
+    sub visit($node, *@pre) {
+        gather {
+            if $node.&label ~~ $TrieValue {
+                take @pre[0] ~ $node.value
+            }
+            else {
+                take @pre[0] ~ $node.&label;
+                my @children = sort $node.&children;
+                my $end = @children.end;
+                for @children.kv -> $_, $child {
+                    when $end { take visit($child, (@pre[1] X~ @end)) }
+                    default { take visit($child, (@pre[1] X~ @mid)) }
+                }
+            }
+        }
+    }
+    flat visit($tree, $indent xx 2);
 }
