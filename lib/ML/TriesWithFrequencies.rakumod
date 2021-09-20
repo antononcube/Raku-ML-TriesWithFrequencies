@@ -129,7 +129,7 @@ sub trie-create1(@words where $_.all ~~ Positional --> ML::TriesWithFrequencies:
 
     my ML::TriesWithFrequencies::Trie $res = trie-make(@words[0]);
 
-    for @words[1 .. (*- 1)] -> @w {
+    for @words[1 .. (@words.elems - 1)] -> @w {
         $res = trie-insert($res, @w);
     }
 
@@ -144,7 +144,7 @@ sub trie-create(@words where $_.all ~~ Positional --> ML::TriesWithFrequencies::
         return Nil;
     }
 
-    if @words.elems <= 15 {
+    if @words.elems <= 20 {
         return trie-create1(@words);
     }
 
