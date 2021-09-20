@@ -138,19 +138,21 @@ sub trie-create1(@words where $_.all ~~ Positional --> ML::TriesWithFrequencies:
 
 #--------------------------------------------------------
 #| Creates a trie from a given list of list of strings. (Recursively.)
-sub trie-create(@words where $_.all ~~ Positional --> ML::TriesWithFrequencies::Trie) is export {
+sub trie-create(@words where $_.all ~~ Positional,
+                UInt :$bisection-threshold = 15,
+        --> ML::TriesWithFrequencies::Trie) is export {
 
     if !(@words.defined and @words) {
         return Nil;
     }
 
-    if @words.elems <= 20 {
+    if @words.elems <= $bisection-threshold {
         return trie-create1(@words);
     }
 
     return trie-merge(
-            trie-create(@words[^ceiling(@words.elems / 2)]),
-            trie-create(@words[ceiling(@words.elems / 2) .. (@words.elems - 1)]));
+            trie-create(@words[^ceiling(@words.elems / 2)], :$bisection-threshold),
+            trie-create(@words[ceiling(@words.elems / 2) .. (@words.elems - 1)], :$bisection-threshold));
 }
 
 #--------------------------------------------------------
@@ -161,8 +163,13 @@ multi trie-create-by-split(Str $word, *%args) {
     trie-create-by-split([$word], |%args)
 }
 
-multi trie-create-by-split(@words where $_.all ~~ Str, :$splitter = '',  :$skip-empty = True, :$v = False) {
-    trie-create(@words.map({ [$_.split($splitter, :skip-empty, :v)] }));
+multi trie-create-by-split(@words where $_.all ~~ Str,
+                           :$splitter = '',
+                           :$skip-empty = True,
+                           :$v = False,
+                           UInt :$bisection-threshold = 15
+        --> ML::TriesWithFrequencies::Trie) {
+    trie-create(@words.map({ [$_.split($splitter, :skip-empty, :v)] }), :$bisection-threshold);
 }
 
 #--------------------------------------------------------
