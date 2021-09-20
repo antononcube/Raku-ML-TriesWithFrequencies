@@ -1,6 +1,6 @@
 {
   "name": "ML::TriesWithFrequencies",
-  "description": "Tries with frequencies package.",
+  "description": "Package with functions for creation and manipulation of tries (prefix trees) with frequencies.",
   "version": "0.1.0",
   "perl": "6.d",
   "authors": [
@@ -17,9 +17,10 @@
   "resources": [],
   "license": "Artistic-2.0",
   "tags": [
+    "data mining",
     "prefix tree",
     "prefix trees",
-    "sequential mining",
+    "sequence mining",
     "trie",
     "tries",
     "tries with frequencies"
