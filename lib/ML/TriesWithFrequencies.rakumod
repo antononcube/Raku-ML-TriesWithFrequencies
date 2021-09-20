@@ -157,8 +157,8 @@ sub trie-create(@words where $_.all ~~ Positional --> ML::TriesWithFrequencies::
 #| Creates a trie by splitting each of the strings in the given list of strings.
 proto trie-create-by-split($words, |) is export {*}
 
-multi trie-create-by-split( Str $word, *%args) {
-    trie-create-by-split( [$word], |%args )
+multi trie-create-by-split(Str $word, *%args) {
+    trie-create-by-split([$word], |%args)
 }
 
 multi trie-create-by-split(@words where $_.all ~~ Str, $splitter = '',  :$skip-empty = True, :$v = False) {
@@ -330,19 +330,117 @@ sub trie-is-key(ML::TriesWithFrequencies::Trie $tr,
     }
 }
 
+##=======================================================
+## Shrinking functions
+##=======================================================
+
+#| @description Shrinks a trie by finding prefixes.
+#| @param tr a trie object
+#| @param delimiter a delimiter to be used when strings are joined
+sub trie-shrink(Trie $tr, Str $delimiter = '') is export {
+    return shrinkRec($tr, $delimiter, -1, False, 0);
+}
+
+#| @description Shrinks a trie by finding prefixes.
+#| @param tr a trie object
+#| @param delimiter a delimiter to be used when strings are joined
+sub trie-shrink-by-threshold(Trie $tr, Str $delimiter, Numeric $threshold) is export {
+    return shrinkRec($tr, $delimiter, $threshold, False, 0);
+}
+
+#| @description Shrinks a trie by finding prefixes.
+#| @param tr a trie object
+#| @param delimiter a delimiter to be used when strings are joined
+sub trie-shrink-internal-nodes(Trie $tr, Str $delimiter, Numeric $threshold) is export {
+    return shrinkRec($tr, $delimiter, $threshold, True, 0);
+}
+
+#| @description Shrinking recursive function.
+#| @param tr a trie object
+#| @param delimiter a delimiter for the concatenation of the node keys
+#| @param threshold if negative automatic shrinking test is applied
+#| @param n recursion level
+sub shrinkRec(ML::TriesWithFrequencies::Trie $tr,
+              Str $delimiter,
+              Numeric $threshold,
+              Bool $internalOnly,
+              Int $n
+        --> ML::TriesWithFrequencies::Trie) {
+
+    my ML::TriesWithFrequencies::Trie $trRes = ML::TriesWithFrequencies::Trie.new();
+    my Bool $rootQ = $n eq 0 and $tr.key eq $TrieRoot;
+
+    if !so $tr.children {
+
+        return $tr;
+
+    } elsif (!$rootQ and $tr.children.elems == 1) {
+        my @arr = $tr.children.values;
+        my Bool $shrinkQ = False;
+
+        if $threshold < 0 and $tr.value >= 1.0 and @arr[0].value >= 1.0 {
+            $shrinkQ = $tr.value eqv @arr[0].value;
+        } elsif $threshold < 0 {
+            $shrinkQ = @arr[0].value eq 1.0;
+        } else {
+            $shrinkQ = @arr[0].value >= $threshold;
+        }
+
+        if $shrinkQ && (!$internalOnly || $internalOnly && !trie-leafQ(@arr[0])) {
+            ## Only one child and the current node does not make a complete match:
+            ## proceed with recursion and join with result.
+
+            my ML::TriesWithFrequencies::Trie $chTr = shrinkRec(@arr[0], $delimiter, $threshold, $internalOnly, $n + 1);
+
+            $trRes.setKey($tr.key ~ $delimiter ~ $chTr.key);
+            $trRes.setValue($tr.value);
+
+            with $chTr.children {
+                $trRes.setChildren($chTr.children);
+            }
+
+        } else {
+            ## Only one child but the current node makes a complete match.
+
+            my ML::TriesWithFrequencies::Trie $chTr = shrinkRec(@arr[0], $delimiter, $threshold, $internalOnly, $n + 1);
+
+            $trRes.setKey($tr.key);
+            $trRes.setValue($tr.value);
+            $trRes.children().push: ($chTr.key => $chTr);
+        }
+
+        return $trRes;
+
+    } else {
+        ## No shrinking at this node. Proceed with recursion.
+        my %recChildren;
+
+        for $tr.children.values -> $chTr {
+            my ML::TriesWithFrequencies::Trie $nTr = shrinkRec($chTr, $delimiter, $threshold, $internalOnly, $n + 1);
+            %recChildren.push: ($nTr.key => $nTr);
+        }
+
+        $trRes.setKey($tr.key);
+        $trRes.setValue($tr.value);
+        $trRes.setChildren(%recChildren);
+
+        return $trRes;
+    }
+}
+
 #--------------------------------------------------------
 #| Visualize
-sub trie-form( ML::TriesWithFrequencies::Trie $tr) is export {
+sub trie-form(ML::TriesWithFrequencies::Trie $tr) is export {
     .say for visualize-tree $tr.toMapFormat{$TrieRoot}:p, *.key, *.value.List;
 }
 
 ## Adapted from here:
 ##   https://titanwolf.org/Network/Articles/Article?AID=34018e5b-c0d5-4351-85b6-d72bd049c8c0
 sub visualize-tree($tree, &label, &children,
-                         :$indent = '',
-                         :@mid = ('├─', '│ '),
-                         :@end = ('└─', '  '),
-                         ) {
+                   :$indent = '',
+                   :@mid = ('├─', '│ '),
+                   :@end = ('└─', '  '),
+                   ) {
     sub visit($node, *@pre) {
         gather {
             if $node.&label ~~ $TrieValue {
