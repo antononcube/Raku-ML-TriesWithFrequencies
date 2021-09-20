@@ -155,8 +155,14 @@ sub trie-create(@words where $_.all ~~ Positional --> ML::TriesWithFrequencies::
 
 #--------------------------------------------------------
 #| Creates a trie by splitting each of the strings in the given list of strings.
-sub trie-create-by-split(@words where $_.all ~~ Str, $splitter = '',  :$skip-empty = True, :$v = False) is export {
-    return trie-create(@words.map({ [$_.split($splitter, :skip-empty, :v)] }));
+proto trie-create-by-split($words, |) is export {*}
+
+multi trie-create-by-split( Str $word, *%args) {
+    trie-create-by-split( [$word], |%args )
+}
+
+multi trie-create-by-split(@words where $_.all ~~ Str, $splitter = '',  :$skip-empty = True, :$v = False) {
+    trie-create(@words.map({ [$_.split($splitter, :skip-empty, :v)] }));
 }
 
 #--------------------------------------------------------
