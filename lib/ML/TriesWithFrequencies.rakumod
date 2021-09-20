@@ -161,7 +161,7 @@ multi trie-create-by-split(Str $word, *%args) {
     trie-create-by-split([$word], |%args)
 }
 
-multi trie-create-by-split(@words where $_.all ~~ Str, $splitter = '',  :$skip-empty = True, :$v = False) {
+multi trie-create-by-split(@words where $_.all ~~ Str, :$splitter = '',  :$skip-empty = True, :$v = False) {
     trie-create(@words.map({ [$_.split($splitter, :skip-empty, :v)] }));
 }
 
@@ -333,26 +333,12 @@ sub trie-is-key(ML::TriesWithFrequencies::Trie $tr,
 ##=======================================================
 ## Shrinking functions
 ##=======================================================
-
 #| @description Shrinks a trie by finding prefixes.
-#| @param tr a trie object
-#| @param delimiter a delimiter to be used when strings are joined
-sub trie-shrink(Trie $tr, Str $delimiter = '') is export {
-    return shrinkRec($tr, $delimiter, -1, False, 0);
-}
-
-#| @description Shrinks a trie by finding prefixes.
-#| @param tr a trie object
-#| @param delimiter a delimiter to be used when strings are joined
-sub trie-shrink-by-threshold(Trie $tr, Str $delimiter, Numeric $threshold) is export {
-    return shrinkRec($tr, $delimiter, $threshold, False, 0);
-}
-
-#| @description Shrinks a trie by finding prefixes.
-#| @param tr a trie object
-#| @param delimiter a delimiter to be used when strings are joined
-sub trie-shrink-internal-nodes(Trie $tr, Str $delimiter, Numeric $threshold) is export {
-    return shrinkRec($tr, $delimiter, $threshold, True, 0);
+#| @param tr A trie object.
+#| @param delimiter A delimiter to be used when strings are joined.
+#| @param threshold Above what threshold to do the shrinking. If negative automatic shrinking test is applied.
+sub trie-shrink(Trie $tr, Str :$delimiter = '', Numeric :$threshold = -1, Bool :$internal-only = False) is export {
+    return shrinkRec($tr, $delimiter, $threshold, $internal-only, 0);
 }
 
 #| @description Shrinking recursive function.
@@ -374,7 +360,8 @@ sub shrinkRec(ML::TriesWithFrequencies::Trie $tr,
 
         return $tr;
 
-    } elsif (!$rootQ and $tr.children.elems == 1) {
+    } elsif ( not $rootQ and $tr.children.elems == 1) {
+
         my @arr = $tr.children.values;
         my Bool $shrinkQ = False;
 
@@ -386,7 +373,7 @@ sub shrinkRec(ML::TriesWithFrequencies::Trie $tr,
             $shrinkQ = @arr[0].value >= $threshold;
         }
 
-        if $shrinkQ && (!$internalOnly || $internalOnly && !trie-leafQ(@arr[0])) {
+        if $shrinkQ and (!$internalOnly or $internalOnly and not trie-leafQ(@arr[0])) {
             ## Only one child and the current node does not make a complete match:
             ## proceed with recursion and join with result.
 
