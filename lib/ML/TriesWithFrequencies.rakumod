@@ -361,7 +361,7 @@ sub shrinkRec(ML::TriesWithFrequencies::Trie $tr,
         --> ML::TriesWithFrequencies::Trie) {
 
     my ML::TriesWithFrequencies::Trie $trRes = ML::TriesWithFrequencies::Trie.new();
-    my Bool $rootQ = $n eq 0 and $tr.key eq $TrieRoot;
+    my Bool $rootQ = $n == 0 and $tr.key eq $TrieRoot;
 
     if !so $tr.children {
 
@@ -375,7 +375,7 @@ sub shrinkRec(ML::TriesWithFrequencies::Trie $tr,
         if $threshold < 0 and $tr.value >= 1.0 and @arr[0].value >= 1.0 {
             $shrinkQ = $tr.value eqv @arr[0].value;
         } elsif $threshold < 0 {
-            $shrinkQ = @arr[0].value eq 1.0;
+            $shrinkQ = @arr[0].value == 1.0;
         } else {
             $shrinkQ = @arr[0].value >= $threshold;
         }
