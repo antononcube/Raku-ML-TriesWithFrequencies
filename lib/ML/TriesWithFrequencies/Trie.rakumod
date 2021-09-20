@@ -60,8 +60,8 @@ class ML::TriesWithFrequencies::Trie {
     #--------------------------------------------------------
     #| To Map/Hash format
     method toWLFormat( --> Str ) {
-        my $res = '<|' ~ self.toWLFormatRec().subst('"' ~ $.trieRootLabel ~ '"', '$TrieRoot') ~ '|>';
-        $res.subst( $.trieValueLabel, '$TrieValue')
+        my $res = '<|' ~ self.toWLFormatRec().subst(:g, '"' ~ $.trieRootLabel ~ '"', '$TrieRoot') ~ '|>';
+        $res.subst(:g, $.trieValueLabel, '$TrieValue')
     }
 
     #| To Map/Hash format recursion
@@ -111,6 +111,6 @@ class ML::TriesWithFrequencies::Trie {
 
     #| To gist
     method gist( --> Str ) {
-        self.toStringRec(1)
+        self.toMapFormat().gist
     }
 }
