@@ -28,7 +28,7 @@ class ML::TriesWithFrequencies::Trie {
         $!value = $v;
         self
     }
-    method setChildren( ML::TriesWithFrequencies::Trie %ch ) {
+    method setChildren( %ch ) {
         %!children = %ch;
         self
     }
