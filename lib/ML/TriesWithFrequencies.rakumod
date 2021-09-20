@@ -27,15 +27,15 @@ sub trie-make(@chars where $_.all ~~ Str,
     }
 
     # First node
-    my ML::TriesWithFrequencies::Trie $res = ML::TriesWithFrequencies::Trie.new(@chars[*- 1], $bottomVal);
+    my ML::TriesWithFrequencies::Trie $res = ML::TriesWithFrequencies::Trie.new( key => @chars[*- 1], value => $bottomVal);
 
     # Is this faster: @chars.head(@chars.elems-1).reverse;
     for @chars[^(*- 1)].reverse -> $c {
         my %children = $res.getKey() => $res;
-        $res = ML::TriesWithFrequencies::Trie.new($c, $val, %children);
+        $res = ML::TriesWithFrequencies::Trie.new(key => $c, value => $val, :%children);
     }
 
-    my ML::TriesWithFrequencies::Trie $res2 = ML::TriesWithFrequencies::Trie.new($TrieRoot, $val);
+    my ML::TriesWithFrequencies::Trie $res2 = ML::TriesWithFrequencies::Trie.new( key => $TrieRoot, value => $val);
     $res2.children.push: ($res.getKey() => $res);
 
     return $res2;
@@ -60,8 +60,8 @@ sub trie-merge(ML::TriesWithFrequencies::Trie $tr1,
     } elsif $tr1.key ne $tr2.key {
 
         return trie-merge(
-                ML::TriesWithFrequencies::Trie.new($TrieRoot, $tr1.value, %($TrieRoot => $tr1.children)),
-                ML::TriesWithFrequencies::Trie.new($TrieRoot, $tr2.value, %($TrieRoot => $tr2.children)));
+                ML::TriesWithFrequencies::Trie.new(key => $TrieRoot, value => $tr1.value, children => %($TrieRoot => $tr1.children)),
+                ML::TriesWithFrequencies::Trie.new(key => $TrieRoot, value => $tr2.value, children => %($TrieRoot => $tr2.children)));
 
     } elsif $tr1.key eq $tr2.key {
 
@@ -180,7 +180,7 @@ sub nodeProbabilitiesRec(ML::TriesWithFrequencies::Trie $tr) {
     my Numeric $chSum = 0;
 
     if !$tr.children {
-        return ML::TriesWithFrequencies::Trie.new($tr.key, $tr.value);
+        return ML::TriesWithFrequencies::Trie.new( key => $tr.key, value => $tr.value);
     }
 
     if ($tr.value == 0) {
@@ -201,7 +201,7 @@ sub nodeProbabilitiesRec(ML::TriesWithFrequencies::Trie $tr) {
         %resChildren.push: ($v.key => $chNode);
     }
 
-    return ML::TriesWithFrequencies::Trie.new($tr.key, $tr.value, %resChildren);
+    return ML::TriesWithFrequencies::Trie.new( key => $tr.key, value => $tr.value, children => %resChildren);
 }
 
 
