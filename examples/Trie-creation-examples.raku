@@ -8,7 +8,19 @@ use ML::TriesWithFrequencies::Trie;
 
 my ML::TriesWithFrequencies::Trie ($tr1, $tr2);
 
-$tr1 = trie-make(['bar'.comb]);
+
+say trie-node-probabilities(trie-create-by-split(<bar barman bask bell best>)).toMapFormat.raku;
+
+my $tr = trie-create-by-split( <bar barman bask bell best> );
+my $ptr = trie-node-probabilities( $tr );
+trie-form($tr);
+
+#say trie-shrink( $tr ).toWLFormat;
+trie-form( trie-shrink( $ptr ) );
+trie-form( trie-shrink( $ptr, delimiter => '~' ) );
+
+#`(
+my $tr1 = trie-make(['bar'.comb]);
 #say $tr1.Str;
 
 $tr2 = trie-make(['bam'.comb]);
@@ -21,13 +33,22 @@ my $tr4 = trie-insert( $tr3, ['balk'.comb]);
 #say $tr4.toMapFormat;
 
 my $tr5 = trie-create(<bar barman bask bell best>.map({[ $_.comb ]}) );
-say $tr5.toMapFormat;
+say $tr5.Str;
+trie-form( $tr5);
 say $tr5.toWLFormat;
 
 my $tr6 = trie-create-by-split(<bar barman bask bell best>);
-say $tr6.toMapFormat;
-say $tr6.toWLFormat;
+#say $tr6.toMapFormat;
+#say $tr6.toWLFormat;
 
-say $tr5 eqv $tr6;
+#say $tr5 eqv $tr6;
+#say trie-node-probabilities($tr5).toWLFormat;
 
-say trie-node-probabilities($tr5).toWLFormat;
+say '-' x 30;
+
+#say trie-position( $tr5, ['baza'.comb]);
+#say trie-retrieve( $tr5, ['baza'.comb]).toWLFormat;
+say <baza bar bell car>.map({ trie-has-complete-match( $tr5, [$_.comb] ) });
+say <baza ba bell car>.map({ trie-contains( $tr5, [$_.comb] ) });
+say <baza ba bell car>.map({ trie-is-key( $tr5, [$_.comb] ) });
+)
