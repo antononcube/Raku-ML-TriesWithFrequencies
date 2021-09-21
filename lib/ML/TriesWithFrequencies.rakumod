@@ -344,7 +344,7 @@ sub trie-is-key(ML::TriesWithFrequencies::Trie $tr,
 #| @param tr A trie object.
 #| @param delimiter A delimiter to be used when strings are joined.
 #| @param threshold Above what threshold to do the shrinking. If negative automatic shrinking test is applied.
-sub trie-shrink(Trie $tr, Str :$delimiter = '', Num :$threshold = -1, Bool :$internal-only = False) is export {
+sub trie-shrink(Trie $tr, Str :$delimiter = '', Num :$threshold = -1e0, Bool :$internal-only = False) is export {
     return shrinkRec($tr, $delimiter, $threshold, $internal-only, 0);
 }
 
@@ -361,7 +361,7 @@ sub shrinkRec(ML::TriesWithFrequencies::Trie $tr,
         --> ML::TriesWithFrequencies::Trie) {
 
     my ML::TriesWithFrequencies::Trie $trRes = ML::TriesWithFrequencies::Trie.new();
-    my Bool $rootQ = $n == 0 and $tr.key eq $TrieRoot;
+    my Bool $rootQ = ($n == 0 and $tr.key eq $TrieRoot);
 
     if !so $tr.children {
 
