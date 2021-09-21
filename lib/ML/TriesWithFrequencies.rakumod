@@ -13,12 +13,16 @@ constant $TrieValue = ML::TriesWithFrequencies::Trie.trieValueLabel;
 #| @param chars a list of objects
 #| @param val value (e.g. frequency) to be assigned
 #| @param bottomVal the bottom value
-sub trie-make(@chars where $_.all ~~ Str,
+sub trie-make(@chars,
               Num $val = 1e0,
               Num $bottomVal? is copy
         --> ML::TriesWithFrequencies::Trie) is export {
 
-    if !@chars {
+    if not @chars.all ~~ Str {
+        die "The first argument is expected to be a positional of strings."
+    }
+
+    if not so @chars {
         return Nil;
     }
 
@@ -27,7 +31,8 @@ sub trie-make(@chars where $_.all ~~ Str,
     }
 
     # First node
-    my ML::TriesWithFrequencies::Trie $res = ML::TriesWithFrequencies::Trie.new( key => @chars[*- 1], value => $bottomVal);
+    my ML::TriesWithFrequencies::Trie $res = ML::TriesWithFrequencies::Trie.new(key => @chars[*- 1],
+            value => $bottomVal);
 
     # Is this faster: @chars.head(@chars.elems-1).reverse;
     for @chars[^(*- 1)].reverse -> $c {
@@ -35,7 +40,7 @@ sub trie-make(@chars where $_.all ~~ Str,
         $res = ML::TriesWithFrequencies::Trie.new(key => $c, value => $val, :%children);
     }
 
-    my ML::TriesWithFrequencies::Trie $res2 = ML::TriesWithFrequencies::Trie.new( key => $TrieRoot, value => $val);
+    my ML::TriesWithFrequencies::Trie $res2 = ML::TriesWithFrequencies::Trie.new(key => $TrieRoot, value => $val);
     $res2.children.push: ($res.getKey() => $res);
 
     return $res2;
@@ -60,8 +65,10 @@ sub trie-merge(ML::TriesWithFrequencies::Trie $tr1,
     } elsif $tr1.key ne $tr2.key {
 
         return trie-merge(
-                ML::TriesWithFrequencies::Trie.new(key => $TrieRoot, value => $tr1.value, children => %($TrieRoot => $tr1.children)),
-                ML::TriesWithFrequencies::Trie.new(key => $TrieRoot, value => $tr2.value, children => %($TrieRoot => $tr2.children)));
+                ML::TriesWithFrequencies::Trie.new(key => $TrieRoot, value => $tr1.value,
+                        children => %($TrieRoot => $tr1.children)),
+                ML::TriesWithFrequencies::Trie.new(key => $TrieRoot, value => $tr2.value,
+                        children => %($TrieRoot => $tr2.children)));
 
     } elsif $tr1.key eq $tr2.key {
 
@@ -107,10 +114,15 @@ sub trie-merge(ML::TriesWithFrequencies::Trie $tr1,
 
 #|Inserts a "word" (a list of strings) into a trie with a given associated value.
 sub trie-insert(ML::TriesWithFrequencies::Trie $tr,
-                @word where $_.all ~~ Str,
+                @word,
                 Num $value = 1e0,
                 Num $bottomVal?
         --> ML::TriesWithFrequencies::Trie) is export {
+
+    if not @word.all ~~ Str {
+        die "The second argument is expected to be a positional of strings."
+    }
+
     with $bottomVal {
         trie-merge($tr, trie-make(@word, $value, $bottomVal))
     } else {
@@ -121,9 +133,15 @@ sub trie-insert(ML::TriesWithFrequencies::Trie $tr,
 #--------------------------------------------------------
 
 #| Creates a trie from a given list of list of strings. (Non-recursively.)
-sub trie-create1(@words where $_.all ~~ Positional --> ML::TriesWithFrequencies::Trie) {
+sub trie-create1(@words,
+                 Bool :$verify-input = True
+        --> ML::TriesWithFrequencies::Trie) {
 
-    if !(@words.defined and @words) {
+    if $verify-input and not @words.all ~~ Positional {
+        die "The first argument is expected to be a positional of positionals of strings."
+    }
+
+    if not so @words {
         return Nil;
     }
 
@@ -138,21 +156,25 @@ sub trie-create1(@words where $_.all ~~ Positional --> ML::TriesWithFrequencies:
 
 #--------------------------------------------------------
 #| Creates a trie from a given list of list of strings. (Recursively.)
-sub trie-create(@words where $_.all ~~ Positional,
+sub trie-create(@words,
                 UInt :$bisection-threshold = 15,
+                Bool :$verify-input = True
         --> ML::TriesWithFrequencies::Trie) is export {
 
-    if !(@words.defined and @words) {
-        return Nil;
+    if not so @words { return Nil; }
+
+    if $verify-input and not @words.all ~~ Positional {
+        die "The first argument is expected to be a positional of positionals of strings."
     }
 
     if @words.elems <= $bisection-threshold {
-        return trie-create1(@words);
+        return trie-create1(@words, :!verify-input);
     }
 
     return trie-merge(
-            trie-create(@words[^ceiling(@words.elems / 2)], :$bisection-threshold),
-            trie-create(@words[ceiling(@words.elems / 2) .. (@words.elems - 1)], :$bisection-threshold));
+            trie-create(@words[^ceiling(@words.elems / 2)], :$bisection-threshold, :!verify-input),
+            trie-create(@words[ceiling(@words.elems / 2) .. (@words.elems - 1)], :$bisection-threshold,
+                    :!verify-input));
 }
 
 #--------------------------------------------------------
@@ -163,12 +185,19 @@ multi trie-create-by-split(Str $word, *%args) {
     trie-create-by-split([$word], |%args)
 }
 
-multi trie-create-by-split(@words where $_.all ~~ Str,
+multi trie-create-by-split(@words,
                            :$splitter = '',
                            :$skip-empty = True,
                            :$v = False,
                            UInt :$bisection-threshold = 15
         --> ML::TriesWithFrequencies::Trie) {
+
+    if not so @words { return Nil }
+
+    if not @words.all ~~ Str {
+        die "The first argument is expected to be a positional of strings."
+    }
+
     trie-create(@words.map({ [$_.split($splitter, :skip-empty, :v)] }), :$bisection-threshold);
 }
 
@@ -187,7 +216,7 @@ sub nodeProbabilitiesRec(ML::TriesWithFrequencies::Trie $tr) {
     my Num $chSum = 0e0;
 
     if !$tr.children {
-        return ML::TriesWithFrequencies::Trie.new( key => $tr.key, value => $tr.value);
+        return ML::TriesWithFrequencies::Trie.new(key => $tr.key, value => $tr.value);
     }
 
     if ($tr.value == 0) {
@@ -208,7 +237,7 @@ sub nodeProbabilitiesRec(ML::TriesWithFrequencies::Trie $tr) {
         %resChildren.push: ($v.key => $chNode);
     }
 
-    return ML::TriesWithFrequencies::Trie.new( key => $tr.key, value => $tr.value, children => %resChildren);
+    return ML::TriesWithFrequencies::Trie.new(key => $tr.key, value => $tr.value, children => %resChildren);
 }
 
 
@@ -227,32 +256,32 @@ sub trie-leafQ(ML::TriesWithFrequencies::Trie $tr --> Bool) {
 #| @param tr a trie object
 #| @param word a list of strings
 sub trie-position(ML::TriesWithFrequencies::Trie $tr,
-                  @word where $_.all ~~ Str
+                  @word
         --> Positional) is export {
-    if not (@word.defined and @word) {
-        return Nil;
-    } else {
-        if not $tr.children.defined and $tr.children {
-            return Nil;
-        }
 
-        my Bool $pos = $tr.children{@word[0]}:exists;
+    if not so @word { return Nil; }
 
-        if not $tr.children{@word[0]}:exists {
-            return Nil;
-        } else {
-            my @res;
-            @res.append(@word[0]);
-            my $rpos = trie-position($tr.children{@word[0]}, @word[1 .. (@word.elems - 1)]);
+    if not so $tr.children { return Nil; }
 
-            if not ($rpos.defined and $rpos) {
-                return @res;
-            } else {
-                @res.append(|$rpos);
-                return @res;
-            }
-        }
+    if not @word.all ~~ Str {
+        die "The second argument is expected to be a positional of strings."
     }
+
+    if not $tr.children{@word[0]}:exists {
+        return Nil;
+    }
+
+    my @res;
+    @res.append(@word[0]);
+    my $rpos = trie-position($tr.children{@word[0]}, @word[1 .. (@word.elems - 1)]);
+
+    if not ($rpos.defined and $rpos) {
+        return @res;
+    } else {
+        @res.append(|$rpos);
+        return @res;
+    }
+
 }
 
 #--------------------------------------------------------
@@ -260,21 +289,23 @@ sub trie-position(ML::TriesWithFrequencies::Trie $tr,
 #| @param tr a trie object
 #| @param word a list of strings
 sub trie-retrieve(ML::TriesWithFrequencies::Trie $tr,
-                  @word where $_.all ~~ Str
+                  @word
         --> ML::TriesWithFrequencies::Trie) is export {
-    if not so @word {
+
+    if not so @word { return $tr; }
+
+    if not so $tr.children { return $tr; }
+
+    if not @word.all ~~ Str {
+        die "The second argument is expected to be a positional of strings."
+    }
+
+    if not $tr.children{@word[0]}:exists {
         return $tr;
     } else {
-        if not so $tr.children {
-            return $tr;
-        }
-
-        if not $tr.children{@word[0]}:exists {
-            return $tr;
-        } else {
-            return trie-retrieve($tr.children{@word[0]}, @word[1 .. (@word.elems - 1)]);
-        }
+        return trie-retrieve($tr.children{@word[0]}, @word[1 .. (@word.elems - 1)]);
     }
+
 }
 
 #--------------------------------------------------------
@@ -283,10 +314,16 @@ sub trie-retrieve(ML::TriesWithFrequencies::Trie $tr,
 #| @param word a list of strings
 #| @details Despite the name this function works on the part of the word that can be found in the trie.
 sub trie-has-complete-match(ML::TriesWithFrequencies::Trie $tr,
-                            @word where $_.all ~~ Str
+                            @word
         --> Bool) is export {
 
     if not so $tr { return False }
+
+    if not so @word { return False }
+
+    if not @word.all ~~ Str {
+        die "The second argument is expected to be a positional of strings."
+    }
 
     my ML::TriesWithFrequencies::Trie $subTr = trie-retrieve($tr, @word);
 
@@ -308,8 +345,14 @@ sub trie-has-complete-match(ML::TriesWithFrequencies::Trie $tr,
 #| @param tr a trie object
 #| @param word a word to be checked
 sub trie-contains(ML::TriesWithFrequencies::Trie $tr,
-                  @word where $_.all ~~ Str
+                  @word
         --> Bool) is export {
+
+    if not so @word { return Nil }
+
+    if not @word.all ~~ Str {
+        die "The second argument is expected to be a positional of strings."
+    }
 
     my $pos = trie-position($tr, @word);
 
@@ -325,8 +368,14 @@ sub trie-contains(ML::TriesWithFrequencies::Trie $tr,
 #| @param tr a trie object
 #| @param word a word to be checked
 sub trie-is-key(ML::TriesWithFrequencies::Trie $tr,
-                @word where $_.all ~~ Str
+                @word
         --> Bool) is export {
+
+    if not so @word { return Nil }
+
+    if not @word.all ~~ Str {
+        die "The second argument is expected to be a positional of strings."
+    }
 
     my $pos = trie-position($tr, @word);
 
@@ -367,7 +416,7 @@ sub shrinkRec(ML::TriesWithFrequencies::Trie $tr,
 
         return $tr;
 
-    } elsif ( not $rootQ and $tr.children.elems == 1) {
+    } elsif (not $rootQ and $tr.children.elems == 1) {
 
         my @arr = $tr.children.values;
         my Bool $shrinkQ = False;
