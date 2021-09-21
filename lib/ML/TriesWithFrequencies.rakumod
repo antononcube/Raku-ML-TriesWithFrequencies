@@ -465,7 +465,7 @@ sub shrinkRec(ML::TriesWithFrequencies::Trie $tr,
 #--------------------------------------------------------
 #| Visualize
 sub trie-form(ML::TriesWithFrequencies::Trie $tr) is export {
-    .say for visualize-tree $tr.toMapFormat{$TrieRoot}:p, *.key, *.value.List;
+    .say for visualize-tree $tr.toMapFormat.first, *.key, *.value.List;
 }
 
 ## Adapted from here:
@@ -491,5 +491,6 @@ sub visualize-tree($tree, &label, &children,
             }
         }
     }
+
     flat visit($tree, $indent xx 2);
 }
