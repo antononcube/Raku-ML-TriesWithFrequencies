@@ -14,8 +14,8 @@ constant $TrieValue = ML::TriesWithFrequencies::Trie.trieValueLabel;
 #| @param val value (e.g. frequency) to be assigned
 #| @param bottomVal the bottom value
 sub trie-make(@chars where $_.all ~~ Str,
-              Numeric $val = 1.0,
-              Numeric $bottomVal? is copy
+              Num $val = 1e0,
+              Num $bottomVal? is copy
         --> ML::TriesWithFrequencies::Trie) is export {
 
     if !@chars {
@@ -108,8 +108,8 @@ sub trie-merge(ML::TriesWithFrequencies::Trie $tr1,
 #|Inserts a "word" (a list of strings) into a trie with a given associated value.
 sub trie-insert(ML::TriesWithFrequencies::Trie $tr,
                 @word where $_.all ~~ Str,
-                Numeric $value = 1.0,
-                Numeric $bottomVal?
+                Num $value = 1e0,
+                Num $bottomVal?
         --> ML::TriesWithFrequencies::Trie) is export {
     with $bottomVal {
         trie-merge($tr, trie-make(@word, $value, $bottomVal))
@@ -177,14 +177,14 @@ multi trie-create-by-split(@words where $_.all ~~ Str,
 #| @param tr a trie object
 sub trie-node-probabilities(ML::TriesWithFrequencies::Trie $tr) is export {
     my ML::TriesWithFrequencies::Trie $res = nodeProbabilitiesRec($tr);
-    $res.setValue(1.0);
+    $res.setValue(1e0);
     return $res;
 }
 
 #| @description Recursive step function for converting node frequencies into node probabilities.
 #| @param tr a trie object
 sub nodeProbabilitiesRec(ML::TriesWithFrequencies::Trie $tr) {
-    my Numeric $chSum = 0;
+    my Num $chSum = 0e0;
 
     if !$tr.children {
         return ML::TriesWithFrequencies::Trie.new( key => $tr.key, value => $tr.value);
@@ -192,7 +192,7 @@ sub nodeProbabilitiesRec(ML::TriesWithFrequencies::Trie $tr) {
 
     if ($tr.value == 0) {
         ## This is a strange case -- that generally should not happen.
-        $chSum = 0;
+        $chSum = 0e0;
         for $tr.children.values -> $ch {
             $chSum += $ch.getValue();
         }
@@ -293,7 +293,7 @@ sub trie-has-complete-match(ML::TriesWithFrequencies::Trie $tr,
     if not so $subTr.children {
         return True;
     } else {
-        my Numeric $chValue = 0.0;
+        my Num $chValue = 0e0;
 
         for $subTr.children.values -> $ch {
             $chValue += $ch.value
@@ -344,7 +344,7 @@ sub trie-is-key(ML::TriesWithFrequencies::Trie $tr,
 #| @param tr A trie object.
 #| @param delimiter A delimiter to be used when strings are joined.
 #| @param threshold Above what threshold to do the shrinking. If negative automatic shrinking test is applied.
-sub trie-shrink(Trie $tr, Str :$delimiter = '', Numeric :$threshold = -1, Bool :$internal-only = False) is export {
+sub trie-shrink(Trie $tr, Str :$delimiter = '', Num :$threshold = -1, Bool :$internal-only = False) is export {
     return shrinkRec($tr, $delimiter, $threshold, $internal-only, 0);
 }
 
@@ -355,7 +355,7 @@ sub trie-shrink(Trie $tr, Str :$delimiter = '', Numeric :$threshold = -1, Bool :
 #| @param n recursion level
 sub shrinkRec(ML::TriesWithFrequencies::Trie $tr,
               Str $delimiter,
-              Numeric $threshold,
+              Num $threshold,
               Bool $internalOnly,
               Int $n
         --> ML::TriesWithFrequencies::Trie) {
@@ -372,10 +372,10 @@ sub shrinkRec(ML::TriesWithFrequencies::Trie $tr,
         my @arr = $tr.children.values;
         my Bool $shrinkQ = False;
 
-        if $threshold < 0 and $tr.value >= 1.0 and @arr[0].value >= 1.0 {
+        if $threshold < 0 and $tr.value >= 1e0 and @arr[0].value >= 1e0 {
             $shrinkQ = $tr.value eqv @arr[0].value;
         } elsif $threshold < 0 {
-            $shrinkQ = @arr[0].value == 1.0;
+            $shrinkQ = @arr[0].value == 1e0;
         } else {
             $shrinkQ = @arr[0].value >= $threshold;
         }

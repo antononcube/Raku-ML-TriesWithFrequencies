@@ -4,7 +4,7 @@ class ML::TriesWithFrequencies::Trie {
     my Str $.trieRootLabel = 'TROOT';
     my Str $.trieValueLabel = 'TVALUE';
     has Str $.key;
-    has Numeric $.value;
+    has Num $.value;
     has ML::TriesWithFrequencies::Trie %.children{Str};
 
 
@@ -34,11 +34,11 @@ class ML::TriesWithFrequencies::Trie {
     }
 
     #--------------------------------------------------------
-    multi method new( Str $key, Numeric $value = 1.0 ) {
+    multi method new( Str $key, Num $value = 1e0 ) {
         self.bless(:$key, :$value)
     }
 
-    multi method new( Str $key, Numeric $value, %children ) {
+    multi method new( Str $key, Num $value, %children ) {
         self.bless(:$key, :$value, :%children)
     }
 
