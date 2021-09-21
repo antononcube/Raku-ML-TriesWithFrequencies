@@ -14,8 +14,8 @@ constant $TrieValue = ML::TriesWithFrequencies::Trie.trieValueLabel;
 #| @param val value (e.g. frequency) to be assigned
 #| @param bottomVal the bottom value
 sub trie-make(@chars,
-              Num $val = 1e0,
-              Num $bottomVal? is copy
+              Num :$value = 1e0,
+              :$bottomValue is copy = 1e0
         --> ML::TriesWithFrequencies::Trie) is export {
 
     if not @chars.all ~~ Str {
@@ -26,21 +26,21 @@ sub trie-make(@chars,
         return Nil;
     }
 
-    without $bottomVal {
-        $bottomVal = $val;
+    if $bottomValue.isa(Whatever) {
+        $bottomValue = $value;
     }
 
     # First node
     my ML::TriesWithFrequencies::Trie $res = ML::TriesWithFrequencies::Trie.new(key => @chars[*- 1],
-            value => $bottomVal);
+            value => $bottomValue);
 
     # Is this faster: @chars.head(@chars.elems-1).reverse;
     for @chars[^(*- 1)].reverse -> $c {
         my %children = $res.getKey() => $res;
-        $res = ML::TriesWithFrequencies::Trie.new(key => $c, value => $val, :%children);
+        $res = ML::TriesWithFrequencies::Trie.new(key => $c, :$value, :%children);
     }
 
-    my ML::TriesWithFrequencies::Trie $res2 = ML::TriesWithFrequencies::Trie.new(key => $TrieRoot, value => $val);
+    my ML::TriesWithFrequencies::Trie $res2 = ML::TriesWithFrequencies::Trie.new(key => $TrieRoot, :$value);
     $res2.children.push: ($res.getKey() => $res);
 
     return $res2;
@@ -115,18 +115,18 @@ sub trie-merge(ML::TriesWithFrequencies::Trie $tr1,
 #|Inserts a "word" (a list of strings) into a trie with a given associated value.
 sub trie-insert(ML::TriesWithFrequencies::Trie $tr,
                 @word,
-                Num $value = 1e0,
-                Num $bottomVal?
+                Num :$value = 1e0,
+                :$bottomValue = 1e0
         --> ML::TriesWithFrequencies::Trie) is export {
 
     if not @word.all ~~ Str {
         die "The second argument is expected to be a positional of strings."
     }
 
-    with $bottomVal {
-        trie-merge($tr, trie-make(@word, $value, $bottomVal))
+    with $bottomValue {
+        trie-merge($tr, trie-make(@word, :$value, :$bottomValue))
     } else {
-        trie-merge($tr, trie-make(@word, $value))
+        trie-merge($tr, trie-make(@word, :$value))
     }
 }
 
@@ -213,7 +213,7 @@ sub trie-node-probabilities(ML::TriesWithFrequencies::Trie $tr) is export {
 #| @description Recursive step function for converting node frequencies into node probabilities.
 #| @param tr a trie object
 sub nodeProbabilitiesRec(ML::TriesWithFrequencies::Trie $tr) {
-    my Num $chSum = 0e0;
+    my num $chSum = 0e0;
 
     if !$tr.children {
         return ML::TriesWithFrequencies::Trie.new(key => $tr.key, value => $tr.value);
@@ -330,7 +330,7 @@ sub trie-has-complete-match(ML::TriesWithFrequencies::Trie $tr,
     if not so $subTr.children {
         return True;
     } else {
-        my Num $chValue = 0e0;
+        my num $chValue = 0e0;
 
         for $subTr.children.values -> $ch {
             $chValue += $ch.value
@@ -393,7 +393,7 @@ sub trie-is-key(ML::TriesWithFrequencies::Trie $tr,
 #| @param tr A trie object.
 #| @param delimiter A delimiter to be used when strings are joined.
 #| @param threshold Above what threshold to do the shrinking. If negative automatic shrinking test is applied.
-sub trie-shrink(Trie $tr, Str :$delimiter = '', Num :$threshold = -1e0, Bool :$internal-only = False) is export {
+sub trie-shrink(Trie $tr, str :$delimiter = '', num :$threshold = -1e0, Bool :$internal-only = False) is export {
     return shrinkRec($tr, $delimiter, $threshold, $internal-only, 0);
 }
 
@@ -403,8 +403,8 @@ sub trie-shrink(Trie $tr, Str :$delimiter = '', Num :$threshold = -1e0, Bool :$i
 #| @param threshold if negative automatic shrinking test is applied
 #| @param n recursion level
 sub shrinkRec(ML::TriesWithFrequencies::Trie $tr,
-              Str $delimiter,
-              Num $threshold,
+              str $delimiter,
+              num $threshold,
               Bool $internalOnly,
               Int $n
         --> ML::TriesWithFrequencies::Trie) {

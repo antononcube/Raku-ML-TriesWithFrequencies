@@ -3,9 +3,9 @@ class ML::TriesWithFrequencies::Trie {
 
     my Str $.trieRootLabel = 'TROOT';
     my Str $.trieValueLabel = 'TVALUE';
-    has Str $.key;
-    has Num $.value;
-    has ML::TriesWithFrequencies::Trie %.children{Str};
+    has str $.key;
+    has num $.value;
+    has ML::TriesWithFrequencies::Trie %.children;
 
 
     #--------------------------------------------------------
@@ -59,13 +59,13 @@ class ML::TriesWithFrequencies::Trie {
 
     #--------------------------------------------------------
     #| To Map/Hash format
-    method toWLFormat( --> Str ) {
+    method toWLFormat( --> str ) {
         my $res = '<|' ~ self.toWLFormatRec().subst(:g, '"' ~ $.trieRootLabel ~ '"', '$TrieRoot') ~ '|>';
         $res.subst(:g, $.trieValueLabel, '$TrieValue')
     }
 
     #| To Map/Hash format recursion
-    method toWLFormatRec( --> Str ) {
+    method toWLFormatRec( --> str ) {
         my @chMap;
 
         with %!children {
@@ -81,9 +81,9 @@ class ML::TriesWithFrequencies::Trie {
 
     #--------------------------------------------------------
     #| To sting recursive step
-    method toStringRec(UInt $n) {
-        my Str $offset = "";
-        my Str $childStr = "";
+    method tostringRec(UInt $n) {
+        my str $offset = "";
+        my str $childstr = "";
         my $k = 0;
 
         $offset = ' ' x $n;
@@ -91,26 +91,26 @@ class ML::TriesWithFrequencies::Trie {
         if %!children {
             for %!children.values -> $elem {
                 if ($k == 0) {
-                    $childStr = "\n" ~ $offset ~ $elem.toStringRec($n + 1);
+                    $childstr = "\n" ~ $offset ~ $elem.tostringRec($n + 1);
                 } else {
-                    $childStr = $childStr ~ ",\n" ~ $offset ~ $elem.toStringRec($n + 1);
+                    $childstr = $childstr ~ ",\n" ~ $offset ~ $elem.tostringRec($n + 1);
                 }
                 $k++;
             }
         } else {
-            $childStr = "";
+            $childstr = "";
         }
-        return '{ key =>' ~ $!key ~ ', value => ' ~ $!value ~ ', children => ' ~ $childStr ~ '}';
+        return '{ key =>' ~ $!key ~ ', value => ' ~ $!value ~ ', children => ' ~ $childstr ~ '}';
     }
 
     #--------------------------------------------------------
     #| To sting
-    method Str( --> Str ) {
+    method str( --> str ) {
         self.gist
     }
 
     #| To gist
-    method gist( --> Str ) {
+    method gist( --> str ) {
         self.toMapFormat().gist
     }
 }
