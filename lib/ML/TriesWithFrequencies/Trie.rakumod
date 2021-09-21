@@ -59,13 +59,13 @@ class ML::TriesWithFrequencies::Trie {
 
     #--------------------------------------------------------
     #| To Map/Hash format
-    method toWLFormat( --> str ) {
+    method toWLFormat( --> Str ) {
         my $res = '<|' ~ self.toWLFormatRec().subst(:g, '"' ~ $.trieRootLabel ~ '"', '$TrieRoot') ~ '|>';
         $res.subst(:g, $.trieValueLabel, '$TrieValue')
     }
 
     #| To Map/Hash format recursion
-    method toWLFormatRec( --> str ) {
+    method toWLFormatRec( --> Str ) {
         my @chMap;
 
         with %!children {
@@ -105,12 +105,12 @@ class ML::TriesWithFrequencies::Trie {
 
     #--------------------------------------------------------
     #| To sting
-    method str( --> str ) {
+    method str( --> Str ) {
         self.gist
     }
 
     #| To gist
-    method gist( --> str ) {
+    method gist( --> Str ) {
         self.toMapFormat().gist
     }
 }
