@@ -1,8 +1,8 @@
 
 class ML::TriesWithFrequencies::Trie {
 
-    my Str $.trieRootLabel = 'TROOT';
-    my Str $.trieValueLabel = 'TVALUE';
+    my Str $.trieRootLabel = 'TRIEROOT';
+    my Str $.trieValueLabel = 'TRIEVALUE';
     has str $.key;
     has num $.value;
     has ML::TriesWithFrequencies::Trie %.children;
