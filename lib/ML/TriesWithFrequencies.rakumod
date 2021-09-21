@@ -15,19 +15,16 @@ constant $TrieValue = ML::TriesWithFrequencies::Trie.trieValueLabel;
 #| @param bottomVal the bottom value
 sub trie-make(@chars,
               Num :$value = 1e0,
-              :$bottomValue is copy = 1e0
+              Num :$bottomValue = 1e0,
+              Bool :$verify-input = True
         --> ML::TriesWithFrequencies::Trie) is export {
 
-    if not @chars.all ~~ Str {
+    if $verify-input and not @chars.all ~~ Str {
         die "The first argument is expected to be a positional of strings."
     }
 
     if not so @chars {
         return Nil;
-    }
-
-    if $bottomValue.isa(Whatever) {
-        $bottomValue = $value;
     }
 
     # First node
@@ -65,10 +62,8 @@ sub trie-merge(ML::TriesWithFrequencies::Trie $tr1,
     } elsif $tr1.key ne $tr2.key {
 
         return trie-merge(
-                ML::TriesWithFrequencies::Trie.new(key => $TrieRoot, value => $tr1.value,
-                        children => %($TrieRoot => $tr1.children)),
-                ML::TriesWithFrequencies::Trie.new(key => $TrieRoot, value => $tr2.value,
-                        children => %($TrieRoot => $tr2.children)));
+                ML::TriesWithFrequencies::Trie.new(key => $TrieRoot, value => $tr1.value, children => %($TrieRoot => $tr1.children)),
+                ML::TriesWithFrequencies::Trie.new(key => $TrieRoot, value => $tr2.value, children => %($TrieRoot => $tr2.children)));
 
     } elsif $tr1.key eq $tr2.key {
 
@@ -116,18 +111,15 @@ sub trie-merge(ML::TriesWithFrequencies::Trie $tr1,
 sub trie-insert(ML::TriesWithFrequencies::Trie $tr,
                 @word,
                 Num :$value = 1e0,
-                :$bottomValue = 1e0
+                Num :$bottomValue = 1e0,
+                Bool :$verify-input = True
         --> ML::TriesWithFrequencies::Trie) is export {
 
     if not @word.all ~~ Str {
         die "The second argument is expected to be a positional of strings."
     }
 
-    with $bottomValue {
-        trie-merge($tr, trie-make(@word, :$value, :$bottomValue))
-    } else {
-        trie-merge($tr, trie-make(@word, :$value))
-    }
+   trie-merge($tr, trie-make(@word, :$value, :$bottomValue, :!verify-input))
 }
 
 #--------------------------------------------------------
@@ -148,7 +140,7 @@ sub trie-create1(@words,
     my ML::TriesWithFrequencies::Trie $res = trie-make(@words[0]);
 
     for @words[1 .. (@words.elems - 1)] -> @w {
-        $res = trie-insert($res, @w);
+        $res = trie-insert($res, @w, :$verify-input);
     }
 
     return $res;
@@ -173,8 +165,7 @@ sub trie-create(@words,
 
     return trie-merge(
             trie-create(@words[^ceiling(@words.elems / 2)], :$bisection-threshold, :!verify-input),
-            trie-create(@words[ceiling(@words.elems / 2) .. (@words.elems - 1)], :$bisection-threshold,
-                    :!verify-input));
+            trie-create(@words[ceiling(@words.elems / 2) .. (@words.elems - 1)], :$bisection-threshold, :!verify-input));
 }
 
 #--------------------------------------------------------
