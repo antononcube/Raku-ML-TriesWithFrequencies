@@ -13,11 +13,13 @@ say trie-node-probabilities(trie-create-by-split(<bar barman bask bell best>)).t
 
 my $tr = trie-create-by-split( <bar barman bask bell best> );
 my $ptr = trie-node-probabilities( $tr );
-trie-form($tr);
+#trie-say($tr);
 
 #say trie-shrink( $tr ).toWLFormat;
-trie-form( trie-shrink( $ptr ) );
-trie-form( trie-shrink( $ptr, delimiter => '~' ) );
+#trie-say( trie-shrink( $ptr ) );
+#trie-say( trie-shrink( $ptr, delimiter => '~' ) );
+
+trie-say(trie-retrieve($ptr, 'bar'.comb));
 
 #`(
 my $tr1 = trie-make(['bar'.comb]);
@@ -34,7 +36,7 @@ my $tr4 = trie-insert( $tr3, ['balk'.comb]);
 
 my $tr5 = trie-create(<bar barman bask bell best>.map({[ $_.comb ]}) );
 say $tr5.Str;
-trie-form( $tr5);
+trie-say( $tr5);
 say $tr5.toWLFormat;
 
 my $tr6 = trie-create-by-split(<bar barman bask bell best>);

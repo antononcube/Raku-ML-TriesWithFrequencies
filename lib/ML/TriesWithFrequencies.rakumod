@@ -464,7 +464,7 @@ sub shrinkRec(ML::TriesWithFrequencies::Trie $tr,
 
 #--------------------------------------------------------
 #| Visualize
-sub trie-form(ML::TriesWithFrequencies::Trie $tr) is export {
+sub trie-say(ML::TriesWithFrequencies::Trie $tr) is export {
     .say for visualize-tree $tr.toMapFormat.first, *.key, *.value.List;
 }
 
