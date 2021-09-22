@@ -8,6 +8,10 @@ not "just" data structure ones.
 
 The Trie functionalities implementation of this Raku package closely follows the Java implementation [AAp3].
 
+The system function names follows the one used in the Mathematica package [AAp2].
+
+**Remark:** Below Mathematica and Wolfram Language (WL) are used as synonyms.
+
 ------
 
 ## Usage 
@@ -148,7 +152,7 @@ Hence, such WL format is provided by the package:
 say trie-shrink(trie-create-by-split(<core cort>)).toWLFormat;
 ```
 ```
-# <|$TrieRoot -> <|$TrieValue -> 2, "cor" -> <|$TrieValue -> 2, "t" -> <|$TrieValue -> 1|>, "e" -> <|$TrieValue -> 1|>|>|>|>
+# <|$TrieRoot -> <|$TrieValue -> 2, "cor" -> <|$TrieValue -> 2, "e" -> <|$TrieValue -> 1|>, "t" -> <|$TrieValue -> 1|>|>|>|>
 ```
 
 ------
@@ -181,7 +185,7 @@ These speed improvements are definitely not satisfactory. I strongly consider:
 
 ## TODO
 
-Most import TODO items are places first.
+In the following list the most important TODO items are places first.
 
 - [ ] Implement "get words" and "get root-to-leaf paths" functions
 
@@ -195,13 +199,13 @@ Most import TODO items are places first.
   
 - [ ] Investigate faster implementations.
  
-  - [ ] Re-implement the Trie functionalities using hash representation for a Trie (instead of a tree of Trie node objects.)
+  - [ ] Re-implement the Trie functionalities using hash representation (instead of a tree of Trie-node objects.)
   
   - [ ] Make a C or C++ implementation and hook-it up to Raku.  
     
-- [ ] Document examples of using Trie text mining to derive grammars.
-  
-- [ ] Make trie-form visualization that is "wide", i.e. places the children nodes horizontally.
+- [ ] Document examples of doing Trie-based text mining or data-mining.
+
+- [ ] Program a trie-form visualization that is "wide", i.e. places the children nodes horizontally.
 
 ------
 
@@ -227,6 +231,7 @@ Most import TODO items are places first.
 
 [RAC1] Tib,
 ["Day 10: My 10 commandments for Raku performances"](https://raku-advent.blog/2020/12/10/day-10-my-10-commandments-for-raku-performances/),
+(2020),
 [Raku Advent Calendar](https://raku-advent.blog).
 
 [WK1] Wikipedia entry, [Trie](https://en.wikipedia.org/wiki/Trie).
