@@ -1,14 +1,16 @@
 # Raku ML::TriesWithFrequencies
 
 
-This Raku package has functions for creation and manipulation of tries (prefix trees) with frequencies.
+This Raku package has functions for creation and manipulation of 
+[Tries (Prefix trees)](https://en.wikipedia.org/wiki/Trie) 
+with frequencies.
 
-The package objects and functions should be seen as Machine Learning (ML) artifacts, 
-not "just" data structure ones.
+The package should be seen as Machine Learning (ML) functionalities, 
+not "just" a Trie data structure ones.
 
-The Trie functionalities implementation of this Raku package closely follows the Java implementation [AAp3].
+This Raku implementation closely follows the Java implementation [AAp3].
 
-The system function names follows the one used in the Mathematica package [AAp2].
+The system of function names follows the one used in the Mathematica package [AAp2].
 
 **Remark:** Below Mathematica and Wolfram Language (WL) are used as synonyms.
 
