@@ -159,7 +159,7 @@ say trie-shrink(trie-create-by-split(<core cort>)).toWLFormat;
 
 ## Implementation notes
 
-This Raku package is a Raku re-implementation of the Java Trie package [AAp3].
+This package is a Raku re-implementation of the Java Trie package [AAp3].
 
 The initial implementation was:
 - 5-6 times slower than the Mathematica implementation [AAp2]
@@ -167,10 +167,10 @@ The initial implementation was:
 
 The initial implementation used:
 - General types for Trie nodes, i.e. `Str` for the key and `Numeric` for the value
-- Argument type verification `where` statements in the `trie-*` functions
+- Argument type verification with `where` statements in the signatures of the `trie-*` functions
 
-After reading [RAC1] I refactored the code to use native types and moved the `where` verifications
-inside the functions. 
+After reading [RAC1] I refactored the code to use native types (`num`, `str`)
+and moved the `where` verifications inside the functions. 
 
 After those changes the current Raku implementation is:
 - 4 times slower than the Mathematica implementation [AAp2]
@@ -185,7 +185,7 @@ These speed improvements are definitely not satisfactory. I strongly consider:
 
 ## TODO
 
-In the following list the most important TODO items are places first.
+In the following list the most important items are placed first.
 
 - [ ] Implement "get words" and "get root-to-leaf paths" functions
 
