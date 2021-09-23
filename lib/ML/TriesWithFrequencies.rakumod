@@ -464,8 +464,10 @@ sub shrinkRec(ML::TriesWithFrequencies::Trie $tr,
 
 #--------------------------------------------------------
 #| Visualize
-sub trie-say(ML::TriesWithFrequencies::Trie $tr) is export {
-    .say for visualize-tree $tr.toMapFormat.first, *.key, *.value.List;
+sub trie-say(ML::TriesWithFrequencies::Trie $tr,
+             Str :$delimiter = ' => ',
+             Bool :$key-value-nodes = True) is export {
+    .say for visualize-tree( $tr.toMapFormat.first, *.key, *.value.List, :$delimiter, :$key-value-nodes);
 }
 
 ## Adapted from here:
@@ -474,14 +476,21 @@ sub visualize-tree($tree, &label, &children,
                    :$indent = '',
                    :@mid = ('├─', '│ '),
                    :@end = ('└─', '  '),
+                   Str :$delimiter = ' => ',
+                   Bool :$key-value-nodes = True
                    ) {
     sub visit($node, *@pre) {
+        my $suffix = '';
+        if $key-value-nodes and $node.value.isa(Hash) and $node.value{$TrieValue}:exists {
+            $suffix = $delimiter ~ $node.value{$TrieValue}
+        }
         gather {
             if $node.&label ~~ $TrieValue {
-                take @pre[0] ~ $node.value
-            }
-            else {
-                take @pre[0] ~ $node.&label;
+                if not $key-value-nodes {
+                    take @pre[0] ~ $node.value
+                }
+            } else {
+                take @pre[0] ~ $node.&label ~ $suffix;
                 my @children = sort $node.&children;
                 my $end = @children.end;
                 for @children.kv -> $_, $child {
