@@ -81,7 +81,7 @@ class ML::TriesWithFrequencies::Trie {
 
     #--------------------------------------------------------
     #| To sting recursive step
-    method tostringRec(UInt $n) {
+    method toStringRec(UInt $n) {
         my str $offset = "";
         my str $childstr = "";
         my $k = 0;
@@ -104,8 +104,8 @@ class ML::TriesWithFrequencies::Trie {
     }
 
     #--------------------------------------------------------
-    #| To sting
-    method str( --> Str ) {
+    #| To string
+    method Str( --> Str ) {
         self.gist
     }
 
