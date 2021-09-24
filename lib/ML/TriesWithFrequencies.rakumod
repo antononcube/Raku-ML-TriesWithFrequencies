@@ -115,7 +115,7 @@ sub trie-insert(ML::TriesWithFrequencies::Trie $tr,
                 Bool :$verify-input = True
         --> ML::TriesWithFrequencies::Trie) is export {
 
-    if not @word.all ~~ Str {
+    if $verify-input and not @word.all ~~ Str {
         die "The second argument is expected to be a positional of strings."
     }
 
