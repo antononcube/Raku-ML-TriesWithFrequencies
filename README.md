@@ -5,8 +5,8 @@ This Raku package has functions for creation and manipulation of
 [Tries (Prefix trees)](https://en.wikipedia.org/wiki/Trie) 
 with frequencies.
 
-The package should be seen as Machine Learning (ML) functionalities, 
-not "just" a Trie data structure ones.
+The package provides Machine Learning (ML) functionalities, 
+not "just" a Trie data structure.
 
 This Raku implementation closely follows the Java implementation [AAp3].
 
