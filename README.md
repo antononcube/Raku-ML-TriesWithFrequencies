@@ -114,7 +114,7 @@ Hence, such WL format is provided by the package:
 say trie-shrink(trie-create-by-split(<core cort>)).toWLFormat;
 ```
 ```
-# <|$TrieRoot -> <|$TrieValue -> 2, "cor" -> <|$TrieValue -> 2, "e" -> <|$TrieValue -> 1|>, "t" -> <|$TrieValue -> 1|>|>|>|>
+# <|$TrieRoot -> <|$TrieValue -> 2, "cor" -> <|$TrieValue -> 2, "t" -> <|$TrieValue -> 1|>, "e" -> <|$TrieValue -> 1|>|>|>|>
 ```
 
 ------
@@ -163,7 +163,7 @@ In the following list the most important items are placed first.
  
   - [ ] Re-implement the Trie functionalities using hash representation (instead of a tree of Trie-node objects.)
   
-  - [ ] Make a C or C++ implementation and hook-it up to Raku.  
+  - [ ] Make a C or C++ implementation and hook it up to Raku.  
     
 - [ ] Document examples of doing Trie-based text mining or data-mining.
 

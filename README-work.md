@@ -109,7 +109,7 @@ In the following list the most important items are placed first.
  
   - [ ] Re-implement the Trie functionalities using hash representation (instead of a tree of Trie-node objects.)
   
-  - [ ] Make a C or C++ implementation and hook-it up to Raku.  
+  - [ ] Make a C or C++ implementation and hook it up to Raku.  
     
 - [ ] Document examples of doing Trie-based text mining or data-mining.
 
