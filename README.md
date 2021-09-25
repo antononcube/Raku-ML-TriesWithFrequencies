@@ -14,6 +14,11 @@ The system of function names follows the one used in the Mathematica package [AA
 
 **Remark:** Below Mathematica and Wolfram Language (WL) are used as synonyms.
 
+**Remark:** There is a Raku package with an alternative implementation, [AAp6], 
+made mostly for comparison studies. (See the implementation notes below.) 
+The package in this repository, `ML::TriesWithFrequencies`, is my *primary* 
+Tries-with-frequencies package.
+
 ------
 
 ## Usage 
@@ -114,7 +119,7 @@ Hence, such WL format is provided by the package:
 say trie-shrink(trie-create-by-split(<core cort>)).toWLFormat;
 ```
 ```
-# <|$TrieRoot -> <|$TrieValue -> 2, "cor" -> <|$TrieValue -> 2, "t" -> <|$TrieValue -> 1|>, "e" -> <|$TrieValue -> 1|>|>|>|>
+# <|$TrieRoot -> <|$TrieValue -> 2, "cor" -> <|$TrieValue -> 2, "e" -> <|$TrieValue -> 1|>, "t" -> <|$TrieValue -> 1|>|>|>|>
 ```
 
 ------
@@ -124,8 +129,8 @@ say trie-shrink(trie-create-by-split(<core cort>)).toWLFormat;
 This package is a Raku re-implementation of the Java Trie package [AAp3].
 
 The initial implementation was:
-- 5-6 times slower than the Mathematica implementation [AAp2]
-- 100 times slower than the Java implementation [AAp3]
+- ≈ 5-6 times slower than the Mathematica implementation [AAp2]
+- ≈ 100 times slower than the Java implementation [AAp3]
 
 The initial implementation used:
 - General types for Trie nodes, i.e. `Str` for the key and `Numeric` for the value
@@ -134,13 +139,20 @@ The initial implementation used:
 After reading [RAC1] I refactored the code to use native types (`num`, `str`)
 and moved the `where` verifications inside the functions. 
 
+I also refactored the function `trie-merge` to be use less copying of data and
+take into account which of the tries has smaller number of children.
+
 After those changes the current Raku implementation is:
-- 4 times slower than the Mathematica implementation [AAp2]
-- 70 times slower than the Java implementation [AAp3]
+- ≈ 2.5 times slower than the Mathematica implementation [AAp2]
+- ≈ 30 times slower than the Java implementation [AAp3]
 
 These speed improvements are definitely not satisfactory. I strongly consider:
-- Re-implementing in Raku the Mathematica  package [AAp2], i.e. to move into Tries that are hashes
-- Re-implementing in C or C++ the Java package [AAp3] and hooking it up to Raku
+
+1. Re-implementing in Raku the Mathematica  package [AAp2], i.e. to move into Tries that are hashes.
+
+   - (It turned out option 1 does not produce better results; see [AAp6].)
+  
+2. Re-implementing in C or C++ the Java package [AAp3] and hooking it up to Raku.
 
 
 ------
@@ -161,7 +173,9 @@ In the following list the most important items are placed first.
   
 - [ ] Investigate faster implementations.
  
-  - [ ] Re-implement the Trie functionalities using hash representation (instead of a tree of Trie-node objects.)
+  - [X] Re-implement the Trie functionalities using hash representation (instead of a tree of Trie-node objects.)
+    
+     - See [AAp6].
   
   - [ ] Make a C or C++ implementation and hook it up to Raku.  
     
@@ -224,6 +238,11 @@ In the following list the most important items are placed first.
 [Java tries with frequencies Mathematica unit tests](https://github.com/antononcube/MathematicaForPrediction/blob/master/UnitTests/JavaTriesWithFrequencies-Unit-Tests.wlt), 
 (2017), 
 [MathematicaForPrediction at GitHub](https://github.com/antononcube/MathematicaForPrediction).
+
+[AAp6] Anton Antonov,
+[ML::HashTriesWithFrequencies Raku package](https://github.com/antononcube/Raku-ML-HashTriesWithFrequencies),
+(2021),
+[GitHub/antononcube](https://github.com/antononcube).
 
 
 ### Videos
