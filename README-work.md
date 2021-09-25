@@ -85,12 +85,12 @@ The initial implementation used:
 After reading [RAC1] I refactored the code to use native types (`num`, `str`)
 and moved the `where` verifications inside the functions. 
 
-I also refactored the function `trie-merge` to be use less copying of data and
-take into account which of the tries has smaller number of children.
+I also refactored the function `trie-merge` to use less copying of data and
+to take into account which of the two tries has smaller number of children.
 
 After those changes the current Raku implementation is:
 - ≈ 2.5 times slower than the Mathematica implementation [AAp2]
-- ≈ 30 times slower than the Java implementation [AAp3]
+- ≈ 40 times slower than the Java implementation [AAp3]
 
 These speed improvements are definitely not satisfactory. I strongly consider:
 
