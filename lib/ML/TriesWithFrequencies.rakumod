@@ -382,19 +382,19 @@ sub trie-is-key(ML::TriesWithFrequencies::Trie $tr,
 ##=======================================================
 #| @description Shrinks a trie by finding prefixes.
 #| @param tr A trie object.
-#| @param delimiter A delimiter to be used when strings are joined.
+#| @param sep A sep to be used when strings are joined.
 #| @param threshold Above what threshold to do the shrinking. If negative automatic shrinking test is applied.
-sub trie-shrink(Trie $tr, str :$delimiter = '', num :$threshold = -1e0, Bool :$internal-only = False) is export {
-    return shrinkRec($tr, $delimiter, $threshold, $internal-only, 0);
+sub trie-shrink(Trie $tr, str :$sep = '', num :$threshold = -1e0, Bool :$internal-only = False) is export {
+    return shrinkRec($tr, $sep, $threshold, $internal-only, 0);
 }
 
 #| @description Shrinking recursive function.
 #| @param tr a trie object
-#| @param delimiter a delimiter for the concatenation of the node keys
+#| @param sep a sep for the concatenation of the node keys
 #| @param threshold if negative automatic shrinking test is applied
 #| @param n recursion level
 sub shrinkRec(ML::TriesWithFrequencies::Trie $tr,
-              str $delimiter,
+              str $sep,
               num $threshold,
               Bool $internalOnly,
               Int $n
@@ -424,9 +424,9 @@ sub shrinkRec(ML::TriesWithFrequencies::Trie $tr,
             ## Only one child and the current node does not make a complete match:
             ## proceed with recursion and join with result.
 
-            my ML::TriesWithFrequencies::Trie $chTr = shrinkRec(@arr[0], $delimiter, $threshold, $internalOnly, $n + 1);
+            my ML::TriesWithFrequencies::Trie $chTr = shrinkRec(@arr[0], $sep, $threshold, $internalOnly, $n + 1);
 
-            $trRes.setKey($tr.key ~ $delimiter ~ $chTr.key);
+            $trRes.setKey($tr.key ~ $sep ~ $chTr.key);
             $trRes.setValue($tr.value);
 
             with $chTr.children {
@@ -436,7 +436,7 @@ sub shrinkRec(ML::TriesWithFrequencies::Trie $tr,
         } else {
             ## Only one child but the current node makes a complete match.
 
-            my ML::TriesWithFrequencies::Trie $chTr = shrinkRec(@arr[0], $delimiter, $threshold, $internalOnly, $n + 1);
+            my ML::TriesWithFrequencies::Trie $chTr = shrinkRec(@arr[0], $sep, $threshold, $internalOnly, $n + 1);
 
             $trRes.setKey($tr.key);
             $trRes.setValue($tr.value);
@@ -450,7 +450,7 @@ sub shrinkRec(ML::TriesWithFrequencies::Trie $tr,
         my %recChildren;
 
         for $tr.children.values -> $chTr {
-            my ML::TriesWithFrequencies::Trie $nTr = shrinkRec($chTr, $delimiter, $threshold, $internalOnly, $n + 1);
+            my ML::TriesWithFrequencies::Trie $nTr = shrinkRec($chTr, $sep, $threshold, $internalOnly, $n + 1);
             %recChildren.push: ($nTr.key => $nTr);
         }
 
@@ -465,9 +465,11 @@ sub shrinkRec(ML::TriesWithFrequencies::Trie $tr,
 #--------------------------------------------------------
 #| Visualize
 sub trie-say(ML::TriesWithFrequencies::Trie $tr,
-             Str :$delimiter = ' => ',
+             Str :$lb = '',
+             Str :$sep = ' => ',
+             Str :$rb = '',
              Bool :$key-value-nodes = True) is export {
-    .say for visualize-tree( $tr.toMapFormat.first, *.key, *.value.List, :$delimiter, :$key-value-nodes);
+    .say for visualize-tree( $tr.toMapFormat.first, *.key, *.value.List, :$lb, :$sep, :$rb, :$key-value-nodes);
 }
 
 ## Adapted from here:
@@ -476,13 +478,15 @@ sub visualize-tree($tree, &label, &children,
                    :$indent = '',
                    :@mid = ('├─', '│ '),
                    :@end = ('└─', '  '),
-                   Str :$delimiter = ' => ',
+                   Str :$lb = '',
+                   Str :$sep = ' => ',
+                   Str :$rb = '',
                    Bool :$key-value-nodes = True
                    ) {
     sub visit($node, *@pre) {
         my $suffix = '';
         if $key-value-nodes and $node.value.isa(Hash) and $node.value{$TrieValue}:exists {
-            $suffix = $delimiter ~ $node.value{$TrieValue}
+            $suffix = $sep ~ $node.value{$TrieValue}
         }
         gather {
             if $node.&label ~~ $TrieValue {
@@ -490,7 +494,7 @@ sub visualize-tree($tree, &label, &children,
                     take @pre[0] ~ $node.value
                 }
             } else {
-                take @pre[0] ~ $node.&label ~ $suffix;
+                take @pre[0] ~ $lb ~ $node.&label ~ $suffix ~ $rb;
                 my @children = sort $node.&children;
                 my $end = @children.end;
                 for @children.kv -> $_, $child {
