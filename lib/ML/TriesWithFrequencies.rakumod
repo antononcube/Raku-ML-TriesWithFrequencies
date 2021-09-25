@@ -28,17 +28,16 @@ sub trie-make(@chars,
     }
 
     # First node
-    my ML::TriesWithFrequencies::Trie $res = ML::TriesWithFrequencies::Trie.new(key => @chars[*- 1],
-            value => $bottomValue);
+    my ML::TriesWithFrequencies::Trie $res = ML::TriesWithFrequencies::Trie.new(key => @chars[*- 1], value => $bottomValue);
 
     # Is this faster: @chars.head(@chars.elems-1).reverse;
     for @chars[^(*- 1)].reverse -> $c {
-        my %children = $res.getKey() => $res;
-        $res = ML::TriesWithFrequencies::Trie.new(key => $c, :$value, :%children);
+        my %children = $res.key => $res;
+        $res = ML::TriesWithFrequencies::Trie.new(key => $c, :$value, :%children );
     }
 
     my ML::TriesWithFrequencies::Trie $res2 = ML::TriesWithFrequencies::Trie.new(key => $TrieRoot, :$value);
-    $res2.children.push: ($res.getKey() => $res);
+    $res2.children.push: ($res.key => $res);
 
     return $res2;
 }
@@ -202,7 +201,7 @@ multi trie-create-by-split(@words,
         die "The first argument is expected to be a positional of strings."
     }
 
-    trie-create(@words.map({ [$_.split($splitter, :skip-empty, :v)] }), :$bisection-threshold);
+    trie-create(@words.map({ [$_.split($splitter, :$skip-empty, :$v)] }), :$bisection-threshold);
 }
 
 #--------------------------------------------------------
