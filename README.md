@@ -112,8 +112,8 @@ say trie-shrink(trie-create-by-split(<core cort>)).toMapFormat;
 # {TRIEROOT => {TRIEVALUE => 2, cor => {TRIEVALUE => 2, e => {TRIEVALUE => 1}, t => {TRIEVALUE => 1}}}}
 ```
 
-On such representation is based the Trie functionalities implementations of the Mathematica package [AAp2].
-Hence, such WL format is provided by the package:
+The Hash-representation is used in the Mathematica package [AAp2].
+Hence, such WL format is provided by the Raku package:
 
 ```perl6
 say trie-shrink(trie-create-by-split(<core cort>)).toWLFormat;
@@ -161,7 +161,7 @@ These speed improvements are definitely not satisfactory. I strongly consider:
 
 In the following list the most important items are placed first.
 
-- [ ] Implement "get words" and "get root-to-leaf paths" functions
+- [ ] Implement "get words" and "get root-to-leaf paths" functions.
 
 - [ ] Convert most of the WL unit tests in [AAp5] into Raku tests.
 
