@@ -12,6 +12,26 @@ plan 4;
 ## 1
 my @words = <bar barman bask bell best>;
 my $tr0 = trie-create-by-split(@words);
+
+## The commands above should produce the trie:
+# TRIEROOT => 5
+# └─b => 5
+#   ├─a => 3
+#   │ ├─r => 2
+#   │ │ └─m => 1
+#   │ │   └─a => 1
+#   │ │     └─n => 1
+#   │ └─s => 1
+#   │   └─k => 1
+#   └─e => 2
+#     ├─l => 1
+#     │ └─l => 1
+#     └─s => 1
+#       └─t => 1
+
+## With node counts:
+# {Internal => 10, Leaves => 4, Total => 14}
+
 isa-ok $tr0, ML::TriesWithFrequencies::Trie, 'created trie';
 
 ## 2
