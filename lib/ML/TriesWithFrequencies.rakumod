@@ -474,6 +474,40 @@ sub shrinkRec(ML::TriesWithFrequencies::Trie $tr,
     }
 }
 
+##=======================================================
+## Statistics functions
+##=======================================================
+
+#| @description Finding the counts of nodes in a trie.
+#| @param tr trie object
+#| @return Returns the values for "total", "internal", "leaves".
+sub trie-node-counts(ML::TriesWithFrequencies::Trie $tr) is export {
+        ## The result would like { "total"->23, "internal"->12, "leaves"->11 }.
+
+        my $res = nodeCountsRec($tr, 0, 0);
+
+        return { Total => $res.key + $res.value, Internal => $res.key, Leaves => $res.value }
+}
+
+#| @description Finding the counts of internal nodes and leaf nodes in a trie.
+#| @param tr trie object
+#| @param nInternal number of internal nodes
+#| @param nLeaves number of leaf nodes
+#| @return A pair object with the new values of nInternal and nLeaves.
+sub nodeCountsRec(ML::TriesWithFrequencies::Trie $tr, UInt $nInternal, UInt $nLeaves) {
+    if not so $tr.children {
+        return ($nInternal => $nLeaves + 1);
+    } else {
+        my $res = $nInternal => $nLeaves;
+
+        for $tr.children.values -> $chTr {
+            $res = nodeCountsRec($chTr, $res.key, $res.value);
+        }
+
+        return ($res.key + 1) => $res.value;
+    }
+}
+
 #--------------------------------------------------------
 #| Visualize
 sub trie-say(ML::TriesWithFrequencies::Trie $tr,
