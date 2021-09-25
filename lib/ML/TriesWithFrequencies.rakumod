@@ -67,12 +67,12 @@ sub trie-merge(ML::TriesWithFrequencies::Trie $tr1,
 
     } elsif $tr1.key eq $tr2.key {
 
-        if not ($tr1.children.defined and $tr1.children) {
+        if not so $tr1.children {
 
             $tr2.setValue($tr1.value + $tr2.value);
             return $tr2;
 
-        } elsif not ($tr2.children.defined and $tr2.children) {
+        } elsif not so $tr2.children {
 
             $tr1.setValue($tr1.value + $tr2.value);
             return $tr1;
@@ -82,19 +82,19 @@ sub trie-merge(ML::TriesWithFrequencies::Trie $tr1,
         $res.setKey($tr1.key);
         $res.setValue($tr1.value + $tr2.value);
 
-        for $tr1.children.pairs -> $elem1 {
+        for $tr1.children.keys -> $key1 {
 
-            if not $tr2.children{$elem1.key}:exists {
-                $res.children.push: ($elem1.key => $elem1.value);
+            if $tr2.children{$key1}:!exists {
+                $res.children.push: $tr1.children{$key1}:p;
             } else {
-                $res.children.push: ($elem1.key => trie-merge($elem1.value, $tr2.children{$elem1.key}));
+                $res.children.push: ($key1 => trie-merge($tr1.children{$key1}, $tr2.children{$key1}));
             }
         }
 
-        for $tr2.children.pairs -> $elem2 {
+        for $tr2.children.keys -> $key2 {
 
-            if not $tr1.children{$elem2.key}:exists {
-                $res.children.push: ($elem2.key => $elem2.value);
+            if $tr1.children{$key2}:!exists {
+                $res.children.push: $tr2.children{$key2}:p;
             }
         }
 
