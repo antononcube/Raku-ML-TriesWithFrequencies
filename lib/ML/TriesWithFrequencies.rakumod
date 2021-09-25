@@ -82,14 +82,32 @@ sub trie-merge(ML::TriesWithFrequencies::Trie $tr1,
         $res.setKey($tr1.key);
         $res.setValue($tr1.value + $tr2.value);
 
-        $res.setChildren( $tr1.children );
+        # Here we merge using the keys of the smaller hash of children.
+        # Hence the two almost identical codes.
+        if $tr1.children.elems < $tr2.children.elems {
 
-        for $tr2.children.keys -> $key2 {
+            $res.setChildren( $tr2.children );
 
-            if $res.children{$key2}:!exists {
-                $res.children.push: $tr2.children{$key2}:p;
-            } else {
-                $res.children{$key2} = trie-merge($tr2.children{$key2}, $res.children{$key2});
+            for $tr1.children.keys -> $key1 {
+
+                if $res.children{$key1}:!exists {
+                    $res.children.push: $tr1.children{$key1}:p;
+                } else {
+                    $res.children{$key1} = trie-merge($tr1.children{$key1}, $res.children{$key1});
+                }
+            }
+
+        } else {
+
+            $res.setChildren( $tr1.children );
+
+            for $tr2.children.keys -> $key2 {
+
+                if $res.children{$key2}:!exists {
+                    $res.children.push: $tr2.children{$key2}:p;
+                } else {
+                    $res.children{$key2} = trie-merge($tr2.children{$key2}, $res.children{$key2});
+                }
             }
         }
 
