@@ -82,19 +82,14 @@ sub trie-merge(ML::TriesWithFrequencies::Trie $tr1,
         $res.setKey($tr1.key);
         $res.setValue($tr1.value + $tr2.value);
 
-        for $tr1.children.keys -> $key1 {
-
-            if $tr2.children{$key1}:!exists {
-                $res.children.push: $tr1.children{$key1}:p;
-            } else {
-                $res.children.push: ($key1 => trie-merge($tr1.children{$key1}, $tr2.children{$key1}));
-            }
-        }
+        $res.setChildren( $tr1.children );
 
         for $tr2.children.keys -> $key2 {
 
-            if $tr1.children{$key2}:!exists {
+            if $res.children{$key2}:!exists {
                 $res.children.push: $tr2.children{$key2}:p;
+            } else {
+                $res.children{$key2} = trie-merge($tr2.children{$key2}, $res.children{$key2});
             }
         }
 
