@@ -45,16 +45,17 @@ sub trie-make(@chars,
 #--------------------------------------------------------
 #| Merge tries.
 sub trie-merge(ML::TriesWithFrequencies::Trie $tr1,
-               ML::TriesWithFrequencies::Trie $tr2
+               ML::TriesWithFrequencies::Trie $tr2,
+               Bool :$merge-clones = True
         --> ML::TriesWithFrequencies::Trie) is export {
 
     my ML::TriesWithFrequencies::Trie $res = ML::TriesWithFrequencies::Trie.new;
 
-    if not ($tr1.defined and $tr1) {
+    if not so $tr1 {
 
         return $tr2;
 
-    } elsif not ($tr2.defined and $tr2) {
+    } elsif not so $tr2 {
 
         return $tr1;
 
@@ -62,19 +63,18 @@ sub trie-merge(ML::TriesWithFrequencies::Trie $tr1,
 
         return trie-merge(
                 ML::TriesWithFrequencies::Trie.new(key => $TrieRoot, value => $tr1.value, children => %($TrieRoot => $tr1.children)),
-                ML::TriesWithFrequencies::Trie.new(key => $TrieRoot, value => $tr2.value, children => %($TrieRoot => $tr2.children)));
+                ML::TriesWithFrequencies::Trie.new(key => $TrieRoot, value => $tr2.value, children => %($TrieRoot => $tr2.children)),
+                :$merge-clones);
 
     } elsif $tr1.key eq $tr2.key {
 
         if not so $tr1.children {
 
-            $tr2.setValue($tr1.value + $tr2.value);
-            return $tr2;
+            return $merge-clones ?? $tr2.clone.setValue($tr1.value + $tr2.value) !! $tr2.setValue($tr1.value + $tr2.value);
 
         } elsif not so $tr2.children {
 
-            $tr1.setValue($tr1.value + $tr2.value);
-            return $tr1;
+            return $merge-clones ?? $tr1.clone.setValue($tr1.value + $tr2.value) !! $tr1.setValue($tr1.value + $tr2.value);
 
         }
 
@@ -92,7 +92,7 @@ sub trie-merge(ML::TriesWithFrequencies::Trie $tr1,
                 if $res.children{$key1}:!exists {
                     $res.children.push: $tr1.children{$key1}:p;
                 } else {
-                    $res.children{$key1} = trie-merge($tr1.children{$key1}, $res.children{$key1});
+                    $res.children{$key1} = trie-merge($tr1.children{$key1}, $res.children{$key1}, :$merge-clones);
                 }
             }
 
@@ -105,7 +105,7 @@ sub trie-merge(ML::TriesWithFrequencies::Trie $tr1,
                 if $res.children{$key2}:!exists {
                     $res.children.push: $tr2.children{$key2}:p;
                 } else {
-                    $res.children{$key2} = trie-merge($tr2.children{$key2}, $res.children{$key2});
+                    $res.children{$key2} = trie-merge($tr2.children{$key2}, $res.children{$key2}, :$merge-clones);
                 }
             }
         }
@@ -124,14 +124,15 @@ sub trie-insert(ML::TriesWithFrequencies::Trie $tr,
                 @word,
                 Num :$value = 1e0,
                 Num :$bottomValue = 1e0,
-                Bool :$verify-input = True
+                Bool :$verify-input = True,
+                Bool :$merge-clones = True
         --> ML::TriesWithFrequencies::Trie) is export {
 
     if $verify-input and not @word.all ~~ Str {
         die "The second argument is expected to be a positional of strings."
     }
 
-   trie-merge($tr, trie-make(@word, :$value, :$bottomValue, :!verify-input))
+   trie-merge($tr, trie-make(@word, :$value, :$bottomValue, :!verify-input), :$merge-clones)
 }
 
 #--------------------------------------------------------
@@ -152,7 +153,7 @@ sub trie-create1(@words,
     my ML::TriesWithFrequencies::Trie $res = trie-make(@words[0]);
 
     for @words[1 .. (@words.elems - 1)] -> @w {
-        $res = trie-insert($res, @w, :$verify-input);
+        $res = trie-insert($res, @w, :$verify-input, :!merge-clones);
     }
 
     return $res;
