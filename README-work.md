@@ -146,7 +146,7 @@ In the following list the most important items are placed first.
 [MathematicaForPrediction at WordPress](https://mathematicaforprediction.wordpress.com).
 
 [AA3] Anton Antonov,
-["Tries with frequencies in Java"](https://mathematicaforprediction.wordpress.com/2017/01/31/tries-with-frequencies-in-java/)
+["Tries with frequencies in Java"](https://mathematicaforprediction.wordpress.com/2017/01/31/tries-with-frequencies-in-java/),
 (2017),
 [MathematicaForPrediction at WordPress](https://mathematicaforprediction.wordpress.com).
 [GitHub Markdown](https://github.com/antononcube/MathematicaForPrediction).
