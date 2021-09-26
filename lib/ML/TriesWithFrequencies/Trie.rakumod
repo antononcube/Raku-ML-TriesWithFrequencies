@@ -43,6 +43,14 @@ class ML::TriesWithFrequencies::Trie {
     }
 
     #--------------------------------------------------------
+    method clone(--> ML::TriesWithFrequencies::Trie) {
+        ML::TriesWithFrequencies::Trie.new(
+                key => self.key,
+                value => self.value,
+                children => self.children.map({ $_.key => $_.value.clone }) )
+    }
+
+    #--------------------------------------------------------
     #| To Map/Hash format
     method toMapFormat( --> Hash ) {
         my %chMap = %();
