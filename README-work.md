@@ -65,7 +65,7 @@ The Hash-representation is used in the Mathematica package [AAp2].
 Hence, such WL format is provided by the Raku package:
 
 ```perl6
-say trie-shrink(trie-create-by-split(<core cort>)).toWLFormat;
+say trie-shrink(trie-create-by-split(<core cort>)).WL;
 ```
 
 ------
