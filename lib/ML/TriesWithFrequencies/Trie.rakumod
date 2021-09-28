@@ -66,13 +66,13 @@ class ML::TriesWithFrequencies::Trie {
     }
 
     #--------------------------------------------------------
-    #| To Map/Hash format
-    method toWLFormat( --> Str ) {
+    #| To WL-Association format
+    method WL( --> Str ) {
         my $res = '<|' ~ self.toWLFormatRec().subst(:g, '"' ~ $.trieRootLabel ~ '"', '$TrieRoot') ~ '|>';
         $res.subst(:g, $.trieValueLabel, '$TrieValue')
     }
 
-    #| To Map/Hash format recursion
+    #| To WL-Association format recursion
     method toWLFormatRec( --> Str ) {
         my @chMap;
 
@@ -88,27 +88,53 @@ class ML::TriesWithFrequencies::Trie {
     }
 
     #--------------------------------------------------------
-    #| To sting recursive step
-    method toStringRec(UInt $n) {
-        my str $offset = "";
-        my str $childstr = "";
-        my $k = 0;
+    #| To XML format
+    method XML( --> Str ) {
+        self.toXMLFormatRec(0)
+    }
 
-        $offset = ' ' x $n;
+    #| To XML format recursion
+    method toXMLFormatRec( UInt $n --> Str ) {
+        my Str $offset = ' ' x $n;
+        my Str $offset1 = $offset ~ ' ';
+        my @chMap;
 
-        if %!children {
-            for %!children.values -> $elem {
-                if ($k == 0) {
-                    $childstr = "\n" ~ $offset ~ $elem.tostringRec($n + 1);
-                } else {
-                    $childstr = $childstr ~ ",\n" ~ $offset ~ $elem.tostringRec($n + 1);
-                }
-                $k++;
+        with %!children {
+            for %!children.kv -> $k, $v {
+                @chMap.append: [ $v.toXMLFormatRec($n + 1) ];
             }
-        } else {
-            $childstr = "";
+            @chMap.map({ $offset1 ~ $_ })
         }
-        return '{ key =>' ~ $!key ~ ', value => ' ~ $!value ~ ', children => ' ~ $childstr ~ '}';
+
+        my $chRes = @chMap ?? "\n" ~ @chMap.join("\n") !! '';
+        my $res = $offset1 ~ '<' ~ $.trieValueLabel ~ '>' ~ $!value ~ '</' ~ $.trieValueLabel ~ '>' ~ $chRes;
+        return $offset ~ '<' ~ $!key ~ '>' ~ "\n" ~ $res ~ "\n" ~ $offset ~ '</' ~ $!key ~ '>'
+    }
+
+    #--------------------------------------------------------
+    # In order to minimize the dependencies to other libraries (e.g. JSON::Marshal)
+    # JSON format is implemented below.
+
+    #| To JSON format
+    method JSON( --> Str ) {
+        self.toJSONFormatRec(0)
+    }
+
+    #| To JSON format recursion
+    method toJSONFormatRec( UInt $n --> Str ) {
+        my Str $offset = ' ' x $n;
+        my Str $offset1 = $offset ~ ' ';
+        my @chMap;
+
+        with %!children {
+            for %!children.kv -> $k, $v {
+                @chMap.append: [ $v.toJSONFormatRec($n + 1) ];
+            }
+            @chMap.map({ $offset1 ~ $_ })
+        }
+
+        my $chRes = @chMap ?? '[' ~ @chMap.join(', ') ~ ']' !! '[]';
+        return  '{"key":' ~ '"' ~ $!key ~ '"' ~ ', "value":' ~ $!value ~ ', "children":' ~ $chRes ~ '}';
     }
 
     #--------------------------------------------------------
