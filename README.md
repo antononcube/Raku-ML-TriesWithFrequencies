@@ -102,21 +102,133 @@ trie-say(trie-retrieve($ptr, 'bar'.comb))
 
 ## Representation
 
-Each trie is tree of objects of the class `ML::TriesWithFrequencies::Trie`.
+Each trie is a tree of objects of the class `ML::TriesWithFrequencies::Trie`.
 Such trees can be nicely represented as hash-maps. For example:
 
 ```perl6
-say trie-shrink(trie-create-by-split(<core cort>)).toMapFormat;
+my $tr = trie-shrink(trie-create-by-split(<core cort>));
+say $tr.gist;
 ```
 ```
 # {TRIEROOT => {TRIEVALUE => 2, cor => {TRIEVALUE => 2, e => {TRIEVALUE => 1}, t => {TRIEVALUE => 1}}}}
 ```
 
+The function `trie-say` uses that Hash-representation:
+
+```perl6
+trie-say($tr)
+```
+```
+# TRIEROOT => 2
+# └─cor => 2
+#   ├─e => 1
+#   └─t => 1
+```
+
+### JSON
+
+The JSON-representation follows the inherent object-tree
+representation with `ML::TriesWithFrequencies::Trie`:
+
+```perl6
+say $tr.JSON;
+```
+```
+# {"key":"TRIEROOT", "value":2, "children":[{"key":"cor", "value":2, "children":[{"key":"e", "value":1, "children":[]}, {"key":"t", "value":1, "children":[]}]}]}
+```
+
+### XML
+
+The XML-representation follows (resembles) the Hash-representation 
+(and output from `trie-say`):
+
+```perl6
+say $tr.XML;
+```
+```
+# <TRIEROOT>
+#  <TRIEVALUE>2</TRIEVALUE>
+#  <cor>
+#   <TRIEVALUE>2</TRIEVALUE>
+#   <e>
+#    <TRIEVALUE>1</TRIEVALUE>
+#   </e>
+#   <t>
+#    <TRIEVALUE>1</TRIEVALUE>
+#   </t>
+#  </cor>
+# </TRIEROOT>
+```
+
+Using the XML representation allows for 
+[XPath]()
+searches, say, using the package `XML::XPath`.
+Here is an example:
+
+```perl6
+use XML::XPath;
+my $tr0 = trie-create-by-split(<bell best>);
+trie-say($tr0);
+```
+```
+# TRIEROOT => 2
+# └─b => 2
+#   └─e => 2
+#     ├─l => 1
+#     │ └─l => 1
+#     └─s => 1
+#       └─t => 1
+```
+Convert to XML:
+
+```perl6
+say $tr0.XML;
+```
+```
+# <TRIEROOT>
+#  <TRIEVALUE>2</TRIEVALUE>
+#  <b>
+#   <TRIEVALUE>2</TRIEVALUE>
+#   <e>
+#    <TRIEVALUE>2</TRIEVALUE>
+#    <l>
+#     <TRIEVALUE>1</TRIEVALUE>
+#     <l>
+#      <TRIEVALUE>1</TRIEVALUE>
+#     </l>
+#    </l>
+#    <s>
+#     <TRIEVALUE>1</TRIEVALUE>
+#     <t>
+#      <TRIEVALUE>1</TRIEVALUE>
+#     </t>
+#    </s>
+#   </e>
+#  </b>
+# </TRIEROOT>
+```
+
+Search for `<b e l>`:
+
+```perl6
+say XML::XPath.new(xml=>$tr0.XML).find('//b/e/l');
+```
+```
+# <l>
+#     <TRIEVALUE>1</TRIEVALUE> 
+#     <l>
+#      <TRIEVALUE>1</TRIEVALUE> 
+#     </l> 
+#    </l>
+```
+
+### WL
+
 The Hash-representation is used in the Mathematica package [AAp2].
 Hence, such WL format is provided by the Raku package:
 
 ```perl6
-say trie-shrink(trie-create-by-split(<core cort>)).WL;
+say $tr.WL;
 ```
 ```
 # <|$TrieRoot -> <|$TrieValue -> 2, "cor" -> <|$TrieValue -> 2, "e" -> <|$TrieValue -> 1|>, "t" -> <|$TrieValue -> 1|>|>|>|>

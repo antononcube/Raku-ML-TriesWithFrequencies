@@ -54,18 +54,67 @@ trie-say(trie-retrieve($ptr, 'bar'.comb))
 
 ## Representation
 
-Each trie is tree of objects of the class `ML::TriesWithFrequencies::Trie`.
+Each trie is a tree of objects of the class `ML::TriesWithFrequencies::Trie`.
 Such trees can be nicely represented as hash-maps. For example:
 
 ```perl6
-say trie-shrink(trie-create-by-split(<core cort>)).toMapFormat;
+my $tr = trie-shrink(trie-create-by-split(<core cort>));
+say $tr.gist;
 ```
+
+The function `trie-say` uses that Hash-representation:
+
+```perl6
+trie-say($tr)
+```
+
+### JSON
+
+The JSON-representation follows the inherent object-tree
+representation with `ML::TriesWithFrequencies::Trie`:
+
+```perl6
+say $tr.JSON;
+```
+
+### XML
+
+The XML-representation follows (resembles) the Hash-representation 
+(and output from `trie-say`):
+
+```perl6
+say $tr.XML;
+```
+
+Using the XML representation allows for 
+[XPath]()
+searches, say, using the package `XML::XPath`.
+Here is an example:
+
+```perl6
+use XML::XPath;
+my $tr0 = trie-create-by-split(<bell best>);
+trie-say($tr0);
+```
+Convert to XML:
+
+```perl6
+say $tr0.XML;
+```
+
+Search for `<b e l>`:
+
+```perl6
+say XML::XPath.new(xml=>$tr0.XML).find('//b/e/l');
+```
+
+### WL
 
 The Hash-representation is used in the Mathematica package [AAp2].
 Hence, such WL format is provided by the Raku package:
 
 ```perl6
-say trie-shrink(trie-create-by-split(<core cort>)).WL;
+say $tr.WL;
 ```
 
 ------
