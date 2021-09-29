@@ -161,12 +161,23 @@ In the following list the most important items are placed first.
 
 - [ ] Convert most of the WL unit tests in [AAp5] into Raku tests.
 
-- [ ] Implement Trie traversal functions.
+- [X] Implement Trie traversal functions.
+
+     - The general `trie-map` function is in a separate role.
+        
+         - A concrete traversal functionality is a class that does the role 
+           and provides additional context.
+       
+- [ ] Implement (sub-)trie removal functions.
+
+     - [X] By threshold (below and above)
+    
+     - [ ] By Pareto principle adherence (top and bottom)
+    
+     - [ ] By regex over the keys
 
 - [ ] Implement Trie-based classification.
-  
-- [ ] Implement sub-trie removal functions.
-  
+
 - [ ] Investigate faster implementations.
  
   - [X] Re-implement the Trie functionalities using hash representation (instead of a tree of Trie-node objects.)
