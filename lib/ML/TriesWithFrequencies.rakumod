@@ -1,4 +1,5 @@
 use ML::TriesWithFrequencies::Trie;
+use ML::TriesWithFrequencies::ThresholdBasedRemover;
 
 unit module ML::TriesWithFrequencies;
 
@@ -510,6 +511,28 @@ sub nodeCountsRec(ML::TriesWithFrequencies::Trie $tr, UInt $nInternal, UInt $nLe
 }
 
 #--------------------------------------------------------
+#| Remove nodes by threshold.
+sub trie-remove-by-threshold (
+        #| Trie
+        ML::TriesWithFrequencies::Trie $tr,
+
+        #| Threshold
+        Numeric $threshold,
+
+        #| Should nodes with values below the threshold be removed or not?
+        Bool :$below-threshold = True,
+
+        #| Name of the aggregation node with value that equal the removed sum.
+        Str :$postfix = ''
+
+        --> ML::TriesWithFrequencies::Trie) is export {
+
+    my $robj = ML::TriesWithFrequencies::ThresholdBasedRemover.new( threshold => $threshold.Num, :$below-threshold, :$postfix );
+
+    $robj.trie-threshold-remove($tr)
+}
+
+#--------------------------------------------------------
 #| Visualize
 sub trie-say(ML::TriesWithFrequencies::Trie $tr,
              Str :$lb = '',
@@ -542,7 +565,7 @@ sub visualize-tree($tree, &label, &children,
                 }
             } else {
                 take @pre[0] ~ $lb ~ $node.&label ~ $suffix ~ $rb;
-                my @children = sort $node.&children;
+                my @children = sort $node.&children.grep({ $_.key ne $TrieValue });
                 my $end = @children.end;
                 for @children.kv -> $_, $child {
                     when $end { take visit($child, (@pre[1] X~ @end)) }

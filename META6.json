@@ -12,7 +12,9 @@
   "test-depends": [],
   "provides": {
     "ML::TriesWithFrequencies": "lib/ML/TriesWithFrequencies.rakumod",
-    "ML::TriesWithFrequencies::Trie": "lib/ML/TriesWithFrequencies/Trie.rakumod"
+    "ML::TriesWithFrequencies::Trie": "lib/ML/TriesWithFrequencies/Trie.rakumod",
+    "ML::TriesWithFrequencies::TrieTraverse": "lib/ML/TriesWithFrequencies/TrieTraverse.rakumod",
+    "ML::TriesWithFrequencies::ThresholdBasedRemover": "lib/ML/TriesWithFrequencies/ThresholdBasedRemover.rakumod"
   },
   "resources": [],
   "license": "Artistic-2.0",
