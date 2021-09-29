@@ -1,0 +1,84 @@
+use Test;
+
+use lib '.';
+use lib './lib';
+
+use ML::TriesWithFrequencies;
+use ML::TriesWithFrequencies::Trie;
+
+# The previous tess should have checked that these commands work and
+# produce expected results:
+my @words = <bar barman bar bar bark bask bell best>;
+my $tr0 = trie-create-by-split(@words);
+my $ptr0 = trie-node-probabilities($tr0);
+
+## The commands above should produce the trie:
+# TRIEROOT => 1
+# └─b => 1
+#   ├─a => 0.75
+#   │ ├─r => 0.8333333333333334
+#   │ │ ├─k => 0.2
+#   │ │ └─m => 0.2
+#   │ │   └─a => 1
+#   │ │     └─n => 1
+#   │ └─s => 0.16666666666666666
+#   │   └─k => 1
+#   └─e => 0.25
+#     ├─l => 0.5
+#     │ └─l => 1
+#     └─s => 0.5
+#       └─t => 1
+
+## With node counts:
+# {Internal => 10, Leaves => 5, Total => 15}
+
+plan 2;
+
+## 1
+# The first test expression
+#  trie-remove-by-threshold($ptr0, 0.21, postfix => 'REMOVED')
+# should produce:
+# TRIEROOT => 1
+# └─b => 1
+#   ├─a => 0.75
+#   │ ├─REMOVED => 0.16666666666666666
+#   │ └─r => 0.8333333333333334
+#   │   └─REMOVED => 0.4
+#   └─e => 0.25
+#     ├─l => 0.5
+#     │ └─l => 1
+#     └─s => 0.5
+#       └─t => 1
+
+is-deeply
+        trie-remove-by-threshold($ptr0, 0.21, postfix => 'REMOVED').toMapFormat,
+        { :TRIEROOT(${ :TRIEVALUE(1e0), :b(${ :TRIEVALUE(1e0), :a(${ :REMOVED(${ :TRIEVALUE(0.16666666666666666e0) }),
+                                                                     :TRIEVALUE(0.75e0), :r(${
+            :REMOVED(${ :TRIEVALUE(0.4e0) }), :TRIEVALUE(0.8333333333333334e0) }) }), :e(${ :TRIEVALUE(0.25e0), :l(${
+            :TRIEVALUE(0.5e0), :l(${ :TRIEVALUE(1e0) }) }), :s(${ :TRIEVALUE(0.5e0),
+                                                                  :t(${ :TRIEVALUE(1e0) }) }) }) }) }) },
+        'remove by threshold with prefix';
+
+## 2
+# The first test expression
+#  trie-remove-by-threshold($ptr0, 0.21, postfix => 'REMOVED')
+# should produce:
+# TRIEROOT => 1
+# └─b => 1
+#   ├─a => 0.75
+#   │ └─r => 0.8333333333333334
+#   └─e => 0.25
+#     ├─l => 0.5
+#     │ └─l => 1
+#     └─s => 0.5
+#       └─t => 1
+is-deeply
+        trie-remove-by-threshold($ptr0, 0.21, postfix => '').toMapFormat,
+        { :TRIEROOT(${ :TRIEVALUE(1e0), :b(${ :TRIEVALUE(1e0), :a(${ :TRIEVALUE(0.75e0),
+                                                                     :r(${ :TRIEVALUE(0.8333333333333334e0) }) }), :e(${
+            :TRIEVALUE(0.25e0), :l(${ :TRIEVALUE(0.5e0), :l(${ :TRIEVALUE(1e0) }) }), :s(${ :TRIEVALUE(0.5e0),
+                                                                                            :t(${ :TRIEVALUE(1e0) }) }) }) }) }) },
+        'remove by threshold with empty prefix';
+
+
+done-testing;
