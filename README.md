@@ -161,8 +161,9 @@ say $tr.XML;
 ```
 
 Using the XML representation allows for 
-[XPath]()
-searches, say, using the package `XML::XPath`.
+[XPath](https://www.w3schools.com/xml/xml_xpath.asp)
+searches, say, using the package 
+[`XML::XPath`](https://github.com/ufobat/p6-XML-XPath).
 Here is an example:
 
 ```perl6
@@ -191,18 +192,18 @@ say $tr0.XML;
 #   <TRIEVALUE>2</TRIEVALUE>
 #   <e>
 #    <TRIEVALUE>2</TRIEVALUE>
-#    <l>
-#     <TRIEVALUE>1</TRIEVALUE>
-#     <l>
-#      <TRIEVALUE>1</TRIEVALUE>
-#     </l>
-#    </l>
 #    <s>
 #     <TRIEVALUE>1</TRIEVALUE>
 #     <t>
 #      <TRIEVALUE>1</TRIEVALUE>
 #     </t>
 #    </s>
+#    <l>
+#     <TRIEVALUE>1</TRIEVALUE>
+#     <l>
+#      <TRIEVALUE>1</TRIEVALUE>
+#     </l>
+#    </l>
 #   </e>
 #  </b>
 # </TRIEROOT>

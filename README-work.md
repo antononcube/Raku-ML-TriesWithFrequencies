@@ -87,8 +87,9 @@ say $tr.XML;
 ```
 
 Using the XML representation allows for 
-[XPath]()
-searches, say, using the package `XML::XPath`.
+[XPath](https://www.w3schools.com/xml/xml_xpath.asp)
+searches, say, using the package 
+[`XML::XPath`](https://github.com/ufobat/p6-XML-XPath).
 Here is an example:
 
 ```perl6
