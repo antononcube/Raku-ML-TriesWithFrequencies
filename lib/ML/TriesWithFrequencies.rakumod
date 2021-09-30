@@ -1,5 +1,6 @@
 use ML::TriesWithFrequencies::Trie;
 use ML::TriesWithFrequencies::ParetoBasedRemover;
+use ML::TriesWithFrequencies::RegexBasedRemover;
 use ML::TriesWithFrequencies::ThresholdBasedRemover;
 
 unit module ML::TriesWithFrequencies;
@@ -538,7 +539,7 @@ sub trie-remove-by-threshold (
 }
 
 #--------------------------------------------------------
-#| Remove nodes by threshold.
+#| Remove nodes by Pareto fraction.
 sub trie-remove-by-pareto-fraction (
 #| Trie
         ML::TriesWithFrequencies::Trie $tr,
@@ -557,6 +558,28 @@ sub trie-remove-by-pareto-fraction (
     my $robj = ML::TriesWithFrequencies::ParetoBasedRemover.new( pareto-fraction => $fraction.Num, remove-bottom => $bottom, :$postfix );
 
     $robj.trie-pareto-remove($tr)
+}
+
+#--------------------------------------------------------
+#| Remove nodes by Pareto fraction.
+sub trie-remove-by-regex (
+#| Trie
+        ML::TriesWithFrequencies::Trie $tr,
+
+#| Pareto fraction
+        $key-pattern,
+
+#| Should the regex be inverted or not?
+        Bool :$invert = False,
+
+#| Name of the aggregation node with value that equal the removed sum.
+        Str :$postfix = ''
+
+        --> ML::TriesWithFrequencies::Trie) is export {
+
+    my $robj = ML::TriesWithFrequencies::RegexBasedRemover.new( :$key-pattern, :$invert, :$postfix );
+
+    $robj.trie-regex-remove($tr)
 }
 
 ##=======================================================
