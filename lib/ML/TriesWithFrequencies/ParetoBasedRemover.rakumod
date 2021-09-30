@@ -42,13 +42,15 @@ class ML::TriesWithFrequencies::ParetoBasedRemover
                 $cumSum += $v.value;
             }
 
-            @children = @children.sort(-> $a, $b {$a cmp $b});
+            ## Sort the children in descending order
+            @children = @children.sort(-> $a, $b {$b.value > $a.value});
 
+            ## Determine threshold
             $threshold = $!pareto-fraction * $cumSum;
 
-            # Pick children
+            # Pick children (using the sorted list of children above)
             $removedSum = 0e0; $cumSum = 0e0;
-            for $tr.children.kv -> $k, $v {
+            for @children.kv -> $k, $v {
 
                 if $!remove-bottom and $cumSum ≤ $threshold or
                         not $!remove-bottom and $cumSum > $threshold {
