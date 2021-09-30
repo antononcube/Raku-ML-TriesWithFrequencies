@@ -32,15 +32,8 @@ class ML::TriesWithFrequencies::ThresholdBasedRemover
             my ML::TriesWithFrequencies::Trie %resChildren = %();
             my Num $removedSum = 0e0;
 
-#            say 'in remove:: ', $tr.children.gist;
-
             # Pick children
             for $tr.children.kv -> $k, $v {
-
-#                say 'in remove:: $k: ', $k;
-#                say 'in remove:: $v.value: ', $v.value;
-#                say 'in remove:: $!threshold: ', $!threshold;
-#                say 'in remove:: check: ', ($!below-threshold and ($v.value ≥ $!threshold));
 
                 if $!below-threshold and $v.value ≥ $!threshold or
                         not $!below-threshold and $v.value < $!threshold {
