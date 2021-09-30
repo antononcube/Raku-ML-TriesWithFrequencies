@@ -1,4 +1,5 @@
 use ML::TriesWithFrequencies::Trie;
+use ML::TriesWithFrequencies::ParetoBasedRemover;
 use ML::TriesWithFrequencies::ThresholdBasedRemover;
 
 unit module ML::TriesWithFrequencies;
@@ -510,6 +511,10 @@ sub nodeCountsRec(ML::TriesWithFrequencies::Trie $tr, UInt $nInternal, UInt $nLe
     }
 }
 
+##=======================================================
+## Removal functions
+##=======================================================
+
 #--------------------------------------------------------
 #| Remove nodes by threshold.
 sub trie-remove-by-threshold (
@@ -531,6 +536,32 @@ sub trie-remove-by-threshold (
 
     $robj.trie-threshold-remove($tr)
 }
+
+#--------------------------------------------------------
+#| Remove nodes by threshold.
+sub trie-remove-by-pareto-fraction (
+#| Trie
+        ML::TriesWithFrequencies::Trie $tr,
+
+#| Pareto fraction
+        Numeric $fraction,
+
+#| Should bottom nodes be removed or not?
+        Bool :$bottom = True,
+
+#| Name of the aggregation node with value that equal the removed sum.
+        Str :$postfix = ''
+
+        --> ML::TriesWithFrequencies::Trie) is export {
+
+    my $robj = ML::TriesWithFrequencies::ParetoBasedRemover.new( pareto-fraction => $fraction.Num, remove-bottom => $bottom, :$postfix );
+
+    $robj.trie-pareto-remove($tr)
+}
+
+##=======================================================
+## Removal functions
+##=======================================================
 
 #--------------------------------------------------------
 #| Visualize
