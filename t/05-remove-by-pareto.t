@@ -1,0 +1,64 @@
+use Test;
+
+use lib '.';
+use lib './lib';
+
+use ML::TriesWithFrequencies;
+use ML::TriesWithFrequencies::Trie;
+
+# The previous tests should have checked that these commands work and
+# produce expected results:
+my $tr = trie-create-by-split(<bar barman bark bask bell best car cast call first fist fall fast>);
+my $ptr = trie-node-probabilities($tr);
+
+## The commands above should produce the trie:
+# TRIEROOT => 1
+# ├─b => 0.46153846153846156
+# │ ├─a => 0.6666666666666666
+# │ │ ├─r => 0.75
+# │ │ │ ├─k => 0.3333333333333333
+# │ │ │ └─m => 0.3333333333333333
+# │ │ │   └─a => 1
+# │ │ │     └─n => 1
+# │ │ └─s => 0.25
+# │ │   └─k => 1
+# │ └─e => 0.3333333333333333
+# │   ├─l => 0.5
+# │   │ └─l => 1
+# │   └─s => 0.5
+# │     └─t => 1
+# ├─c => 0.23076923076923078
+# │ └─a => 1
+# │   ├─l => 0.3333333333333333
+# │   │ └─l => 1
+# │   ├─r => 0.3333333333333333
+# │   └─s => 0.3333333333333333
+# │     └─t => 1
+# └─f => 0.3076923076923077
+#   ├─a => 0.5
+#   │ ├─l => 0.5
+#   │ │ └─l => 1
+#   │ └─s => 0.5
+#   │   └─t => 1
+#   └─i => 0.5
+#     ├─r => 0.5
+#     │ └─s => 1
+#     │   └─t => 1
+#     └─s => 0.5
+#       └─t => 1
+
+## With node counts:
+# {Internal => 22, Leaves => 12, Total => 34}
+
+plan 1;
+
+## 1
+my $res1 = trie-remove-by-pareto-fraction($ptr, 0.6, postfix => 'BOTTOM');
+is-deeply
+        trie-retrieve($res1, 'BOTTOM').toMapFormat<BOTTOM><TRIEVALUE>,
+        trie-retrieve($ptr, 'c').toMapFormat<c><TRIEVALUE>,
+        'remove by Pareto fraction 0.6';
+
+
+
+done-testing;
