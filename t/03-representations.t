@@ -6,7 +6,7 @@ use lib './lib';
 use ML::TriesWithFrequencies;
 use ML::TriesWithFrequencies::Trie;
 
-# The previous tess should have checked that these commands work and
+# The previous test should have checked that these commands work and
 # produce expected results:
 my @words = <bar barman>;
 my $tr0 = trie-create-by-split(@words);

@@ -6,7 +6,7 @@ use lib './lib';
 use ML::TriesWithFrequencies;
 use ML::TriesWithFrequencies::Trie;
 
-# The previous tess should have checked that these commands work and
+# The previous tests should have checked that these commands work and
 # produce expected results:
 my $tr = trie-create-by-split(<bar barman bark bask bell best car cast call first fist fall fast>);
 my $tr1 = trie-shrink($tr);
