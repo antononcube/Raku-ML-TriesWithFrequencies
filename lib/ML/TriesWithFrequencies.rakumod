@@ -294,10 +294,22 @@ sub trie-position(ML::TriesWithFrequencies::Trie $tr,
 #--------------------------------------------------------
 #| @description Retrieval of a sub-trie corresponding to a "word".
 #| @param tr a trie object
+proto trie-retrieve(ML::TriesWithFrequencies::Trie $tr, |
+        --> ML::TriesWithFrequencies::Trie) is export {*}
+
+#| @description Retrieval of a sub-trie corresponding to a "word".
+#| @param $tr a trie object
+#| @param $word a string
+multi trie-retrieve(ML::TriesWithFrequencies::Trie $tr, $word
+        --> ML::TriesWithFrequencies::Trie) {
+    trie-retrieve($tr, [$word,])
+}
+
+#| @description Retrieval of a sub-trie corresponding to a "word".
+#| @param tr a trie object
 #| @param word a list of strings
-sub trie-retrieve(ML::TriesWithFrequencies::Trie $tr,
-                  @word
-        --> ML::TriesWithFrequencies::Trie) is export {
+multi trie-retrieve(ML::TriesWithFrequencies::Trie $tr, @word
+        --> ML::TriesWithFrequencies::Trie) {
 
     if not so @word { return $tr; }
 
@@ -312,17 +324,25 @@ sub trie-retrieve(ML::TriesWithFrequencies::Trie $tr,
     } else {
         return trie-retrieve($tr.children{@word[0]}, @word[1 .. (@word.elems - 1)]);
     }
-
 }
 
 #--------------------------------------------------------
 #| @description For a given trie finds if the retrievable part of a word is complete match.
 #| @param tr a trie object
+proto trie-has-complete-match(ML::TriesWithFrequencies::Trie $tr, | --> Bool) is export {*}
+
+#| @description For a given trie finds if the retrievable part of a word is complete match.
+#| @param tr a trie object
+#| @param word a list of strings
+multi trie-has-complete-match(ML::TriesWithFrequencies::Trie $tr, $word --> Bool) {
+    trie-has-complete-match($tr, [$word,])
+}
+
+#| @description For a given trie finds if the retrievable part of a word is complete match.
+#| @param tr a trie object
 #| @param word a list of strings
 #| @details Despite the name this function works on the part of the word that can be found in the trie.
-sub trie-has-complete-match(ML::TriesWithFrequencies::Trie $tr,
-                            @word
-        --> Bool) is export {
+multi trie-has-complete-match(ML::TriesWithFrequencies::Trie $tr, @word --> Bool) {
 
     if not so $tr { return False }
 
@@ -350,10 +370,19 @@ sub trie-has-complete-match(ML::TriesWithFrequencies::Trie $tr,
 #--------------------------------------------------------
 #| @description Does the trie object tr contains a word.
 #| @param tr a trie object
+proto trie-contains(ML::TriesWithFrequencies::Trie $tr, | --> Bool) is export {*}
+
+#| @description Does the trie object tr contains a word.
+#| @param tr a trie object
 #| @param word a word to be checked
-sub trie-contains(ML::TriesWithFrequencies::Trie $tr,
-                  @word
-        --> Bool) is export {
+multi trie-contains(ML::TriesWithFrequencies::Trie $tr, $word --> Bool) {
+    trie-contains($tr, [$word,])
+}
+
+#| @description Does the trie object tr contains a word.
+#| @param tr a trie object
+#| @param word a word to be checked
+multi trie-contains(ML::TriesWithFrequencies::Trie $tr, @word --> Bool) is export {
 
     if not so @word { return Nil }
 
@@ -373,10 +402,19 @@ sub trie-contains(ML::TriesWithFrequencies::Trie $tr,
 #--------------------------------------------------------
 #| @description Does the trie object tr has a word as key.
 #| @param tr a trie object
+proto trie-is-key(ML::TriesWithFrequencies::Trie $tr, | --> Bool) is export {*}
+
+#| @description Does the trie object tr has a word as key.
+#| @param tr a trie object
 #| @param word a word to be checked
-sub trie-is-key(ML::TriesWithFrequencies::Trie $tr,
-                @word
-        --> Bool) is export {
+multi trie-is-key(ML::TriesWithFrequencies::Trie $tr, $word --> Bool) {
+    trie-is-key($tr, [$word,])
+}
+
+#| @description Does the trie object tr has a word as key.
+#| @param tr a trie object
+#| @param word a word to be checked
+multi trie-is-key(ML::TriesWithFrequencies::Trie $tr, @word --> Bool) is export {
 
     if not so @word { return Nil }
 
