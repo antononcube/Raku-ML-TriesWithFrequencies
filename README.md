@@ -192,18 +192,18 @@ say $tr0.XML;
 #   <TRIEVALUE>2</TRIEVALUE>
 #   <e>
 #    <TRIEVALUE>2</TRIEVALUE>
-#    <s>
-#     <TRIEVALUE>1</TRIEVALUE>
-#     <t>
-#      <TRIEVALUE>1</TRIEVALUE>
-#     </t>
-#    </s>
 #    <l>
 #     <TRIEVALUE>1</TRIEVALUE>
 #     <l>
 #      <TRIEVALUE>1</TRIEVALUE>
 #     </l>
 #    </l>
+#    <s>
+#     <TRIEVALUE>1</TRIEVALUE>
+#     <t>
+#      <TRIEVALUE>1</TRIEVALUE>
+#     </t>
+#    </s>
 #   </e>
 #  </b>
 # </TRIEROOT>
@@ -285,13 +285,13 @@ In the following list the most important items are placed first.
          - A concrete traversal functionality is a class that does the role 
            and provides additional context.
        
-- [ ] Implement (sub-)trie removal functions.
+- [X] Implement (sub-)trie removal functions.
 
      - [X] By threshold (below and above)
     
-     - [ ] By Pareto principle adherence (top and bottom)
+     - [X] By Pareto principle adherence (top and bottom)
     
-     - [ ] By regex over the keys
+     - [X] By regex over the keys
 
 - [ ] Implement Trie-based classification.
 
