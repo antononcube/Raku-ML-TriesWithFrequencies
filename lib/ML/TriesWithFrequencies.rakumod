@@ -566,7 +566,7 @@ sub trie-remove-by-threshold (
         #| Should nodes with values below the threshold be removed or not?
         Bool :$below-threshold = True,
 
-        #| Name of the aggregation node with value that equal the removed sum.
+        #| Name of the aggregation node with value that equals the removed sum.
         Str :$postfix = ''
 
         --> ML::TriesWithFrequencies::Trie) is export {
@@ -588,7 +588,7 @@ sub trie-remove-by-pareto-fraction (
 #| Should bottom nodes be removed or not?
         Bool :$bottom = True,
 
-#| Name of the aggregation node with value that equal the removed sum.
+#| Name of the aggregation node with value that equals the removed sum.
         Str :$postfix = ''
 
         --> ML::TriesWithFrequencies::Trie) is export {
@@ -610,7 +610,7 @@ sub trie-remove-by-regex (
 #| Should the regex be inverted or not?
         Bool :$invert = False,
 
-#| Name of the aggregation node with value that equal the removed sum.
+#| Name of the aggregation node with value that equals the removed sum.
         Str :$postfix = ''
 
         --> ML::TriesWithFrequencies::Trie) is export {
@@ -620,8 +620,73 @@ sub trie-remove-by-regex (
     $robj.trie-regex-remove($tr)
 }
 
+
 ##=======================================================
-## Removal functions
+## Selection functions
+##=======================================================
+
+#--------------------------------------------------------
+#| Select nodes by threshold.
+sub trie-select-by-threshold (
+#| Trie
+        ML::TriesWithFrequencies::Trie $tr,
+
+#| Threshold
+        Numeric $threshold,
+
+#| Should nodes with values above the threshold be selected or not?
+        Bool :$above-threshold = True,
+
+#| Name of the aggregation node with value that equals the removed sum.
+        Str :$postfix = ''
+
+        --> ML::TriesWithFrequencies::Trie) is export {
+
+    trie-remove-by-threshold( $tr, $threshold, below-threshold => $above-threshold, :$postfix )
+}
+
+#--------------------------------------------------------
+#| Select nodes by Pareto fraction.
+sub trie-select-by-pareto-fraction (
+#| Trie
+        ML::TriesWithFrequencies::Trie $tr,
+
+#| Pareto fraction
+        Numeric $fraction,
+
+#| Should top nodes be selected or not?
+        Bool :$top = True,
+
+#| Name of the aggregation node with value that equals the removed sum.
+        Str :$postfix = ''
+
+        --> ML::TriesWithFrequencies::Trie) is export {
+
+    trie-remove-by-pareto-fraction( $tr, $fraction, bottom => $$top, :$postfix )
+}
+
+#--------------------------------------------------------
+#| Select nodes by regex.
+sub trie-select-by-regex (
+#| Trie
+        ML::TriesWithFrequencies::Trie $tr,
+
+#| Pareto fraction
+        $key-pattern,
+
+#| Should the regex be inverted or not?
+        Bool :$invert = False,
+
+#| Name of the aggregation node with value that equal the removed sum.
+        Str :$postfix = ''
+
+        --> ML::TriesWithFrequencies::Trie) is export {
+
+    trie-remove-by-regex($tr, $key-pattern, invert => !$invert, :$postfix)
+}
+
+##=======================================================
+## Visualization functions
 ##=======================================================
 
 #--------------------------------------------------------
