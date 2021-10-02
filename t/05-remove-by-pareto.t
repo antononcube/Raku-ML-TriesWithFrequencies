@@ -50,7 +50,7 @@ my $ptr = trie-node-probabilities($tr);
 ## With node counts:
 # {Internal => 22, Leaves => 12, Total => 34}
 
-plan 1;
+plan 3;
 
 ## 1
 my $res1 = trie-remove-by-pareto-fraction($ptr, 0.6, postfix => 'BOTTOM');
@@ -60,5 +60,16 @@ is-deeply
         'remove by Pareto fraction 0.6';
 
 
+## 2
+is-deeply
+        trie-select-by-pareto-fraction($ptr, 0.6, :!top, postfix => ''),
+        trie-remove-by-pareto-fraction($ptr, 0.6, :!bottom, postfix => ''),
+        'remove and select equivalence 1';
+
+## 3
+is-deeply
+        trie-select-by-pareto-fraction($ptr, 0.6, :!top, postfix => 'BOTTOM'),
+        trie-remove-by-pareto-fraction($ptr, 0.6, :!bottom, postfix => 'BOTTOM'),
+        'remove and select equivalence 2';
 
 done-testing;

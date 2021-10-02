@@ -37,7 +37,7 @@ my $tr1 = trie-shrink($tr);
 ## With node counts:
 # {Internal => 9, Leaves => 12, Total => 21}
 
-plan 3;
+plan 5;
 
 ## 1
 # This only removes
@@ -95,5 +95,17 @@ is-deeply
         trie-retrieve($res2, <b a sk>).toMapFormat,
         trie-retrieve($res2, <b a>).toMapFormat,
         "remove by regex / ^ 's' .* /";
+
+## 4
+is-deeply
+        trie-select-by-regex($tr1, / ^ 'ca' .* /, postfix => ''),
+        trie-remove-by-regex($tr1, / ^ 'ca' .* /, :invert, postfix => ''),
+        'remove and select equivalence 1';
+
+## 5
+is-deeply
+        trie-select-by-regex($tr1, / ^ 's' .* /, postfix => 'REGREMOVED'),
+        trie-remove-by-regex($tr1, / ^ 's' .* /, :invert, postfix => 'REGREMOVED'),
+        'remove and select equivalence 2';
 
 done-testing;

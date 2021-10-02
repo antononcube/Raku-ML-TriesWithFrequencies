@@ -32,7 +32,7 @@ my $ptr0 = trie-node-probabilities($tr0);
 ## With node counts:
 # {Internal => 10, Leaves => 5, Total => 15}
 
-plan 2;
+plan 4;
 
 ## 1
 # The first test expression
@@ -80,5 +80,16 @@ is-deeply
                                                                                             :t(${ :TRIEVALUE(1e0) }) }) }) }) }) },
         'remove by threshold with empty prefix';
 
+## 3
+is-deeply
+        trie-select-by-threshold($ptr0, 0.21, postfix => '').toMapFormat,
+        trie-remove-by-threshold($ptr0, 0.21, postfix => '').toMapFormat,
+        "remove and select equivalence 1";
+
+## 4
+is-deeply
+        trie-select-by-threshold($ptr0, 0.21, postfix => 'REM').toMapFormat,
+        trie-remove-by-threshold($ptr0, 0.21, postfix => 'REM').toMapFormat,
+        "remove and select equivalence 2";
 
 done-testing;
