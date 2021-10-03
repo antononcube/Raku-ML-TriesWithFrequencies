@@ -36,7 +36,7 @@ sub trie-make(@chars,
     # Is this faster: @chars.head(@chars.elems-1).reverse;
     for @chars[^(*- 1)].reverse -> $c {
         my %children = $res.key => $res;
-        $res = ML::TriesWithFrequencies::Trie.new(key => $c, :$value, :%children );
+        $res = ML::TriesWithFrequencies::Trie.new(key => $c, :$value, :%children);
     }
 
     my ML::TriesWithFrequencies::Trie $res2 = ML::TriesWithFrequencies::Trie.new(key => $TrieRoot, :$value);
@@ -65,8 +65,14 @@ sub trie-merge(ML::TriesWithFrequencies::Trie $tr1,
     } elsif $tr1.key ne $tr2.key {
 
         return trie-merge(
-                ML::TriesWithFrequencies::Trie.new(key => $TrieRoot, value => $tr1.value, children => %($TrieRoot => $tr1.children)),
-                ML::TriesWithFrequencies::Trie.new(key => $TrieRoot, value => $tr2.value, children => %($TrieRoot => $tr2.children)),
+                ML::TriesWithFrequencies::Trie.new(
+                        key => $TrieRoot,
+                        value => $tr1.value,
+                        children => %($TrieRoot => $tr1.children)),
+                ML::TriesWithFrequencies::Trie.new(
+                        key => $TrieRoot,
+                        value => $tr2.value,
+                        children => %($TrieRoot => $tr2.children)),
                 :$merge-clones);
 
     } elsif $tr1.key eq $tr2.key {
@@ -88,7 +94,7 @@ sub trie-merge(ML::TriesWithFrequencies::Trie $tr1,
         # Hence the two almost identical codes.
         if $tr1.children.elems < $tr2.children.elems {
 
-            $res.setChildren( $tr2.children );
+            $res.setChildren($tr2.children);
 
             for $tr1.children.keys -> $key1 {
 
@@ -101,7 +107,7 @@ sub trie-merge(ML::TriesWithFrequencies::Trie $tr1,
 
         } else {
 
-            $res.setChildren( $tr1.children );
+            $res.setChildren($tr1.children);
 
             for $tr2.children.keys -> $key2 {
 
@@ -135,7 +141,7 @@ sub trie-insert(ML::TriesWithFrequencies::Trie $tr,
         die "The second argument is expected to be a positional of strings."
     }
 
-   trie-merge($tr, trie-make(@word, :$value, :$bottomValue, :!verify-input), :$merge-clones)
+    trie-merge($tr, trie-make(@word, :$value, :$bottomValue, :!verify-input), :$merge-clones)
 }
 
 #--------------------------------------------------------
@@ -181,7 +187,8 @@ sub trie-create(@words,
 
     return trie-merge(
             trie-create(@words[^ceiling(@words.elems / 2)], :$bisection-threshold, :!verify-input),
-            trie-create(@words[ceiling(@words.elems / 2) .. (@words.elems - 1)], :$bisection-threshold, :!verify-input));
+            trie-create(@words[ceiling(@words.elems / 2) .. (@words.elems - 1)], :$bisection-threshold,
+                    :!verify-input));
 }
 
 #--------------------------------------------------------
@@ -407,14 +414,28 @@ proto trie-is-key(ML::TriesWithFrequencies::Trie $tr, | --> Bool) is export {*}
 #| @description Does the trie object tr has a word as key.
 #| @param tr a trie object
 #| @param word a word to be checked
-multi trie-is-key(ML::TriesWithFrequencies::Trie $tr, $word --> Bool) {
+multi trie-is-key(
+#| Trie object
+        ML::TriesWithFrequencies::Trie $tr,
+
+#| A string "word" to test as a key
+        $word
+
+        --> Bool) {
     trie-is-key($tr, [$word,])
 }
 
 #| @description Does the trie object tr has a word as key.
 #| @param tr a trie object
 #| @param word a word to be checked
-multi trie-is-key(ML::TriesWithFrequencies::Trie $tr, @word --> Bool) is export {
+multi trie-is-key(
+#| Trie object
+        ML::TriesWithFrequencies::Trie $tr,
+
+#| A positional "word" to test as a key
+        @word
+
+        --> Bool) is export {
 
     if not so @word { return Nil }
 
@@ -438,7 +459,20 @@ multi trie-is-key(ML::TriesWithFrequencies::Trie $tr, @word --> Bool) is export 
 #| @param tr A trie object.
 #| @param sep A sep to be used when strings are joined.
 #| @param threshold Above what threshold to do the shrinking. If negative automatic shrinking test is applied.
-sub trie-shrink(Trie $tr, str :$sep = '', num :$threshold = -1e0, Bool :$internal-only = False) is export {
+sub trie-shrink(
+#| Trie object
+        Trie $tr,
+
+#| Separator string to be used when strings are joined.
+        Str :$sep = '',
+
+#| Above what threshold to do the shrinking. If negative automatic shrinking test is applied.
+        num :$threshold = -1e0,
+
+#| Should only internal nodes be shrunk or not?
+        Bool :$internal-only = False
+
+        --> ML::TriesWithFrequencies::Trie) is export {
     return shrinkRec($tr, $sep, $threshold, $internal-only, 0);
 }
 
@@ -523,12 +557,16 @@ sub shrinkRec(ML::TriesWithFrequencies::Trie $tr,
 #| @description Finding the counts of nodes in a trie.
 #| @param tr trie object
 #| @return Returns the values for "total", "internal", "leaves".
-sub trie-node-counts(ML::TriesWithFrequencies::Trie $tr) is export {
-        ## The result would like { "total"->23, "internal"->12, "leaves"->11 }.
+sub trie-node-counts(
+#| Trie object
+        ML::TriesWithFrequencies::Trie $tr
 
-        my $res = nodeCountsRec($tr, 0, 0);
+        --> Hash) is export {
+    ## The result would like { "total"->23, "internal"->12, "leaves"->11 }.
 
-        return { Total => $res.key + $res.value, Internal => $res.key, Leaves => $res.value }
+    my $res = nodeCountsRec($tr, 0, 0);
+
+    return { Total => $res.key + $res.value, Internal => $res.key, Leaves => $res.value }
 }
 
 #| @description Finding the counts of internal nodes and leaf nodes in a trie.
@@ -557,21 +595,22 @@ sub nodeCountsRec(ML::TriesWithFrequencies::Trie $tr, UInt $nInternal, UInt $nLe
 #--------------------------------------------------------
 #| Remove nodes by threshold.
 sub trie-remove-by-threshold (
-        #| Trie
+#| Trie
         ML::TriesWithFrequencies::Trie $tr,
 
-        #| Threshold
+#| Threshold
         Numeric $threshold,
 
-        #| Should nodes with values below the threshold be removed or not?
+#| Should nodes with values below the threshold be removed or not?
         Bool :$below-threshold = True,
 
-        #| Name of the aggregation node with value that equals the removed sum.
+#| Name of the aggregation node with value that equals the removed sum.
         Str :$postfix = ''
 
         --> ML::TriesWithFrequencies::Trie) is export {
 
-    my $robj = ML::TriesWithFrequencies::ThresholdBasedRemover.new( threshold => $threshold.Num, :$below-threshold, :$postfix );
+    my $robj = ML::TriesWithFrequencies::ThresholdBasedRemover.new(threshold => $threshold.Num, :$below-threshold,
+            :$postfix);
 
     $robj.trie-threshold-remove($tr)
 }
@@ -593,7 +632,8 @@ sub trie-remove-by-pareto-fraction (
 
         --> ML::TriesWithFrequencies::Trie) is export {
 
-    my $robj = ML::TriesWithFrequencies::ParetoBasedRemover.new( pareto-fraction => $fraction.Num, remove-bottom => $bottom, :$postfix );
+    my $robj = ML::TriesWithFrequencies::ParetoBasedRemover.new(pareto-fraction => $fraction.Num,
+            remove-bottom => $bottom, :$postfix);
 
     $robj.trie-pareto-remove($tr)
 }
@@ -615,7 +655,7 @@ sub trie-remove-by-regex (
 
         --> ML::TriesWithFrequencies::Trie) is export {
 
-    my $robj = ML::TriesWithFrequencies::RegexBasedRemover.new( :$key-pattern, :$invert, :$postfix );
+    my $robj = ML::TriesWithFrequencies::RegexBasedRemover.new(:$key-pattern, :$invert, :$postfix);
 
     $robj.trie-regex-remove($tr)
 }
@@ -641,8 +681,7 @@ sub trie-select-by-threshold (
         Str :$postfix = ''
 
         --> ML::TriesWithFrequencies::Trie) is export {
-
-    trie-remove-by-threshold( $tr, $threshold, below-threshold => $above-threshold, :$postfix )
+    trie-remove-by-threshold($tr, $threshold, below-threshold => $above-threshold, :$postfix)
 }
 
 #--------------------------------------------------------
@@ -661,8 +700,7 @@ sub trie-select-by-pareto-fraction (
         Str :$postfix = ''
 
         --> ML::TriesWithFrequencies::Trie) is export {
-
-    trie-remove-by-pareto-fraction( $tr, $fraction, bottom => $$top, :$postfix )
+    trie-remove-by-pareto-fraction($tr, $fraction, bottom => $$top, :$postfix)
 }
 
 #--------------------------------------------------------
@@ -681,7 +719,6 @@ sub trie-select-by-regex (
         Str :$postfix = ''
 
         --> ML::TriesWithFrequencies::Trie) is export {
-
     trie-remove-by-regex($tr, $key-pattern, invert => !$invert, :$postfix)
 }
 
@@ -691,12 +728,22 @@ sub trie-select-by-regex (
 
 #--------------------------------------------------------
 #| Visualize
-sub trie-say(ML::TriesWithFrequencies::Trie $tr,
-             Str :$lb = '',
-             Str :$sep = ' => ',
-             Str :$rb = '',
-             Bool :$key-value-nodes = True) is export {
-    .say for visualize-tree( $tr.toMapFormat.first, *.key, *.value.List, :$lb, :$sep, :$rb, :$key-value-nodes);
+sub trie-say(
+#| Trie object
+        ML::TriesWithFrequencies::Trie $tr,
+
+#| A string that is the left boundary marker of a node
+        Str :$lb = '',
+
+#| A string that separates the key and value of a node
+        Str :$sep = ' => ',
+
+#| A string that is the right boundary marker of a node
+        Str :$rb = '',
+
+#| Should key-value nodes be used not?
+        Bool :$key-value-nodes = True) is export {
+    .say for visualize-tree($tr.toMapFormat.first, *.key, *.value.List, :$lb, :$sep, :$rb, :$key-value-nodes);
 }
 
 ## Adapted from here:
