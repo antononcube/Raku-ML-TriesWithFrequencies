@@ -15,6 +15,7 @@
     "ML::TriesWithFrequencies::Trie": "lib/ML/TriesWithFrequencies/Trie.rakumod",
     "ML::TriesWithFrequencies::TrieTraverse": "lib/ML/TriesWithFrequencies/TrieTraverse.rakumod",
     "ML::TriesWithFrequencies::ParetoBasedRemover": "lib/ML/TriesWithFrequencies/ParetoBasedRemover.rakumod",
+    "ML::TriesWithFrequencies::PathsGatherer": "lib/ML/TriesWithFrequencies/PathsGatherer.rakumod",
     "ML::TriesWithFrequencies::RegexBasedRemover": "lib/ML/TriesWithFrequencies/RegexBasedRemover.rakumod",
     "ML::TriesWithFrequencies::ThresholdBasedRemover": "lib/ML/TriesWithFrequencies/ThresholdBasedRemover.rakumod"
   },

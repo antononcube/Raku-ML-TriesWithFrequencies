@@ -1,5 +1,6 @@
 use ML::TriesWithFrequencies::Trie;
 use ML::TriesWithFrequencies::ParetoBasedRemover;
+use ML::TriesWithFrequencies::PathsGatherer;
 use ML::TriesWithFrequencies::RegexBasedRemover;
 use ML::TriesWithFrequencies::ThresholdBasedRemover;
 
@@ -720,6 +721,29 @@ sub trie-select-by-regex (
 
         --> ML::TriesWithFrequencies::Trie) is export {
     trie-remove-by-regex($tr, $key-pattern, invert => !$invert, :$postfix)
+}
+
+##=======================================================
+## Path functions
+##=======================================================
+#| @description Finds the paths from the root of a trie to the leaves.
+#| @param tr a trie object
+sub trie-root-to-leaf-paths( ML::TriesWithFrequencies::Trie $tr --> Positional) is export {
+
+    my $pobj = ML::TriesWithFrequencies::PathsGatherer.new();
+
+    $pobj.trie-trace($tr)
+}
+
+#| @description Finds all words in the trie tr that start with the word searchWord.
+#| @param tr a trie object
+#| @param sep is a separator
+sub trie-get-words(ML::TriesWithFrequencies::Trie $tr, :$sep = Whatever --> Positional) is export {
+
+    my $res = trie-root-to-leaf-paths($tr).map({ $_».key.grep({ $_ ne $TrieRoot }) });
+
+    if $sep.isa(Str) { $res».join($sep).List }
+    else { $res.List }
 }
 
 ##=======================================================
