@@ -738,12 +738,25 @@ sub trie-root-to-leaf-paths( ML::TriesWithFrequencies::Trie $tr --> Positional) 
 #| @description Finds all words in the trie tr that start with the word searchWord.
 #| @param tr a trie object
 #| @param sep is a separator
-sub trie-get-words(ML::TriesWithFrequencies::Trie $tr, :$sep = Whatever --> Positional) is export {
+sub trie-words(ML::TriesWithFrequencies::Trie $tr, :$sep = Whatever --> Positional) is export {
 
     my $res = trie-root-to-leaf-paths($tr).map({ $_».key.grep({ $_ ne $TrieRoot }) });
 
     if $sep.isa(Str) { $res».join($sep).List }
     else { $res.List }
+}
+
+#| @description Finds all words in the trie tr that start with the word searchWord.
+#| @param tr a trie object
+#| @param sep is a separator
+sub trie-words-with-probabilities(ML::TriesWithFrequencies::Trie $tr, :$sep = Whatever) is export {
+
+    my @res = trie-root-to-leaf-paths($tr);
+    my @words = @res.map({ $_».key.grep({ $_ ne $TrieRoot }) });
+    my @probs = @res.map({ [*] $_».value });
+
+    if $sep.isa(Str) { @words».join($sep) Z=> @probs }
+    else { @words Z=> @probs }
 }
 
 ##=======================================================
