@@ -20,12 +20,11 @@ class ML::TriesWithFrequencies::PathsGatherer {
             ML::TriesWithFrequencies::Trie $tr,
             @path) {
 
-        my @currentPath = @path;
-        @currentPath.append: ($tr.key => $tr.value);
+        my @currentPath is List = @path;
 
         if not so $tr.children {
 
-            @!tracedPaths.append($[@currentPath]);
+            @!tracedPaths.append($[|@currentPath, $tr.key => $tr.value]);
 
         } else {
 
@@ -38,11 +37,11 @@ class ML::TriesWithFrequencies::PathsGatherer {
             # System.out.println( sum + " " + tr.getValue() );
             if $tr.value >= 1e0 and $sum < $tr.value or
                     $tr.value < 1e0 and $sum < 1e0 {
-                @!tracedPaths.append($[@currentPath]);
+                @!tracedPaths.append($[|@currentPath, $tr.key => $tr.value * (1 - $sum) ]);
             }
 
             for $tr.children.values -> $ch {
-                self.trace($ch, @currentPath);
+                self.trace($ch, $[|@currentPath, $tr.key => $tr.value]);
             }
         }
     }
