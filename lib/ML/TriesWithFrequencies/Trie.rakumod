@@ -66,6 +66,12 @@ class ML::TriesWithFrequencies::Trie {
     }
 
     #--------------------------------------------------------
+    #| As Hash
+    method hash( --> Hash) {
+       self.toMapFormat()
+    }
+
+    #--------------------------------------------------------
     #| To WL-Association format
     method WL( --> Str ) {
         my $res = '<|' ~ self.toWLFormatRec().subst(:g, '"' ~ $.trieRootLabel ~ '"', '$TrieRoot') ~ '|>';
