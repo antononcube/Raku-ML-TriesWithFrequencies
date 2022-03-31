@@ -35,9 +35,8 @@ class ML::TriesWithFrequencies::PathsGatherer {
             }
 
             # System.out.println( sum + " " + tr.getValue() );
-            if $tr.value >= 1e0 and $sum < $tr.value or
-                    $tr.value < 1e0 and $sum < 1e0 {
-                @!tracedPaths.append($[|@currentPath, $tr.key => $tr.value * (1 - $sum) ]);
+            if $sum < 1e0 || $sum < $tr.value {
+                @!tracedPaths.append($[|@currentPath, $tr.key => $tr.value]);
             }
 
             for $tr.children.values -> $ch {
