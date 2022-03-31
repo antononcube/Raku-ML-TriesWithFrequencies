@@ -743,7 +743,7 @@ sub trie-words(ML::TriesWithFrequencies::Trie $tr, :$sep = Whatever --> Position
     my $res = trie-root-to-leaf-paths($tr).map({ $_».key.grep({ $_ ne $TrieRoot }) });
 
     if $sep.isa(Str) { $res».join($sep).List }
-    else { $res.List }
+    else { $res.List>>.List }
 }
 
 #| @description Finds all words in the trie tr that start with the word searchWord.
