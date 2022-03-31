@@ -50,15 +50,14 @@ is-deeply
 ## 2
 is-deeply
         trie-words($ptr, sep => Whatever).sort,
-        (("b", "a", "r").Seq, ("b", "a", "r", "k").Seq, ("b", "a", "r", "m", "a", "n").Seq, ("b", "a", "s", "k").Seq,
-         ("c", "a", "r").Seq, ("c", "a", "s", "t").Seq, ("f", "i", "r", "s", "t").Seq, ("f", "i", "s", "t").Seq).Seq,
+        (("b", "a", "r"), ("b", "a", "r", "k"), ("b", "a", "r", "m", "a", "n"), ("b", "a", "s", "k"),
+         ("c", "a", "r"), ("c", "a", "s", "t"), ("f", "i", "r", "s", "t"), ("f", "i", "s", "t")),
         'expected trie words 2';
 
 ## 3
 is-deeply
         Hash(trie-words-with-probabilities($ptr, sep => '')),
-        %(:fist(0.125e0), :first(0.125e0), :car(0.125e0), :cast(0.125e0), :bask(0.125e0), :bar(0.125e0),
-          :barman(0.125e0), :bark(0.125e0)),
+        %((:cast(0.125e0), :car(0.125e0), :bask(0.125e0), :bar(0.375e0), :bark(0.125e0), :barman(0.125e0), :first(0.125e0), :fist(0.125e0))),
         'expected trie word probabilities';
 
 done-testing;
