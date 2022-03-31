@@ -6,7 +6,7 @@ role ML::TriesWithFrequencies::TrieTraverse {
     method kvFunc(Str $k, ML::TriesWithFrequencies::Trie $tr --> Pair) {!!!};
 
     #--------------------------------------------------------
-    #| Traver trie with a key-value function.
+    #| Traverse trie with a key-value function.
     multi method trie-map(
     #| Trie to be traversed
             ML::TriesWithFrequencies::Trie $tr,
@@ -51,7 +51,7 @@ role ML::TriesWithFrequencies::TrieTraverse {
     }
 
     #--------------------------------------------------------
-    #| Traver trie with a pre- and post- node functions.
+    #| Traverse trie with a pre- and post- node functions.
     multi method trie-map(
     #| Trie to be traversed
             ML::TriesWithFrequencies::Trie $tr,
