@@ -68,12 +68,12 @@ is-deeply <barked balm barking>.map({ trie-has-complete-match($jTr, $_.comb) }),
         'JavaTrieContains1';
 
 # 11
-is-deeply trie-words(trie-retrieve($jTr2, <b>), sep => '').sort,
+is-deeply trie-words($jTr2, <b>, sep => '').sort,
         <bar barring>,
         'JavaTrieGetWords1';
 
 # 12
-is-deeply trie-words(trie-retrieve($jTr2, <c>), sep => '').sort,
+is-deeply trie-words($jTr2, <c>, sep => '').sort,
         <cold colder car care caress>.sort,
         'JavaTrieGetWords2';
 
@@ -90,17 +90,14 @@ is-deeply trie-words($jTr3, sep => '').unique.sort,
 # 15
 is-deeply trie-root-to-leaf-paths($jTr).sort,
         ($[:TRIEROOT(9e0), :b(9e0), :a(9e0), :r(9e0), :k(9e0)],
-         $[:TRIEROOT(9e0), :b(9e0), :a(9e0), :r(9e0), :k(9e0), :e(6e0),
-           :d(1e0)], $[:TRIEROOT(9e0), :b(9e0), :a(9e0), :r(9e0), :k(9e0),
-                       :e(6e0), :e(3e0), :p(3e0)], $[:TRIEROOT(9e0), :b(9e0), :a(9e0),
-                                                     :r(9e0), :k(9e0), :e(6e0), :e(3e0), :p(3e0), :e(2e0), :r(2e0)],
-         $[:TRIEROOT(9e0), :b(9e0), :a(9e0), :r(9e0), :k(9e0), :e(6e0),
-           :e(3e0), :p(3e0), :e(2e0), :r(2e0), :s(1e0)], $[:TRIEROOT(9e0),
-                                                           :b(9e0), :a(9e0), :r(9e0), :k(9e0), :e(6e0), :r(2e0)],
-         $[:TRIEROOT(9e0), :b(9e0), :a(9e0), :r(9e0), :k(9e0), :e(6e0),
-           :r(2e0), :s(1e0)], $[:TRIEROOT(9e0), :b(9e0), :a(9e0), :r(9e0),
-                                :k(9e0), :i(1e0), :n(1e0), :g(1e0)], $[:TRIEROOT(9e0), :b(9e0),
-                                                                       :a(9e0), :r(9e0), :k(9e0), :s(1e0)]).Seq,
+         $[:TRIEROOT(9e0), :b(9e0), :a(9e0), :r(9e0), :k(9e0), :e(6e0), :d(1e0)],
+         $[:TRIEROOT(9e0), :b(9e0), :a(9e0), :r(9e0), :k(9e0), :e(6e0), :e(3e0), :p(3e0)],
+         $[:TRIEROOT(9e0), :b(9e0), :a(9e0), :r(9e0), :k(9e0), :e(6e0), :e(3e0), :p(3e0), :e(2e0), :r(2e0)],
+         $[:TRIEROOT(9e0), :b(9e0), :a(9e0), :r(9e0), :k(9e0), :e(6e0), :e(3e0), :p(3e0), :e(2e0), :r(2e0), :s(1e0)],
+         $[:TRIEROOT(9e0), :b(9e0), :a(9e0), :r(9e0), :k(9e0), :e(6e0), :r(2e0)],
+         $[:TRIEROOT(9e0), :b(9e0), :a(9e0), :r(9e0), :k(9e0), :e(6e0), :r(2e0), :s(1e0)],
+         $[:TRIEROOT(9e0), :b(9e0), :a(9e0), :r(9e0), :k(9e0), :i(1e0), :n(1e0), :g(1e0)],
+         $[:TRIEROOT(9e0), :b(9e0), :a(9e0), :r(9e0), :k(9e0), :s(1e0)]).Seq,
         'JavaRootToLeafPaths1';
 
 # 16
