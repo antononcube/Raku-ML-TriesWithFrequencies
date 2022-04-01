@@ -728,9 +728,14 @@ sub trie-select-by-regex (
 ##=======================================================
 #| @description Finds the paths from the root of a trie to the leaves.
 #| @param tr a trie object
-sub trie-root-to-leaf-paths( ML::TriesWithFrequencies::Trie $tr --> Positional) is export {
+sub trie-root-to-leaf-paths( ML::TriesWithFrequencies::Trie $tr, :$ulp = Whatever --> Positional) is export {
 
-    my $pobj = ML::TriesWithFrequencies::PathsGatherer.new();
+    my $pobj;
+    if ($ulp ~~ Numeric) {
+        $pobj = ML::TriesWithFrequencies::PathsGatherer.new(:$ulp);
+    } else {
+        $pobj = ML::TriesWithFrequencies::PathsGatherer.new();
+    }
 
     $pobj.trie-trace($tr)
 }

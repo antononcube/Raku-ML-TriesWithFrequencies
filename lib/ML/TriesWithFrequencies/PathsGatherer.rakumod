@@ -3,6 +3,7 @@ use ML::TriesWithFrequencies::Trie;
 class ML::TriesWithFrequencies::PathsGatherer {
 
     has @.tracedPaths;
+    has Numeric $.ulp = 2.220446049250313e-16;
 
     #--------------------------------------------------------
     method new() {
@@ -29,7 +30,7 @@ class ML::TriesWithFrequencies::PathsGatherer {
             }
 
             # System.out.println( sum + " " + tr.getValue() );
-            if $sum < 1e0 || $sum < $tr.value {
+            if $sum < ( 1e0 - $!ulp ) || $sum < ($tr.value - $!ulp) {
                 @!tracedPaths.append($[|@currentPath, $tr.key => $tr.value]);
             }
 
