@@ -735,10 +735,21 @@ sub trie-root-to-leaf-paths( ML::TriesWithFrequencies::Trie $tr --> Positional) 
     $pobj.trie-trace($tr)
 }
 
+##-------------------------------------------------------
+proto trie-words(ML::TriesWithFrequencies::Trie $tr, | --> Positional) is export {*};
+
+#| @description Finds all words in the trie tr that start with the word searchWord.
+#| @param tr a trie object
+#| @param sw a list of strings
+#| @param sep is a separator
+multi trie-words(ML::TriesWithFrequencies::Trie $tr, $sw, :$sep = Whatever --> Positional) {
+    return trie-words(trie-retrieve($tr, $sw), :$sep);
+}
+
 #| @description Finds all words in the trie tr that start with the word searchWord.
 #| @param tr a trie object
 #| @param sep is a separator
-sub trie-words(ML::TriesWithFrequencies::Trie $tr, :$sep = Whatever --> Positional) is export {
+multi trie-words(ML::TriesWithFrequencies::Trie $tr, :$sep = Whatever --> Positional) {
 
     my $res = trie-root-to-leaf-paths($tr).map({ $_».key.grep({ $_ ne $TrieRoot }) });
 
@@ -746,6 +757,7 @@ sub trie-words(ML::TriesWithFrequencies::Trie $tr, :$sep = Whatever --> Position
     else { $res.List>>.List }
 }
 
+##-------------------------------------------------------
 #| @description Finds all words in the trie tr that start with the word searchWord.
 #| @param tr a trie object
 #| @param sep is a separator
