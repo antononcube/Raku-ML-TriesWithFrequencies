@@ -285,7 +285,7 @@ In the following list the most important items are placed first.
      
      - See `trie-words` and `trie-root-to-leaf-paths`.
      
-- [ ] Convert most of the WL unit tests in [AAp5] into Raku tests.
+- [X] Convert most of the WL unit tests in [AAp5] into Raku tests.
 
 - [X] Implement Trie traversal functions.
 
