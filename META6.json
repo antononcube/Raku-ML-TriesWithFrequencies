@@ -1,7 +1,7 @@
 {
   "name": "ML::TriesWithFrequencies",
   "description": "Package with functions for creation and manipulation of tries (prefix trees) with frequencies.",
-  "version": "0.1.0",
+  "version": "0.5.0",
   "perl": "6.d",
   "authors": [
     "Anton Antonov"
@@ -12,12 +12,12 @@
   "test-depends": [],
   "provides": {
     "ML::TriesWithFrequencies": "lib/ML/TriesWithFrequencies.rakumod",
-    "ML::TriesWithFrequencies::Trie": "lib/ML/TriesWithFrequencies/Trie.rakumod",
-    "ML::TriesWithFrequencies::TrieTraverse": "lib/ML/TriesWithFrequencies/TrieTraverse.rakumod",
     "ML::TriesWithFrequencies::ParetoBasedRemover": "lib/ML/TriesWithFrequencies/ParetoBasedRemover.rakumod",
     "ML::TriesWithFrequencies::PathsGatherer": "lib/ML/TriesWithFrequencies/PathsGatherer.rakumod",
     "ML::TriesWithFrequencies::RegexBasedRemover": "lib/ML/TriesWithFrequencies/RegexBasedRemover.rakumod",
-    "ML::TriesWithFrequencies::ThresholdBasedRemover": "lib/ML/TriesWithFrequencies/ThresholdBasedRemover.rakumod"
+    "ML::TriesWithFrequencies::ThresholdBasedRemover": "lib/ML/TriesWithFrequencies/ThresholdBasedRemover.rakumod",
+    "ML::TriesWithFrequencies::Trie": "lib/ML/TriesWithFrequencies/Trie.rakumod",
+    "ML::TriesWithFrequencies::TrieTraverse": "lib/ML/TriesWithFrequencies/TrieTraverse.rakumod"
   },
   "resources": [],
   "license": "Artistic-2.0",
