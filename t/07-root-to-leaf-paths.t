@@ -38,7 +38,7 @@ my $ptr = trie-node-probabilities($tr);
 ## With node counts:
 # {Internal => 15, Leaves => 7, Total => 22}
 
-plan 3;
+plan 4;
 
 ## 1
 is-deeply
@@ -59,5 +59,9 @@ is-deeply
         Hash(trie-words-with-probabilities($ptr, sep => '')),
         %((:cast(0.125e0), :car(0.125e0), :bask(0.125e0), :bar(0.375e0), :bark(0.125e0), :barman(0.125e0), :first(0.125e0), :fist(0.125e0))),
         'expected trie word probabilities';
+
+## 4
+is trie-root-to-leaf-paths($ptr, ulp => 2.3223e-12).WHAT ~~ Positional, True,
+        'Root-to-leaf paths with ULP spec';
 
 done-testing;
