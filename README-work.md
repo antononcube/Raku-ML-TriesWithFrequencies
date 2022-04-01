@@ -142,9 +142,16 @@ After those changes the current Raku implementation is:
 - ≈ 2.5 times slower than the Mathematica implementation [AAp2]
 - ≈ 40 times slower than the Java implementation [AAp3]
 
+After the (monumental) work on 
+[the new MoarVM dispatch mechanism](https://6guts.wordpress.com/2021/09/29/the-new-moarvm-dispatch-mechanism-is-here/),
+[JW1], was incorporated in standard Rakudo releases (September/October 2021)
+additional 20% speed-up was obtained. Currently this package is:
+- ≈ 2.0 times slower than the Mathematica implementation [AAp2]
+- ≈ 30 times slower than the Java implementation [AAp3]
+
 These speed improvements are definitely not satisfactory. I strongly consider:
 
-1. Re-implementing in Raku the Mathematica  package [AAp2], i.e. to move into Tries that are hashes.
+1. Re-implementing in Raku the Mathematica package [AAp2], i.e. to move into Tries that are hashes.
 
    - (It turned out option 1 does not produce better results; see [AAp6].)
   
@@ -157,8 +164,10 @@ These speed improvements are definitely not satisfactory. I strongly consider:
 
 In the following list the most important items are placed first.
 
-- [ ] Implement "get words" and "get root-to-leaf paths" functions.
-
+- [X] Implement "get words" and "get root-to-leaf paths" functions.
+     
+     - See `trie-words` and `trie-root-to-leaf-paths`.
+     
 - [ ] Convert most of the WL unit tests in [AAp5] into Raku tests.
 
 - [X] Implement Trie traversal functions.
@@ -176,6 +185,8 @@ In the following list the most important items are placed first.
     
      - [X] By regex over the keys
 
+- [ ] Implement `trie-prune` function.
+     
 - [ ] Implement Trie-based classification.
 
 - [ ] Investigate faster implementations.
@@ -211,6 +222,11 @@ In the following list the most important items are placed first.
 (2017),
 [MathematicaForPrediction at WordPress](https://mathematicaforprediction.wordpress.com).
 [GitHub Markdown](https://github.com/antononcube/MathematicaForPrediction).
+
+[JW1] Jonathan Worthington,
+["The new MoarVM dispatch mechanism is here!"](https://6guts.wordpress.com/2021/09/29/the-new-moarvm-dispatch-mechanism-is-here/),
+(2021),
+[6guts at WordPress](https://6guts.wordpress.com).
 
 [RAC1] Tib,
 ["Day 10: My 10 commandments for Raku performances"](https://raku-advent.blog/2020/12/10/day-10-my-10-commandments-for-raku-performances/),
