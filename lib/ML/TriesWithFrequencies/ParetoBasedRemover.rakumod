@@ -14,12 +14,6 @@ class ML::TriesWithFrequencies::ParetoBasedRemover
     }
 
     #--------------------------------------------------------
-    method kvFunc(Str $k, ML::TriesWithFrequencies::Trie $tr --> Pair) {
-        note 'Not used, not implemented.';
-        Pair('Not', Whatever)
-    }
-
-    #--------------------------------------------------------
     method remove(
             ML::TriesWithFrequencies::Trie $tr,
             --> ML::TriesWithFrequencies::Trie) {

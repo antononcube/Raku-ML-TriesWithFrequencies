@@ -10,12 +10,6 @@ class ML::TriesWithFrequencies::PathsGatherer {
     }
 
     #--------------------------------------------------------
-    method kvFunc(Str $k, ML::TriesWithFrequencies::Trie $tr --> Pair) {
-        note 'Not used, not implemented.';
-        Pair('Not', Whatever)
-    }
-
-    #--------------------------------------------------------
     method trace(
             ML::TriesWithFrequencies::Trie $tr,
             @path) {

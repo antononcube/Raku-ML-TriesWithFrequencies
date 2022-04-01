@@ -3,9 +3,6 @@ use ML::TriesWithFrequencies::Trie;
 role ML::TriesWithFrequencies::TrieTraverse {
 
     #--------------------------------------------------------
-    method kvFunc(Str $k, ML::TriesWithFrequencies::Trie $tr --> Pair) {!!!};
-
-    #--------------------------------------------------------
     #| Traverse trie with a key-value function.
     multi method trie-map(
     #| Trie to be traversed
