@@ -13,7 +13,7 @@ my @words = ["bark", "barkeeper", "barkeepers", "barkeep", "barks", "barking", "
 
 my @words2 = ["bar", "barring", "car", "care", "caress", "cold", "colder"];
 
-plan 20;
+plan 21;
 
 # 1
 my $jTr = trie-create-by-split(@words);
@@ -125,6 +125,12 @@ is-deeply
         'JavaTrieGetWords1';
 
 # 20
+is-deeply
+        trie-words($jTr, <b a r k>)>>.join.sort,
+        trie-words(trie-node-probabilities($jTr), <b a r k>)>>.join.sort,
+        'JavaTrieRootToLeafPaths1';
+
+# 21
 is-deeply
         trie-words(trie-shrink($jTr)).sort,
         trie-words(trie-shrink(trie-node-probabilities($jTr))).sort,
