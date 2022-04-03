@@ -134,7 +134,7 @@ representation with `ML::TriesWithFrequencies::Trie`:
 say $tr.JSON;
 ```
 ```
-# {"key":"TRIEROOT", "value":2, "children":[{"key":"cor", "value":2, "children":[{"key":"e", "value":1, "children":[]}, {"key":"t", "value":1, "children":[]}]}]}
+# {"key":"TRIEROOT", "value":2, "children":[{"key":"cor", "value":2, "children":[{"key":"t", "value":1, "children":[]}, {"key":"e", "value":1, "children":[]}]}]}
 ```
 
 ### XML
@@ -150,12 +150,12 @@ say $tr.XML;
 #  <TRIEVALUE>2</TRIEVALUE>
 #  <cor>
 #   <TRIEVALUE>2</TRIEVALUE>
-#   <e>
-#    <TRIEVALUE>1</TRIEVALUE>
-#   </e>
 #   <t>
 #    <TRIEVALUE>1</TRIEVALUE>
 #   </t>
+#   <e>
+#    <TRIEVALUE>1</TRIEVALUE>
+#   </e>
 #  </cor>
 # </TRIEROOT>
 ```
@@ -232,7 +232,7 @@ Hence, such WL format is provided by the Raku package:
 say $tr.WL;
 ```
 ```
-# <|$TrieRoot -> <|$TrieValue -> 2, "cor" -> <|$TrieValue -> 2, "e" -> <|$TrieValue -> 1|>, "t" -> <|$TrieValue -> 1|>|>|>|>
+# <|$TrieRoot -> <|$TrieValue -> 2, "cor" -> <|$TrieValue -> 2, "t" -> <|$TrieValue -> 1|>, "e" -> <|$TrieValue -> 1|>|>|>|>
 ```
 
 ------
@@ -304,17 +304,17 @@ In the following list the most important items are placed first.
 
 - [ ] Implement optional ULP spec argument for relevant functions:
      
-     - [ ] `trie-root-to-leaf-paths`
+     - [X] `trie-root-to-leaf-paths`
      
-     - [ ] `trie-words`
+     - [X] `trie-words`
      
      - [ ] Membership test functions?
      
-- [ ] Implement `trie-prune` function.
-     
 - [ ] Design and code refactoring so trie objects to have OOP interface.
 
-     - Instead of just having `trie-words($tr, <c>)` we should be also able to say `$tr.trie-words(<c>)`.
+    - Instead of just having `trie-words($tr, <c>)` we should be also able to say `$tr.trie-words(<c>)`.
+    
+- [ ] Implement `trie-prune` function.
 
 - [ ] Implement Trie-based classification.
 
