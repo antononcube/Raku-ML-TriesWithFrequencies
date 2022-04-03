@@ -6,9 +6,9 @@ use lib './lib';
 use ML::TriesWithFrequencies;
 use ML::TriesWithFrequencies::Trie;
 
-my ML::TriesWithFrequencies::Trie ($tr1, $tr2);
+say "Now running Raku compiler: {$*RAKU.compiler.version}!";
 
-my @words = slurp("resources/dictionaryWords.txt".IO).lines;
+my @words = slurp("/usr/share/dict/words".IO).lines;
 
 say '@words.elems :', @words.elems;
 say '@words.roll(12) :', @words.roll(12);
@@ -43,9 +43,10 @@ say "=" x 60;
 srand(12);
 for [1..5].map({ 10 ** $_ }) -> $n {
     say '$n = ', $n;
-    my @wordsLocal = $n > @words.elems ?? @words.roll(@words.elems) !! @words.roll($n) ;
+    my @wordsLocal = $n > @words.elems ?? @words !! @words.roll($n) ;
     my $start = now;
-    my $tr = trie-create-by-split( @wordsLocal );
+    my ML::TriesWithFrequencies::Trie $tr = trie-create-by-split( @wordsLocal );
     say 'number of words = ', @wordsLocal.elems, ', creation time:', now - $start;
+    say "Trie statistics: {trie-node-counts($tr).gist}";
     #say $tr.toWLFormat;
 }
