@@ -134,7 +134,7 @@ representation with `ML::TriesWithFrequencies::Trie`:
 say $tr.JSON;
 ```
 ```
-# {"key":"TRIEROOT", "value":2, "children":[{"key":"cor", "value":2, "children":[{"key":"t", "value":1, "children":[]}, {"key":"e", "value":1, "children":[]}]}]}
+# {"key":"TRIEROOT", "value":2, "children":[{"key":"cor", "value":2, "children":[{"key":"e", "value":1, "children":[]}, {"key":"t", "value":1, "children":[]}]}]}
 ```
 
 ### XML
@@ -150,12 +150,12 @@ say $tr.XML;
 #  <TRIEVALUE>2</TRIEVALUE>
 #  <cor>
 #   <TRIEVALUE>2</TRIEVALUE>
-#   <t>
-#    <TRIEVALUE>1</TRIEVALUE>
-#   </t>
 #   <e>
 #    <TRIEVALUE>1</TRIEVALUE>
 #   </e>
+#   <t>
+#    <TRIEVALUE>1</TRIEVALUE>
+#   </t>
 #  </cor>
 # </TRIEROOT>
 ```
@@ -232,8 +232,71 @@ Hence, such WL format is provided by the Raku package:
 say $tr.WL;
 ```
 ```
-# <|$TrieRoot -> <|$TrieValue -> 2, "cor" -> <|$TrieValue -> 2, "t" -> <|$TrieValue -> 1|>, "e" -> <|$TrieValue -> 1|>|>|>|>
+# <|$TrieRoot -> <|$TrieValue -> 2, "cor" -> <|$TrieValue -> 2, "e" -> <|$TrieValue -> 1|>, "t" -> <|$TrieValue -> 1|>|>|>|>
 ```
+
+------
+
+## Two stiles of pipelining
+
+As it was mentioned above the package was initially developed to have the functional programming design 
+of the Mathematica package [AAp2]. With that design and using the 
+[feed operator `==>`](https://docs.raku.org/language/operators#infix_==%3E)
+we can construct pipelines like this one:
+
+```perl6
+my @words2 = <bar barman bask bell belly>;
+my @words3 = <call car cast>;
+
+trie-create-by-split(@words2)==>
+trie-merge(trie-create-by-split(@words3))==>
+trie-node-probabilities==>
+trie-shrink==>
+trie-say
+```
+```
+# TRIEROOT => 1
+# ├─b => 0.625
+# │ ├─a => 0.6
+# │ │ ├─r => 0.6666666666666666
+# │ │ │ └─man => 0.5
+# │ │ └─sk => 0.3333333333333333
+# │ └─ell => 0.4
+# │   └─y => 0.5
+# └─ca => 0.375
+#   ├─ll => 0.3333333333333333
+#   ├─r => 0.3333333333333333
+#   └─st => 0.3333333333333333
+```
+
+The package also supports "dot pipelining" through chaining of methods:
+
+```perl6
+ML::TriesWithFrequencies::Trie.create-by-split(@words2)
+.merge(ML::TriesWithFrequencies::Trie.create-by-split(@words3))
+.node-probabilities        
+.shrink
+.say
+```
+```
+# TRIEROOT => 1
+# ├─b => 0.625
+# │ ├─a => 0.6
+# │ │ ├─r => 0.6666666666666666
+# │ │ │ └─man => 0.5
+# │ │ └─sk => 0.3333333333333333
+# │ └─ell => 0.4
+# │   └─y => 0.5
+# └─ca => 0.375
+#   ├─ll => 0.3333333333333333
+#   ├─r => 0.3333333333333333
+#   └─st => 0.3333333333333333
+```
+
+**Remark:** The `trie-*` functions are implemented through the methods of `ML::TriesWithFrequencies::Trie`.
+Given a method name of `ML::TriesWithFrequencies::Trie` the corresponding function name in
+`ML::TriesWithFrequencies` is derived by adding the prefix `trie-`. 
+(For example, `$tr.shrink` vs `trie-shrink($tr)`.) 
 
 ------
 
@@ -310,7 +373,7 @@ In the following list the most important items are placed first.
      
      - [ ] Membership test functions?
      
-- [ ] Design and code refactoring so trie objects to have OOP interface.
+- [X] Design and code refactoring so trie objects to have OOP interface.
 
     - Instead of just having `trie-words($tr, <c>)` we should be also able to say `$tr.trie-words(<c>)`.
     

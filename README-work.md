@@ -120,6 +120,40 @@ say $tr.WL;
 
 ------
 
+## Two stiles of pipelining
+
+As it was mentioned above the package was initially developed to have the functional programming design 
+of the Mathematica package [AAp2]. With that design and using the 
+[feed operator `==>`](https://docs.raku.org/language/operators#infix_==%3E)
+we can construct pipelines like this one:
+
+```perl6
+my @words2 = <bar barman bask bell belly>;
+my @words3 = <call car cast>;
+
+trie-create-by-split(@words2)==>
+trie-merge(trie-create-by-split(@words3))==>
+trie-node-probabilities==>
+trie-shrink==>
+trie-say
+```
+
+The package also supports "dot pipelining" through chaining of methods:
+
+```perl6
+ML::TriesWithFrequencies::Trie.create-by-split(@words2)
+.merge(ML::TriesWithFrequencies::Trie.create-by-split(@words3))
+.node-probabilities        
+.shrink
+.say
+```
+
+**Remark:** The `trie-*` functions are implemented through the methods of `ML::TriesWithFrequencies::Trie`.
+Given the method the corresponding function is derived by adding the prefix `trie-`. 
+(For example, `$tr.shrink` vs `trie-shrink($tr)`.) 
+
+------
+
 ## Implementation notes
 
 This package is a Raku re-implementation of the Java Trie package [AAp3].
@@ -193,7 +227,7 @@ In the following list the most important items are placed first.
      
      - [ ] Membership test functions?
      
-- [ ] Design and code refactoring so trie objects to have OOP interface.
+- [X] Design and code refactoring so trie objects to have OOP interface.
 
     - Instead of just having `trie-words($tr, <c>)` we should be also able to say `$tr.trie-words(<c>)`.
     
