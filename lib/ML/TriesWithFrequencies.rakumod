@@ -456,5 +456,5 @@ sub trie-say(
 
 #| Should key-value nodes be used not?
         Bool :$key-value-nodes = True) is export {
-    $tr.say-tree-form(:$lb, :$sep, :$rb, :$key-value-nodes);
+    $tr.tree-form(:$lb, :$sep, :$rb, :$key-value-nodes);
 }
