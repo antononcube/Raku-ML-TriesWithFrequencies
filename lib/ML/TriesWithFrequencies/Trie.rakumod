@@ -752,7 +752,7 @@ class ML::TriesWithFrequencies::Trie
 
     #--------------------------------------------------------
     #| Visualize
-    method tree-form(
+    method say(
     #| A string that is the left boundary marker of a node
             Str :$lb = '',
 
