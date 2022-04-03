@@ -1,4 +1,4 @@
-use ML::TriesWithFrequencies::Trie;
+use ML::TriesWithFrequencies::Trieish;
 use ML::TriesWithFrequencies::TrieTraverse;
 
 class ML::TriesWithFrequencies::ThresholdBasedRemover
@@ -15,15 +15,15 @@ class ML::TriesWithFrequencies::ThresholdBasedRemover
 
     #--------------------------------------------------------
     method remove(
-            ML::TriesWithFrequencies::Trie $tr,
-            --> ML::TriesWithFrequencies::Trie) {
+            ML::TriesWithFrequencies::Trieish $tr,
+            --> ML::TriesWithFrequencies::Trieish) {
         if not so $tr.children {
 
             return $tr.clone()
 
         } else {
 
-            my ML::TriesWithFrequencies::Trie %resChildren = %();
+            my ML::TriesWithFrequencies::Trieish %resChildren = %();
             my Num $removedSum = 0e0;
 
             # Pick children
@@ -44,21 +44,21 @@ class ML::TriesWithFrequencies::ThresholdBasedRemover
 
             # Make node for the removed (if postfix is a non-empty string)
             if $!postfix and $removedSum > 0 {
-                %resChildren.push: ($!postfix => ML::TriesWithFrequencies::Trie.new(key => $!postfix, value => $removedSum))
+                %resChildren.push: ($!postfix => $tr.new(key => $!postfix, value => $removedSum))
             }
 
 #            say 'in remove::', %resChildren;
 
             # Result
-            return ML::TriesWithFrequencies::Trie.new(key => $tr.key, value => $tr.value, children => %resChildren)
+            return $tr.new(key => $tr.key, value => $tr.value, children => %resChildren)
         }
     }
 
 
     #--------------------------------------------------------
-    method trie-threshold-remove(ML::TriesWithFrequencies::Trie $tr) {
-        my sub preFunc( ML::TriesWithFrequencies::Trie $tr) { self.remove($tr) }
-        my sub postFunc(ML::TriesWithFrequencies::Trie $tr) { $tr };
+    method trie-threshold-remove(ML::TriesWithFrequencies::Trieish $tr) {
+        my sub preFunc( ML::TriesWithFrequencies::Trieish $tr) { self.remove($tr) }
+        my sub postFunc(ML::TriesWithFrequencies::Trieish $tr) { $tr };
         self.trie-map($tr, &preFunc, WhateverCode, 1)
     }
 }

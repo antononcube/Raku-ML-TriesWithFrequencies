@@ -1,4 +1,4 @@
-use ML::TriesWithFrequencies::Trie;
+use ML::TriesWithFrequencies::Trieish;
 
 role ML::TriesWithFrequencies::TrieTraverse {
 
@@ -6,7 +6,7 @@ role ML::TriesWithFrequencies::TrieTraverse {
     #| Traverse trie with a key-value function.
     multi method trie-map(
     #| Trie to be traversed
-            ML::TriesWithFrequencies::Trie $tr,
+            ML::TriesWithFrequencies::Trieish $tr,
 
     #| Returns a Pair of Str to Num
             &kvFunc,
@@ -15,7 +15,7 @@ role ML::TriesWithFrequencies::TrieTraverse {
     #| Recursion level
             UInt $level
 
-            --> ML::TriesWithFrequencies::Trie) {
+            --> ML::TriesWithFrequencies::Trieish) {
         if not so $tr {
 
             return Nil;
@@ -28,22 +28,22 @@ role ML::TriesWithFrequencies::TrieTraverse {
 
             my Pair $pres = &kvFunc($tr.key, $tr.value);
 
-            return ML::TriesWithFrequencies::Trie.new(key => $pres.key, value => $pres.value)
+            return ML::TriesWithFrequencies::Trieish.new(key => $pres.key, value => $pres.value)
 
         } else {
 
-            my ML::TriesWithFrequencies::Trie %resChildren = %();
+            my ML::TriesWithFrequencies::Trieish %resChildren = %();
 
             for $tr.children.kv -> $k, $v {
 
-                my ML::TriesWithFrequencies::Trie $chNode = self.trie-map($v, &kvFunc, $level + 1);
+                my ML::TriesWithFrequencies::Trieish $chNode = self.trie-map($v, &kvFunc, $level + 1);
 
                 %resChildren.push: ($k, $chNode);
             }
 
             my Pair $pres = &kvFunc($tr.key, $tr.value);
 
-            return ML::TriesWithFrequencies::Trie.new(key => $pres.key, value => $pres.value, children => %resChildren);
+            return ML::TriesWithFrequencies::Trieish.new(key => $pres.key, value => $pres.value, children => %resChildren);
         }
     }
 
@@ -51,7 +51,7 @@ role ML::TriesWithFrequencies::TrieTraverse {
     #| Traverse trie with a pre- and post- node functions.
     multi method trie-map(
     #| Trie to be traversed
-            ML::TriesWithFrequencies::Trie $tr,
+            ML::TriesWithFrequencies::Trieish $tr,
 
     #| Takes and returns a Trie
             &preFunc,
@@ -62,7 +62,7 @@ role ML::TriesWithFrequencies::TrieTraverse {
     #| Recursion level
             UInt $level
 
-            --> ML::TriesWithFrequencies::Trie) {
+            --> ML::TriesWithFrequencies::Trieish) {
         if not so $tr {
 
             return Nil;
@@ -73,7 +73,7 @@ role ML::TriesWithFrequencies::TrieTraverse {
 
         } else {
 
-            my ML::TriesWithFrequencies::Trie $res;
+            my ML::TriesWithFrequencies::Trieish $res;
 
             if &preFunc.isa(WhateverCode) or not so &preFunc {
                 $res = $tr
@@ -81,13 +81,13 @@ role ML::TriesWithFrequencies::TrieTraverse {
                 $res = &preFunc($tr)
             }
 
-            my ML::TriesWithFrequencies::Trie %resChildren = %();
+            my ML::TriesWithFrequencies::Trieish %resChildren = %();
 
             if so $res.children {
 
                 for $res.children.kv -> $k, $v {
 
-                    my ML::TriesWithFrequencies::Trie $chNode = self.trie-map($v, &preFunc, &postFunc, $level + 1);
+                    my ML::TriesWithFrequencies::Trieish $chNode = self.trie-map($v, &preFunc, &postFunc, $level + 1);
 
                     %resChildren.push: ($k, $chNode);
                 }

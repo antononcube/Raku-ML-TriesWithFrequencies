@@ -1,4 +1,4 @@
-use ML::TriesWithFrequencies::Trie;
+use ML::TriesWithFrequencies::Trieish;
 
 class ML::TriesWithFrequencies::PathsGatherer {
 
@@ -12,7 +12,7 @@ class ML::TriesWithFrequencies::PathsGatherer {
 
     #--------------------------------------------------------
     method trace(
-            ML::TriesWithFrequencies::Trie $tr,
+            ML::TriesWithFrequencies::Trieish $tr,
             @path) {
 
         my @currentPath is List = @path;
@@ -42,7 +42,7 @@ class ML::TriesWithFrequencies::PathsGatherer {
 
 
     #--------------------------------------------------------
-    method trie-trace(ML::TriesWithFrequencies::Trie $tr) {
+    method trie-trace(ML::TriesWithFrequencies::Trieish $tr) {
         self.trace($tr, []);
         @!tracedPaths
     }

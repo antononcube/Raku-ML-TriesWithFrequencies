@@ -23,27 +23,7 @@ sub trie-make(@chars,
               Bool :$verify-input = True
         --> ML::TriesWithFrequencies::Trie) is export {
 
-    if $verify-input and not @chars.all ~~ Str {
-        die "The first argument is expected to be a positional of strings."
-    }
-
-    if not so @chars {
-        return Nil;
-    }
-
-    # First node
-    my ML::TriesWithFrequencies::Trie $res = ML::TriesWithFrequencies::Trie.new(key => @chars[*- 1], value => $bottomValue);
-
-    # Is this faster: @chars.head(@chars.elems-1).reverse;
-    for @chars[^(*- 1)].reverse -> $c {
-        my %children = $res.key => $res;
-        $res = ML::TriesWithFrequencies::Trie.new(key => $c, :$value, :%children);
-    }
-
-    my ML::TriesWithFrequencies::Trie $res2 = ML::TriesWithFrequencies::Trie.new(key => $TrieRoot, :$value);
-    $res2.children.push: ($res.key => $res);
-
-    return $res2;
+    return ML::TriesWithFrequencies::Trie.make(@chars, :$value, :$bottomValue, :$verify-input);
 }
 
 #--------------------------------------------------------
@@ -53,77 +33,7 @@ sub trie-merge(ML::TriesWithFrequencies::Trie $tr1,
                Bool :$merge-clones = True
         --> ML::TriesWithFrequencies::Trie) is export {
 
-    my ML::TriesWithFrequencies::Trie $res = ML::TriesWithFrequencies::Trie.new;
-
-    if not so $tr1 {
-
-        return $tr2;
-
-    } elsif not so $tr2 {
-
-        return $tr1;
-
-    } elsif $tr1.key ne $tr2.key {
-
-        return trie-merge(
-                ML::TriesWithFrequencies::Trie.new(
-                        key => $TrieRoot,
-                        value => $tr1.value,
-                        children => %($TrieRoot => $tr1.children)),
-                ML::TriesWithFrequencies::Trie.new(
-                        key => $TrieRoot,
-                        value => $tr2.value,
-                        children => %($TrieRoot => $tr2.children)),
-                :$merge-clones);
-
-    } elsif $tr1.key eq $tr2.key {
-
-        if not so $tr1.children {
-
-            return $merge-clones ?? $tr2.clone.setValue($tr1.value + $tr2.value) !! $tr2.setValue($tr1.value + $tr2.value);
-
-        } elsif not so $tr2.children {
-
-            return $merge-clones ?? $tr1.clone.setValue($tr1.value + $tr2.value) !! $tr1.setValue($tr1.value + $tr2.value);
-
-        }
-
-        $res.setKey($tr1.key);
-        $res.setValue($tr1.value + $tr2.value);
-
-        # Here we merge using the keys of the smaller hash of children.
-        # Hence the two almost identical codes.
-        if $tr1.children.elems < $tr2.children.elems {
-
-            $res.setChildren($tr2.children);
-
-            for $tr1.children.keys -> $key1 {
-
-                if $res.children{$key1}:!exists {
-                    $res.children.push: $tr1.children{$key1}:p;
-                } else {
-                    $res.children{$key1} = trie-merge($tr1.children{$key1}, $res.children{$key1}, :$merge-clones);
-                }
-            }
-
-        } else {
-
-            $res.setChildren($tr1.children);
-
-            for $tr2.children.keys -> $key2 {
-
-                if $res.children{$key2}:!exists {
-                    $res.children.push: $tr2.children{$key2}:p;
-                } else {
-                    $res.children{$key2} = trie-merge($tr2.children{$key2}, $res.children{$key2}, :$merge-clones);
-                }
-            }
-        }
-
-        return $res;
-    }
-
-    return Nil;
+    return ML::TriesWithFrequencies::Trie.merge($tr1, $tr2);
 }
 
 #--------------------------------------------------------
@@ -138,35 +48,7 @@ sub trie-insert(ML::TriesWithFrequencies::Trie $tr,
                 Bool :$merge-clones = True
         --> ML::TriesWithFrequencies::Trie) is export {
 
-    if $verify-input and not @word.all ~~ Str {
-        die "The second argument is expected to be a positional of strings."
-    }
-
-    trie-merge($tr, trie-make(@word, :$value, :$bottomValue, :!verify-input), :$merge-clones)
-}
-
-#--------------------------------------------------------
-
-#| Creates a trie from a given list of list of strings. (Non-recursively.)
-sub trie-create1(@words,
-                 Bool :$verify-input = True
-        --> ML::TriesWithFrequencies::Trie) {
-
-    if $verify-input and not @words.all ~~ Positional {
-        die "The first argument is expected to be a positional of positionals of strings."
-    }
-
-    if not so @words {
-        return Nil;
-    }
-
-    my ML::TriesWithFrequencies::Trie $res = trie-make(@words[0]);
-
-    for @words[1 .. (@words.elems - 1)] -> @w {
-        $res = trie-insert($res, @w, :$verify-input, :!merge-clones);
-    }
-
-    return $res;
+    return $tr.insert(@word, :$value, :$bottomValue, :$verify-input, :$merge-clones);
 }
 
 #--------------------------------------------------------
@@ -176,20 +58,7 @@ sub trie-create(@words,
                 Bool :$verify-input = True
         --> ML::TriesWithFrequencies::Trie) is export {
 
-    if not so @words { return Nil; }
-
-    if $verify-input and not @words.all ~~ Positional {
-        die "The first argument is expected to be a positional of positionals of strings."
-    }
-
-    if @words.elems <= $bisection-threshold {
-        return trie-create1(@words, :!verify-input);
-    }
-
-    return trie-merge(
-            trie-create(@words[^ceiling(@words.elems / 2)], :$bisection-threshold, :!verify-input),
-            trie-create(@words[ceiling(@words.elems / 2) .. (@words.elems - 1)], :$bisection-threshold,
-                    :!verify-input));
+  return ML::TriesWithFrequencies::Trie.create(@words, :$bisection-threshold, :$verify-input);
 }
 
 #--------------------------------------------------------
@@ -206,55 +75,15 @@ multi trie-create-by-split(@words,
                            :$v = False,
                            UInt :$bisection-threshold = 15
         --> ML::TriesWithFrequencies::Trie) {
-
-    if not so @words { return Nil }
-
-    if not @words.all ~~ Str {
-        die "The first argument is expected to be a positional of strings."
-    }
-
-    trie-create(@words.map({ [$_.split($splitter, :$skip-empty, :$v)] }), :$bisection-threshold);
+    return ML::TriesWithFrequencies::Trie.create-by-split(@words, :$splitter, :$skip-empty, :$v, :$bisection-threshold);
 }
 
 #--------------------------------------------------------
 #| Converts the counts (frequencies) at the nodes into node probabilities.
 #| @param tr a trie object
 sub trie-node-probabilities(ML::TriesWithFrequencies::Trie $tr) is export {
-    my ML::TriesWithFrequencies::Trie $res = nodeProbabilitiesRec($tr);
-    $res.setValue(1e0);
-    return $res;
+    return $tr.node-probabilities;
 }
-
-#| @description Recursive step function for converting node frequencies into node probabilities.
-#| @param tr a trie object
-sub nodeProbabilitiesRec(ML::TriesWithFrequencies::Trie $tr) {
-    my num $chSum = 0e0;
-
-    if !$tr.children {
-        return ML::TriesWithFrequencies::Trie.new(key => $tr.key, value => $tr.value);
-    }
-
-    if ($tr.value == 0) {
-        ## This is a strange case -- that generally should not happen.
-        $chSum = 0e0;
-        for $tr.children.values -> $ch {
-            $chSum += $ch.getValue();
-        }
-    } else {
-        $chSum = $tr.value;
-    }
-
-    my %resChildren = %();
-
-    for $tr.children.kv -> $k, $v {
-        my ML::TriesWithFrequencies::Trie $chNode = nodeProbabilitiesRec($v);
-        $chNode.setValue($chNode.value / $chSum);
-        %resChildren.push: ($v.key => $chNode);
-    }
-
-    return ML::TriesWithFrequencies::Trie.new(key => $tr.key, value => $tr.value, children => %resChildren);
-}
-
 
 ##=======================================================
 ## Retrieval functions
@@ -343,7 +172,7 @@ proto trie-has-complete-match(ML::TriesWithFrequencies::Trie $tr, | --> Bool) is
 #| @param tr a trie object
 #| @param word a list of strings
 multi trie-has-complete-match(ML::TriesWithFrequencies::Trie $tr, $word --> Bool) {
-    trie-has-complete-match($tr, [$word,])
+    return $tr.has-complete-match([$word,]);
 }
 
 #| @description For a given trie finds if the retrievable part of a word is complete match.
@@ -351,28 +180,7 @@ multi trie-has-complete-match(ML::TriesWithFrequencies::Trie $tr, $word --> Bool
 #| @param word a list of strings
 #| @details Despite the name this function works on the part of the word that can be found in the trie.
 multi trie-has-complete-match(ML::TriesWithFrequencies::Trie $tr, @word --> Bool) {
-
-    if not so $tr { return False }
-
-    if not so @word { return False }
-
-    if not @word.all ~~ Str {
-        die "The second argument is expected to be a positional of strings."
-    }
-
-    my ML::TriesWithFrequencies::Trie $subTr = trie-retrieve($tr, @word);
-
-    if not so $subTr.children {
-        return True;
-    } else {
-        my num $chValue = 0e0;
-
-        for $subTr.children.values -> $ch {
-            $chValue += $ch.value
-        }
-
-        return $chValue < $subTr.value
-    }
+    return $tr.has-complete-match(@word);
 }
 
 #--------------------------------------------------------
@@ -384,27 +192,14 @@ proto trie-contains(ML::TriesWithFrequencies::Trie $tr, | --> Bool) is export {*
 #| @param tr a trie object
 #| @param word a word to be checked
 multi trie-contains(ML::TriesWithFrequencies::Trie $tr, $word --> Bool) {
-    trie-contains($tr, [$word,])
+    return $tr.contains([$word,]);
 }
 
 #| @description Does the trie object tr contains a word.
 #| @param tr a trie object
 #| @param word a word to be checked
 multi trie-contains(ML::TriesWithFrequencies::Trie $tr, @word --> Bool) is export {
-
-    if not so @word { return Nil }
-
-    if not @word.all ~~ Str {
-        die "The second argument is expected to be a positional of strings."
-    }
-
-    my $pos = trie-position($tr, @word);
-
-    if not so $pos or $pos.elems < @word.elems {
-        return False;
-    } else {
-        return trie-has-complete-match($tr, $pos);
-    }
+    return $tr.contains(@word);
 }
 
 #--------------------------------------------------------
@@ -423,7 +218,7 @@ multi trie-is-key(
         $word
 
         --> Bool) {
-    trie-is-key($tr, [$word,])
+    return $tr.is-key([$word,]);
 }
 
 #| @description Does the trie object tr has a word as key.
@@ -437,20 +232,7 @@ multi trie-is-key(
         @word
 
         --> Bool) is export {
-
-    if not so @word { return Nil }
-
-    if not @word.all ~~ Str {
-        die "The second argument is expected to be a positional of strings."
-    }
-
-    my $pos = trie-position($tr, @word);
-
-    if not so $pos or $pos.elems < @word.elems {
-        return False;
-    } else {
-        return True;
-    }
+    return $tr.is-key(@word);
 }
 
 ##=======================================================
@@ -474,82 +256,9 @@ sub trie-shrink(
         Bool :$internal-only = False
 
         --> ML::TriesWithFrequencies::Trie) is export {
-    return shrinkRec($tr, $sep, $threshold, $internal-only, 0);
+    return $tr.shrink(:$sep, :$threshold, :$internal-only);
 }
 
-#| @description Shrinking recursive function.
-#| @param tr a trie object
-#| @param sep a sep for the concatenation of the node keys
-#| @param threshold if negative automatic shrinking test is applied
-#| @param n recursion level
-sub shrinkRec(ML::TriesWithFrequencies::Trie $tr,
-              str $sep,
-              num $threshold,
-              Bool $internalOnly,
-              Int $n
-        --> ML::TriesWithFrequencies::Trie) {
-
-    my ML::TriesWithFrequencies::Trie $trRes = ML::TriesWithFrequencies::Trie.new();
-    my Bool $rootQ = ($n == 0 and $tr.key eq $TrieRoot);
-
-    if !so $tr.children {
-
-        return $tr;
-
-    } elsif (not $rootQ and $tr.children.elems == 1) {
-
-        my @arr = $tr.children.values;
-        my Bool $shrinkQ = False;
-
-        if $threshold < 0 and $tr.value >= 1e0 and @arr[0].value >= 1e0 {
-            $shrinkQ = $tr.value eqv @arr[0].value;
-        } elsif $threshold < 0 {
-            $shrinkQ = @arr[0].value == 1e0;
-        } else {
-            $shrinkQ = @arr[0].value >= $threshold;
-        }
-
-        if $shrinkQ and (!$internalOnly or $internalOnly and not trie-leafQ(@arr[0])) {
-            ## Only one child and the current node does not make a complete match:
-            ## proceed with recursion and join with result.
-
-            my ML::TriesWithFrequencies::Trie $chTr = shrinkRec(@arr[0], $sep, $threshold, $internalOnly, $n + 1);
-
-            $trRes.setKey($tr.key ~ $sep ~ $chTr.key);
-            $trRes.setValue($tr.value);
-
-            with $chTr.children {
-                $trRes.setChildren($chTr.children);
-            }
-
-        } else {
-            ## Only one child but the current node makes a complete match.
-
-            my ML::TriesWithFrequencies::Trie $chTr = shrinkRec(@arr[0], $sep, $threshold, $internalOnly, $n + 1);
-
-            $trRes.setKey($tr.key);
-            $trRes.setValue($tr.value);
-            $trRes.children().push: ($chTr.key => $chTr);
-        }
-
-        return $trRes;
-
-    } else {
-        ## No shrinking at this node. Proceed with recursion.
-        my %recChildren;
-
-        for $tr.children.values -> $chTr {
-            my ML::TriesWithFrequencies::Trie $nTr = shrinkRec($chTr, $sep, $threshold, $internalOnly, $n + 1);
-            %recChildren.push: ($nTr.key => $nTr);
-        }
-
-        $trRes.setKey($tr.key);
-        $trRes.setValue($tr.value);
-        $trRes.setChildren(%recChildren);
-
-        return $trRes;
-    }
-}
 
 ##=======================================================
 ## Statistics functions
@@ -563,30 +272,7 @@ sub trie-node-counts(
         ML::TriesWithFrequencies::Trie $tr
 
         --> Hash) is export {
-    ## The result would like { "total"->23, "internal"->12, "leaves"->11 }.
-
-    my $res = nodeCountsRec($tr, 0, 0);
-
-    return { Total => $res.key + $res.value, Internal => $res.key, Leaves => $res.value }
-}
-
-#| @description Finding the counts of internal nodes and leaf nodes in a trie.
-#| @param tr trie object
-#| @param nInternal number of internal nodes
-#| @param nLeaves number of leaf nodes
-#| @return A pair object with the new values of nInternal and nLeaves.
-sub nodeCountsRec(ML::TriesWithFrequencies::Trie $tr, UInt $nInternal, UInt $nLeaves) {
-    if not so $tr.children {
-        return ($nInternal => $nLeaves + 1);
-    } else {
-        my $res = $nInternal => $nLeaves;
-
-        for $tr.children.values -> $chTr {
-            $res = nodeCountsRec($chTr, $res.key, $res.value);
-        }
-
-        return ($res.key + 1) => $res.value;
-    }
+    return $tr.node-counts;
 }
 
 ##=======================================================
@@ -610,10 +296,7 @@ sub trie-remove-by-threshold (
 
         --> ML::TriesWithFrequencies::Trie) is export {
 
-    my $robj = ML::TriesWithFrequencies::ThresholdBasedRemover.new(threshold => $threshold.Num, :$below-threshold,
-            :$postfix);
-
-    $robj.trie-threshold-remove($tr)
+    return $tr.remove-by-threshold($threshold, :$below-threshold, :$postfix);
 }
 
 #--------------------------------------------------------
@@ -633,10 +316,7 @@ sub trie-remove-by-pareto-fraction (
 
         --> ML::TriesWithFrequencies::Trie) is export {
 
-    my $robj = ML::TriesWithFrequencies::ParetoBasedRemover.new(pareto-fraction => $fraction.Num,
-            remove-bottom => $bottom, :$postfix);
-
-    $robj.trie-pareto-remove($tr)
+   return $tr.remove-by-pareto-fraction($fraction, :$bottom, :$postfix);
 }
 
 #--------------------------------------------------------
@@ -655,10 +335,7 @@ sub trie-remove-by-regex (
         Str :$postfix = ''
 
         --> ML::TriesWithFrequencies::Trie) is export {
-
-    my $robj = ML::TriesWithFrequencies::RegexBasedRemover.new(:$key-pattern, :$invert, :$postfix);
-
-    $robj.trie-regex-remove($tr)
+    return $tr.remove-by-regex($key-pattern, :$invert, :$postfix);
 }
 
 
@@ -682,7 +359,7 @@ sub trie-select-by-threshold (
         Str :$postfix = ''
 
         --> ML::TriesWithFrequencies::Trie) is export {
-    trie-remove-by-threshold($tr, $threshold, below-threshold => $above-threshold, :$postfix)
+    return $tr.remove-by-threshold($threshold, below-threshold => $above-threshold, :$postfix);
 }
 
 #--------------------------------------------------------
@@ -701,7 +378,7 @@ sub trie-select-by-pareto-fraction (
         Str :$postfix = ''
 
         --> ML::TriesWithFrequencies::Trie) is export {
-    trie-remove-by-pareto-fraction($tr, $fraction, bottom => $$top, :$postfix)
+    return $tr.remove-by-pareto-fraction($fraction, bottom => $$top, :$postfix);
 }
 
 #--------------------------------------------------------
@@ -720,7 +397,7 @@ sub trie-select-by-regex (
         Str :$postfix = ''
 
         --> ML::TriesWithFrequencies::Trie) is export {
-    trie-remove-by-regex($tr, $key-pattern, invert => !$invert, :$postfix)
+    return $tr.remove-by-regex($key-pattern, invert => !$invert, :$postfix);
 }
 
 ##=======================================================
@@ -729,15 +406,7 @@ sub trie-select-by-regex (
 #| @description Finds the paths from the root of a trie to the leaves.
 #| @param tr a trie object
 sub trie-root-to-leaf-paths( ML::TriesWithFrequencies::Trie $tr, :$ulp = Whatever --> Positional) is export {
-
-    my $pobj;
-    if ($ulp ~~ Numeric) {
-        $pobj = ML::TriesWithFrequencies::PathsGatherer.new(:$ulp);
-    } else {
-        $pobj = ML::TriesWithFrequencies::PathsGatherer.new();
-    }
-
-    $pobj.trie-trace($tr)
+    return $tr.root-to-leaf-paths(:$ulp);
 }
 
 ##-------------------------------------------------------
@@ -748,18 +417,14 @@ proto trie-words(ML::TriesWithFrequencies::Trie $tr, | --> Positional) is export
 #| @param sw a list of strings
 #| @param sep is a separator
 multi trie-words(ML::TriesWithFrequencies::Trie $tr, $sw, :$sep = Whatever --> Positional) {
-    return trie-words(trie-retrieve($tr, $sw), :$sep);
+    return $tr.words($sw, :$sep);
 }
 
 #| @description Finds all words in the trie tr that start with the word searchWord.
 #| @param tr a trie object
 #| @param sep is a separator
 multi trie-words(ML::TriesWithFrequencies::Trie $tr, :$sep = Whatever --> Positional) {
-
-    my $res = trie-root-to-leaf-paths($tr).map({ $_».key.grep({ $_ ne $TrieRoot }) });
-
-    if $sep.isa(Str) { $res».join($sep).List }
-    else { $res.List>>.List }
+    return $tr.words(:$sep);
 }
 
 ##-------------------------------------------------------
@@ -767,13 +432,7 @@ multi trie-words(ML::TriesWithFrequencies::Trie $tr, :$sep = Whatever --> Positi
 #| @param tr a trie object
 #| @param sep is a separator
 sub trie-words-with-probabilities(ML::TriesWithFrequencies::Trie $tr, :$sep = Whatever) is export {
-
-    my @res = trie-root-to-leaf-paths($tr);
-    my @words = @res.map({ $_».key.grep({ $_ ne $TrieRoot }) });
-    my @probs = @res.map({ [*] $_».value });
-
-    if $sep.isa(Str) { @words».join($sep) Z=> @probs }
-    else { @words Z=> @probs }
+    return $tr.words-with-probabilities(:$sep);
 }
 
 ##=======================================================
@@ -797,41 +456,5 @@ sub trie-say(
 
 #| Should key-value nodes be used not?
         Bool :$key-value-nodes = True) is export {
-    .say for visualize-tree($tr.toMapFormat.first, *.key, *.value.List, :$lb, :$sep, :$rb, :$key-value-nodes);
-}
-
-## Adapted from here:
-##   https://titanwolf.org/Network/Articles/Article?AID=34018e5b-c0d5-4351-85b6-d72bd049c8c0
-sub visualize-tree($tree, &label, &children,
-                   :$indent = '',
-                   :@mid = ('├─', '│ '),
-                   :@end = ('└─', '  '),
-                   Str :$lb = '',
-                   Str :$sep = ' => ',
-                   Str :$rb = '',
-                   Bool :$key-value-nodes = True
-                   ) {
-    sub visit($node, *@pre) {
-        my $suffix = '';
-        if $key-value-nodes and $node.value.isa(Hash) and $node.value{$TrieValue}:exists {
-            $suffix = $sep ~ $node.value{$TrieValue}
-        }
-        gather {
-            if $node.&label ~~ $TrieValue {
-                if not $key-value-nodes {
-                    take @pre[0] ~ $node.value
-                }
-            } else {
-                take @pre[0] ~ $lb ~ $node.&label ~ $suffix ~ $rb;
-                my @children = sort $node.&children.grep({ $_.key ne $TrieValue });
-                my $end = @children.end;
-                for @children.kv -> $_, $child {
-                    when $end { take visit($child, (@pre[1] X~ @end)) }
-                    default { take visit($child, (@pre[1] X~ @mid)) }
-                }
-            }
-        }
-    }
-
-    flat visit($tree, $indent xx 2);
+    $tr.say-tree-form(:$lb, :$sep, :$rb, :$key-value-nodes);
 }
