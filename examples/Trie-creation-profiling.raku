@@ -1,8 +1,5 @@
 #!/usr/bin/env perl6
 
-use lib '.';
-use lib './lib';
-
 use ML::TriesWithFrequencies;
 use ML::TriesWithFrequencies::Trie;
 
@@ -13,31 +10,9 @@ my @words = slurp("/usr/share/dict/words".IO).lines;
 say '@words.elems :', @words.elems;
 say '@words.roll(12) :', @words.roll(12);
 
-#`(
-# Across a word bisection thresholds.
-say "=" x 60;
-say "Across a word bisection thresholds";
-say "=" x 60;
-
-srand(3232);
-my @wordsLocal = @words.roll(10000);
-my %thresholdTimings =
-        do for [5, 10 ... 50] -> $th {
-            say 'threshold = ', $th;
-            my $start = now;
-            my $tr = trie-create-by-split(@wordsLocal, bisection-threshold => $th);
-            my $timing = now - $start;
-            say 'creation time:', $timing;
-            $th => $timing
-        };
-
-#put %thresholdTimings.pairs.sort({ $_.value });
-put %thresholdTimings;
-)
-
 # Across a word collections sizes.
 say "=" x 60;
-say "Across a word collections sizes";
+say "Across word collections sizes";
 say "=" x 60;
 
 srand(12);
