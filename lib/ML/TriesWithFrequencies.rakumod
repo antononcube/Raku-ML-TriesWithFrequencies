@@ -320,12 +320,12 @@ sub trie-remove-by-pareto-fraction (
 }
 
 #--------------------------------------------------------
-#| Remove nodes by Pareto fraction.
+#| Remove nodes by regex.
 sub trie-remove-by-regex (
 #| Trie
         ML::TriesWithFrequencies::Trie $tr,
 
-#| Pareto fraction
+#| Regex
         $key-pattern,
 
 #| Should the regex be inverted or not?
@@ -387,7 +387,7 @@ sub trie-select-by-regex (
 #| Trie
         ML::TriesWithFrequencies::Trie $tr,
 
-#| Pareto fraction
+#| Regex
         $key-pattern,
 
 #| Should the regex be inverted or not?

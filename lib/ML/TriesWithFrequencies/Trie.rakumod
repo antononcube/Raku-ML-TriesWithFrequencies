@@ -146,7 +146,7 @@ class ML::TriesWithFrequencies::Trie
         return Nil;
     }
 
-    #|Inserts a "word" (a list of strings) into a trie with a given associated value.
+    #| Inserts a "word" (a list of strings) into a trie with a given associated value.
     method insert(@word,
                   Num :$value = 1e0,
                   Num :$bottomValue = 1e0,
@@ -155,7 +155,7 @@ class ML::TriesWithFrequencies::Trie
             --> ML::TriesWithFrequencies::Trie) is export {
 
         if $verify-input and not @word.all ~~ Str {
-            die "The second argument is expected to be a positional of strings."
+            die "The first argument is expected to be a positional of strings."
         }
 
         return self.merge(self, self.make(@word, :$value, :$bottomValue, :!verify-input), :$merge-clones);
@@ -625,9 +625,9 @@ class ML::TriesWithFrequencies::Trie
     }
 
     #--------------------------------------------------------
-    #| Remove nodes by Pareto fraction.
+    #| Remove nodes by regex.
     method remove-by-regex (
-    #| Pareto fraction
+    #| Regex
             $key-pattern,
 
     #| Should the regex be inverted or not?
