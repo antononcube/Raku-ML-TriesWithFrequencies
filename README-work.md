@@ -187,17 +187,17 @@ In the following list the most important items are placed first.
 
 - [ ] Implement optional ULP spec argument for relevant functions:
      
-     - [ ] `trie-root-to-leaf-paths`
+     - [X] `trie-root-to-leaf-paths`
      
-     - [ ] `trie-words`
+     - [X] `trie-words`
      
      - [ ] Membership test functions?
      
-- [ ] Implement `trie-prune` function.
-     
 - [ ] Design and code refactoring so trie objects to have OOP interface.
 
-     - Instead of just having `trie-words($tr, <c>)` we should be also able to say `$tr.trie-words(<c>)`.
+    - Instead of just having `trie-words($tr, <c>)` we should be also able to say `$tr.trie-words(<c>)`.
+    
+- [ ] Implement `trie-prune` function.
 
 - [ ] Implement Trie-based classification.
 
