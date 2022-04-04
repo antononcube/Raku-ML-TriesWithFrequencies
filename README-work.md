@@ -120,6 +120,15 @@ say $tr.WL;
 
 ------
 
+## Cloning 
+
+All `trie-*` functions and `ML::TriesWithFrequencies::Trie` methods that manipulate tries produce trie clones.
+
+For performance reasons I considered having in-place trie manipulations, but that, of course, confuses reasoning
+in development, testing, and usage. Hence, ubiquitous cloning.
+
+------
+
 ## Two stiles of pipelining
 
 As it was mentioned above the package was initially developed to have the functional programming design 
@@ -156,6 +165,8 @@ Given the method the corresponding function is derived by adding the prefix `tri
 
 ## Implementation notes
 
+### Performance
+
 This package is a Raku re-implementation of the Java Trie package [AAp3].
 
 The initial implementation was:
@@ -191,6 +202,32 @@ These speed improvements are definitely not satisfactory. I strongly consider:
   
 2. Re-implementing in C or C++ the Java package [AAp3] and hooking it up to Raku.
 
+### Moving from FP design and OOP design
+
+The initial versions of the package -- up to version 0.5.0 -- had exported functions only 
+in the namespace `ML::TriesWithFrequencies` with the prefix `trie-`. 
+Those functions came from a purely Functional Programming (FP) design.
+
+In order to get chains of Object Oriented Programming (OOP) methods application that 
+are typical in Raku programming the package versions after version 0.6.0 have trie 
+manipulation transformation methods in the class `ML::TriesWithFrequencies::Trie`. 
+
+In order to get trie-class methods a fairly fundamental code refactoring was required. 
+Here are the steps:
+
+1. The old class `ML::TriesWithFrequencies::Trie` was made into the role
+   `ML::TriesWithFrequencies::Trieish`.
+
+2. The traversal and remover classes were made to use `ML::TriesWithFrequencies::Trieish` type
+instead of `ML::TriesWithFrequencies::Trie`.
+
+3. The trie functions implementations -- with the prefix "trie-" -- 
+of `ML::TriesWithFrequencies` were moved as methods implementations in `ML::TriesWithFrequencies::Trie`.
+
+4. The trie functions in `ML::TriesWithFrequencies` were reimplemented using the methods
+of `ML::TriesWithFrequencies::Trie`.
+
+**Remark:** See the section "Two stiles of pipelining" above for illustrations of the two approaches.
 
 ------
 
@@ -198,54 +235,54 @@ These speed improvements are definitely not satisfactory. I strongly consider:
 
 In the following list the most important items are placed first.
 
-- [X] Implement "get words" and "get root-to-leaf paths" functions.
+- [X] DONE Implement "get words" and "get root-to-leaf paths" functions.
      
      - See `trie-words` and `trie-root-to-leaf-paths`.
      
-- [X] Convert most of the WL unit tests in [AAp5] into Raku tests.
+- [X] DONE Convert most of the WL unit tests in [AAp5] into Raku tests.
 
-- [X] Implement Trie traversal functions.
+- [X] DONE Implement Trie traversal functions.
 
      - The general `trie-map` function is in a separate role.
         
-         - A concrete traversal functionality is a class that does the role 
-           and provides additional context.
+     - A concrete traversal functionality is a class that does the role 
+       and provides additional context.
        
-- [X] Implement (sub-)trie removal functions.
+- [X] DONE Implement (sub-)trie removal functions.
 
-     - [X] By threshold (below and above)
+     - [X] DONE By threshold (below and above)
     
-     - [X] By Pareto principle adherence (top and bottom)
+     - [X] DONE By Pareto principle adherence (top and bottom)
     
-     - [X] By regex over the keys
+     - [X] DONE By regex over the keys
 
-- [ ] Implement optional ULP spec argument for relevant functions:
+- [ ] TODD Implement optional ULP spec argument for relevant functions:
      
-     - [X] `trie-root-to-leaf-paths`
+     - [X] DONE `trie-root-to-leaf-paths`
      
-     - [X] `trie-words`
+     - [X] DONE `trie-words`
      
-     - [ ] Membership test functions?
+     - [ ] TODO Membership test functions?
      
-- [X] Design and code refactoring so trie objects to have OOP interface.
+- [X] DONE Design and code refactoring so trie objects to have OOP interface.
 
     - Instead of just having `trie-words($tr, <c>)` we should be also able to say `$tr.trie-words(<c>)`.
     
-- [ ] Implement `trie-prune` function.
+- [ ] TODO Implement `trie-prune` function.
 
-- [ ] Implement Trie-based classification.
+- [ ] TODO Implement Trie-based classification.
 
-- [ ] Investigate faster implementations.
+- [ ] TODO Investigate faster implementations.
  
-  - [X] Re-implement the Trie functionalities using hash representation (instead of a tree of Trie-node objects.)
+  - [X] DONE Re-implement the Trie functionalities using hash representation (instead of a tree of Trie-node objects.)
     
      - See [AAp6].
   
-  - [ ] Make a C or C++ implementation and hook it up to Raku.  
+  - [ ] TODO Make a C or C++ implementation and hook it up to Raku.  
     
-- [ ] Document examples of doing Trie-based text mining or data-mining.
+- [ ] TODO Document examples of doing Trie-based text mining or data-mining.
 
-- [ ] Program a trie-form visualization that is "wide", i.e. places the children nodes horizontally.
+- [ ] TODO Program a trie-form visualization that is "wide", i.e. places the children nodes horizontally.
 
 ------
 
