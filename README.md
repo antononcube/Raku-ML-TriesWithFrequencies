@@ -401,7 +401,7 @@ In the following list the most important items are placed first.
     
      - [X] DONE By regex over the keys
 
-- [ ] TODD Implement optional ULP spec argument for relevant functions:
+- [ ] TODO Implement optional ULP spec argument for relevant functions:
      
      - [X] DONE `trie-root-to-leaf-paths`
      
