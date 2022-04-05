@@ -31,6 +31,6 @@
     "tries",
     "tries with frequencies"
   ],
-  "api": "1",
+  "api": "2",
   "source-url": "https://github.com/antononcube/Raku-ML-TriesWithFrequencies.git"
 }
