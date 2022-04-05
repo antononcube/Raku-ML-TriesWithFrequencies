@@ -752,7 +752,7 @@ class ML::TriesWithFrequencies::Trie
 
     #--------------------------------------------------------
     #| Visualize
-    method say(
+    method form(
     #| A string that is the left boundary marker of a node
             Str :$lb = '',
 
@@ -764,7 +764,8 @@ class ML::TriesWithFrequencies::Trie
 
     #| Should key-value nodes be used not?
             Bool :$key-value-nodes = True) is export {
-        .say for visualize-tree(self.toMapFormat.first, *.key, *.value.List, :$lb, :$sep, :$rb, :$key-value-nodes, trieValueLabel => self.trieValueLabel);
+        my $res = visualize-tree(self.toMapFormat.first, *.key, *.value.List, :$lb, :$sep, :$rb, :$key-value-nodes, trieValueLabel => self.trieValueLabel);
+        return $res.join("\n");
     }
 
     ## Adapted from here:

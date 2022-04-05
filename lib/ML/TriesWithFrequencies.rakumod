@@ -440,7 +440,27 @@ sub trie-words-with-probabilities(ML::TriesWithFrequencies::Trie $tr, :$sep = Wh
 ##=======================================================
 
 #--------------------------------------------------------
-#| Visualize
+#| Make the visualization trie form
+sub trie-form(
+#| Trie object
+        ML::TriesWithFrequencies::Trie $tr,
+
+#| A string that is the left boundary marker of a node
+        Str :$lb = '',
+
+#| A string that separates the key and value of a node
+        Str :$sep = ' => ',
+
+#| A string that is the right boundary marker of a node
+        Str :$rb = '',
+
+#| Should key-value nodes be used not?
+        Bool :$key-value-nodes = True) is export {
+    return $tr.form(:$lb, :$sep, :$rb, :$key-value-nodes);
+}
+
+#--------------------------------------------------------
+#| Visualize trie form
 sub trie-say(
 #| Trie object
         ML::TriesWithFrequencies::Trie $tr,
@@ -456,5 +476,5 @@ sub trie-say(
 
 #| Should key-value nodes be used not?
         Bool :$key-value-nodes = True) is export {
-    $tr.say(:$lb, :$sep, :$rb, :$key-value-nodes);
+    say trie-form($tr, :$lb, :$sep, :$rb, :$key-value-nodes);
 }
