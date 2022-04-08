@@ -352,7 +352,7 @@ class ML::TriesWithFrequencies::Trie
 
     #| @description For a given trie finds if the retrievable part of a word is complete match.
     #| @param word a list of strings
-    multi method trie-has-complete-match($word --> Bool) {
+    multi method has-complete-match($word --> Bool) {
         return self.has-complete-match([$word,]);
     }
 
