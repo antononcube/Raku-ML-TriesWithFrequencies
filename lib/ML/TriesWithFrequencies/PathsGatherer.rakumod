@@ -25,12 +25,14 @@ class ML::TriesWithFrequencies::PathsGatherer {
 
             my Num $sum = 0e0;
 
+            # This should be simpler: [+] $tr.children.values>>.value
             for $tr.children.values -> $ch {
                 $sum += $ch.value;
             }
 
             # System.out.println( sum + " " + tr.getValue() );
-            if $sum < ( 1e0 - $!ulp ) || $sum < ($tr.value - $!ulp) {
+            if $tr.value < 1.0 && $sum + 2.0 * $!ulp < 1.0 ||
+                    $tr.value >= 1.0 && $sum + $!ulp < $tr.value {
                 @!tracedPaths.append($[|@currentPath, $tr.key => $tr.value]);
             }
 
