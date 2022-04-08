@@ -791,7 +791,7 @@ class ML::TriesWithFrequencies::Trie
         my ML::TriesWithFrequencies::Trie $trRes= self.retrieve(@record);
         my %res = $trRes.leaf-probabilities.deepmap(* / $trRes.value);
 
-        given $prop.lc {
+        given $prop {
             when $_ ~~ Str && $_.lc eq 'decision' { return %res.pairs.sort(-*.value).sort(-*.value).head.key; }
             when $_ ~~ Str && $_.lc (elem) <probabilities probs> { return %res; }
             when $_ ~~ Pair && $_.key.lc (elem) <probability prob> { return %res{$_.value}:exists ?? %res{$_.value} !! 0; }
