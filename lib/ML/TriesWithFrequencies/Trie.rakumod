@@ -1,10 +1,11 @@
 use v6.d;
 
-use ML::TriesWithFrequencies::Trieish;
+use ML::TriesWithFrequencies::LeafProbabilitiesGatherer;
 use ML::TriesWithFrequencies::ParetoBasedRemover;
 use ML::TriesWithFrequencies::PathsGatherer;
 use ML::TriesWithFrequencies::RegexBasedRemover;
 use ML::TriesWithFrequencies::ThresholdBasedRemover;
+use ML::TriesWithFrequencies::Trieish;
 
 class ML::TriesWithFrequencies::Trie
         does ML::TriesWithFrequencies::Trieish {
@@ -231,7 +232,9 @@ class ML::TriesWithFrequencies::Trie
         return self.create(@words.map({ [$_.split($splitter, :$skip-empty, :$v)] }), :$bisection-threshold);
     }
 
-    #--------------------------------------------------------
+    ##========================================================
+    ## Trie node-probabilities and related functions
+    ##========================================================
     #| Converts the counts (frequencies) at the nodes into node probabilities.
     #| @param tr a trie object
     method node-probabilities() is export {
@@ -268,6 +271,24 @@ class ML::TriesWithFrequencies::Trie
         }
 
         return ML::TriesWithFrequencies::Trie.new(key => $tr.key, value => $tr.value, children => %resChildren);
+    }
+
+    #--------------------------------------------------------
+    sub value-total(ML::TriesWithFrequencies::Trie $tr) {
+        return [+] $tr.children>>.value;
+    }
+
+    #--------------------------------------------------------
+    method leaf-probabilities(:$ulp = Whatever --> Hash) is export {
+
+        my $pobj;
+        if ($ulp ~~ Numeric) {
+            $pobj = ML::TriesWithFrequencies::LeafProbabilitiesGatherer.new(:$ulp);
+        } else {
+            $pobj = ML::TriesWithFrequencies::LeafProbabilitiesGatherer.new();
+        }
+
+        $pobj.trie-trace(self)
     }
 
     ##=======================================================

@@ -12,6 +12,7 @@
   "test-depends": [],
   "provides": {
     "ML::TriesWithFrequencies": "lib/ML/TriesWithFrequencies.rakumod",
+    "ML::TriesWithFrequencies::LeafProbabilitiesGatherer": "lib/ML/TriesWithFrequencies/LeafProbabilitiesGatherer.rakumod",
     "ML::TriesWithFrequencies::ParetoBasedRemover": "lib/ML/TriesWithFrequencies/ParetoBasedRemover.rakumod",
     "ML::TriesWithFrequencies::PathsGatherer": "lib/ML/TriesWithFrequencies/PathsGatherer.rakumod",
     "ML::TriesWithFrequencies::RegexBasedRemover": "lib/ML/TriesWithFrequencies/RegexBasedRemover.rakumod",
