@@ -316,7 +316,7 @@ class ML::TriesWithFrequencies::Trie
         if not so self.children { return Nil; }
 
         if not @word.all ~~ Str {
-            die "The second argument is expected to be a positional of strings."
+            die "The first argument is expected to be a positional of strings."
         }
 
         if not self.children{@word[0]}:exists {
@@ -387,7 +387,7 @@ class ML::TriesWithFrequencies::Trie
         if not so @word { return False }
 
         if not @word.all ~~ Str {
-            die "The second argument is expected to be a positional of strings."
+            die "The first argument is expected to be a positional of strings."
         }
 
         my ML::TriesWithFrequencies::Trie $subTr = self.retrieve(@word);
@@ -423,7 +423,7 @@ class ML::TriesWithFrequencies::Trie
         if not so @word { return Nil }
 
         if not @word.all ~~ Str {
-            die "The second argument is expected to be a positional of strings."
+            die "The first argument is expected to be a positional of strings."
         }
 
         my $pos = self.position(@word);
@@ -462,7 +462,7 @@ class ML::TriesWithFrequencies::Trie
         if not so @word { return Nil }
 
         if not @word.all ~~ Str {
-            die "The second argument is expected to be a positional of strings."
+            die "The first argument is expected to be a positional of strings."
         }
 
         my $pos = self.position(@word);
@@ -765,6 +765,38 @@ class ML::TriesWithFrequencies::Trie
 
         if $sep.isa(Str) { @words».join($sep) Z=> @probs }
         else { @words Z=> @probs }
+    }
+
+    ##=======================================================
+    ## Classification
+    ##=======================================================
+    sub is-array-of-arrays($obj) is export {
+        $obj ~~ Positional and ( [and] $obj.map({ $_ ~~ Positional }) )
+    }
+
+    #------------------------------------------------------------
+    proto method classify(@record, :$prop = 'Decision') is export {*}
+
+    multi method classify(@record, :$prop = 'Decision') {
+
+        if is-array-of-arrays(@record) {
+            return @record.map({ self.classify($_, :$prop) });
+        }
+
+        if !self.is-key(@record) {
+            warn "The first argument {@record} is not key in the trie.";
+            return Nil;
+        }
+
+        my ML::TriesWithFrequencies::Trie $trRes= self.retrieve(@record);
+        my %res = $trRes.leaf-probabilities.deepmap(* / $trRes.value);
+
+        given $prop.lc {
+            when $_ ~~ Str && $_.lc eq 'decision' { return %res.pairs.sort(-*.value).sort(-*.value).head.key; }
+            when $_ ~~ Str && $_.lc (elem) <probabilities probs> { return %res; }
+            when $_ ~~ Pair && $_.key.lc (elem) <probability prob> { return %res{$_.value}:exists ?? %res{$_.value} !! 0; }
+            default { return %res; }
+        }
     }
 
     ##=======================================================
