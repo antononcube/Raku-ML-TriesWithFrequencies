@@ -400,6 +400,28 @@ sub trie-select-by-regex (
     return $tr.remove-by-regex($key-pattern, invert => !$invert, :$postfix);
 }
 
+
+##=======================================================
+## Classify functions
+##=======================================================
+
+#--------------------------------------------------------
+#| Classify record(s).
+#| C<prop> takes the values C<<Decision Probabilities Probs Probability Prob>>.
+sub trie-classify (
+#| Trie
+        ML::TriesWithFrequencies::Trie $tr,
+
+#| Record(s)
+        $records,
+
+#| Property
+        Str :$prop
+                   ) is export {
+    return $tr.classify($records, :$prop);
+}
+
+
 ##=======================================================
 ## Path functions
 ##=======================================================
