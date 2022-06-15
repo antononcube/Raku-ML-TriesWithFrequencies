@@ -796,7 +796,7 @@ class ML::TriesWithFrequencies::Trie
 
         given $prop {
             when $_ ~~ Str && $_.lc eq 'decision' { return %res.pairs.sort(-*.value).sort(-*.value).head.key; }
-            when $_.isa(Whatever) || $_ ~~ Str && $_.lc eq 'identity' { return %res; }
+            when $_.isa(Whatever) || $_ ~~ Str && $_.lc (elem) <value values> { return %res; }
             when $_ ~~ Str && $_.lc (elem) <probabilities probs> { return %res.deepmap({ $_ / $sum }); }
             when $_ ~~ Pair && $_.key.lc (elem) <probability prob> { return %res{$_.value}:exists ?? %res{$_.value} / $sum !! 0; }
             default {

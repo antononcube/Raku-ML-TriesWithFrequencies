@@ -407,7 +407,9 @@ sub trie-select-by-regex (
 
 #--------------------------------------------------------
 #| Classify record(s).
-#| C<prop> takes the values C<Whatever>, C<<Decision Identity Probabilities Probs>>, or C<Probability => <some-label>>.
+#| C<prop> takes the values C<Whatever>, C<<Decision Values Probabilities>>, or C<Probability => <some-label>>.
+#| "Value" can be used instead of "Values";
+#| "Probs" and "Prob" can be used instead of "Probabilities" and "Probability" respectively.
 sub trie-classify (
 #| Trie
         ML::TriesWithFrequencies::Trie $tr,
