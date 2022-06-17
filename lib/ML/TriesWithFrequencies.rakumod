@@ -63,6 +63,8 @@ sub trie-create(@words,
 
 #--------------------------------------------------------
 #| Creates a trie by splitting each of the strings in the given list of strings.
+#| C<:$splitter, :$skip-empty, :$v> are passed to C<split>.
+#| C<$bisection-threshold> : the threshold after which to stop binary recursive calls.
 proto trie-create-by-split($words, |) is export {*}
 
 multi trie-create-by-split(Str $word, *%args) {
