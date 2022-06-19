@@ -1,5 +1,6 @@
 # Raku ML::TriesWithFrequencies
 
+[![SparkyCI](http://sparrowhub.io:2222/project/gh-antononcube-Raku-ML-TriesWithFrequencies/badge)](http://sparrowhub.io:2222)
 
 This Raku package has functions for creation and manipulation of 
 [Tries (Prefix trees)](https://en.wikipedia.org/wiki/Trie) 
