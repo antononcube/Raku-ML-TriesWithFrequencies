@@ -1,0 +1,40 @@
+use Test;
+
+use lib '.';
+use lib './lib';
+
+use ML::TriesWithFrequencies;
+use ML::TriesWithFrequencies::Trie;
+
+plan 4;
+
+## 1
+my @words1 = ['bar' xx 3].append('bark' xx 2).append('bare' xx 3).append('cam' xx 3).append('came').append('camelia' xx 4);
+
+my $tr1 = ML::TriesWithFrequencies::Trie.create-by-split(@words1).node-probabilities;
+
+is
+        $tr1.classify('bar'.comb) ∈ <r e>,
+        True,
+        'Simple classify call';
+
+## 2
+is-deeply
+        $tr1.classify('bar'.comb, prop => 'Probs'),
+        {e => 0.375e0, k => 0.25e0, r => 0.375e0},
+        'Classify and give probabilities';
+
+## 3
+is-deeply
+        $tr1.classify('bar'.comb, prop => Whatever),
+        {e => 0.375e0, k => 0.25e0, r => 0.375e0},
+        'Classify with Whatever';
+
+## 4
+is-deeply
+        $tr1.classify('bar'.comb, prop => 'Values'),
+        {e => 0.375e0, k => 0.25e0, r => 0.375e0},
+        'Classify and give non-normalized values';
+
+
+done-testing;
