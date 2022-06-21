@@ -3,6 +3,7 @@ use ML::TriesWithFrequencies::Trieish;
 class ML::TriesWithFrequencies::LeafProbabilitiesGatherer {
 
     has Numeric $.ulp = 2.220446049250313e-16;
+    has Bool $.counts-trie is rw = False;
 
     #--------------------------------------------------------
     method new() {
@@ -13,7 +14,6 @@ class ML::TriesWithFrequencies::LeafProbabilitiesGatherer {
     method trace(
             ML::TriesWithFrequencies::Trieish $tr,
             UInt $level) {
-
         if not so $tr.children {
 
             return [$tr.key => $tr.value,];
@@ -26,17 +26,27 @@ class ML::TriesWithFrequencies::LeafProbabilitiesGatherer {
             # This should be simpler: [+] $tr.children.values>>.value
             for $tr.children.values -> $ch {
                 $sum += $ch.value;
-                @res.append( self.trace($ch, $level + 1) );
+                @res.append(self.trace($ch, $level + 1));
             }
 
-            if $sum + 2.0 * $!ulp < 1.0 && $tr.children.elems > 0 {
-                @res.append($tr.key => 1 - $sum);
+            if $.counts-trie {
+                if $sum < $tr.value && $tr.children.elems > 0 {
+                    @res.append($tr.key => $tr.value - $sum);
+                }
+            } else {
+                if $sum + 2.0 * $!ulp < 1.0 && $tr.children.elems > 0 {
+                    @res.append($tr.key => 1 - $sum);
+                }
             }
 
             my @res2;
 
             for @res -> $elem {
-                @res2.append([$elem.key => $elem.value * $tr.value,])
+                if $.counts-trie {
+                    @res2.append([$elem.key => $elem.value,])
+                } else {
+                    @res2.append([$elem.key => $elem.value * $tr.value,])
+                }
             }
 
             return @res2;
