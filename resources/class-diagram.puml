@@ -1,0 +1,172 @@
+@startuml
+class ML::TriesWithFrequencies::PathsGatherer  {
+  {field} $!ulp
+  {field} @!tracedPaths
+  {method} BUILDALL
+  {method} new
+  {method} trace
+  {method} tracedPaths
+  {method} trie-trace
+  {method} ulp
+}
+
+
+class ML::TriesWithFrequencies::Trie  {
+  {field} $!key
+  {field} $!value
+  {field} %!children
+  {method} BUILDALL
+  {method} JSON
+  {method} Str
+  {method} WL
+  {method} XML
+  {method} children
+  {method} classify
+  {method} clone
+  {method} contains
+  {method} create
+  {method} create-by-split
+  {method} form
+  {method} getChildren
+  {method} getKey
+  {method} getValue
+  {method} gist
+  {method} has-complete-match
+  {method} hash
+  {method} insert
+  {method} is-key
+  {method} key
+  {method} leaf-probabilities
+  {method} leafQ
+  {method} make
+  {method} merge
+  {method} new
+  {method} node-counts
+  {method} node-probabilities
+  {method} position
+  {method} remove-by-pareto-fraction
+  {method} remove-by-regex
+  {method} remove-by-threshold
+  {method} retrieve
+  {method} root-to-leaf-paths
+  {method} select-by-pareto-fraction
+  {method} select-by-regex
+  {method} select-by-threshold
+  {method} setChildren
+  {method} setKey
+  {method} setValue
+  {method} shrink
+  {method} toJSONFormatRec
+  {method} toMapFormat
+  {method} toWLFormatRec
+  {method} toXMLFormatRec
+  {method} trieRootLabel
+  {method} trieValueLabel
+  {method} value
+  {method} words
+  {method} words-with-probabilities
+}
+ML::TriesWithFrequencies::Trie --|> ML::TriesWithFrequencies::Trieish
+
+
+class ML::TriesWithFrequencies::ParetoBasedRemover  {
+  {field} $!pareto-fraction
+  {field} $!postfix
+  {field} $!remove-bottom
+  {method} BUILDALL
+  {method} new
+  {method} pareto-fraction
+  {method} postfix
+  {method} remove
+  {method} remove-bottom
+  {method} trie-map
+  {method} trie-pareto-remove
+}
+ML::TriesWithFrequencies::ParetoBasedRemover --|> ML::TriesWithFrequencies::TrieTraverse
+
+
+class ML::TriesWithFrequencies::ThresholdBasedRemover  {
+  {field} $!below-threshold
+  {field} $!postfix
+  {field} $!threshold
+  {method} BUILDALL
+  {method} below-threshold
+  {method} new
+  {method} postfix
+  {method} remove
+  {method} threshold
+  {method} trie-map
+  {method} trie-threshold-remove
+}
+ML::TriesWithFrequencies::ThresholdBasedRemover --|> ML::TriesWithFrequencies::TrieTraverse
+
+
+class "TRIEVALUE" <<constant>> {
+}
+"TRIEVALUE" --|> Stringy
+
+
+class "TRIEROOT" <<constant>> {
+}
+"TRIEROOT" --|> Stringy
+
+
+class ML::TriesWithFrequencies::RegexBasedRemover  {
+  {field} $!invert
+  {field} $!key-pattern
+  {field} $!postfix
+  {method} BUILDALL
+  {method} invert
+  {method} key-pattern
+  {method} new
+  {method} postfix
+  {method} remove
+  {method} trie-map
+  {method} trie-regex-remove
+}
+ML::TriesWithFrequencies::RegexBasedRemover --|> ML::TriesWithFrequencies::TrieTraverse
+
+
+class ML::TriesWithFrequencies::Trieish <<role>> {
+  {field} $!key
+  {field} $!value
+  {field} %!children
+  {method} JSON
+  {method} Str
+  {method} WL
+  {method} XML
+  {method} clone
+  {method} getChildren
+  {method} getKey
+  {method} getValue
+  {method} gist
+  {method} hash
+  {method} setChildren
+  {method} setKey
+  {method} setValue
+  {method} toJSONFormatRec
+  {method} toMapFormat
+  {method} toWLFormatRec
+  {method} toXMLFormatRec
+  {method} trieRootLabel
+  {method} trieValueLabel
+}
+
+
+class ML::TriesWithFrequencies::LeafProbabilitiesGatherer  {
+  {field} $!counts-trie
+  {field} $!ulp
+  {method} BUILDALL
+  {method} counts-trie
+  {method} new
+  {method} trace
+  {method} trie-trace
+  {method} ulp
+}
+
+
+class ML::TriesWithFrequencies::TrieTraverse <<role>> {
+}
+
+
+@enduml
