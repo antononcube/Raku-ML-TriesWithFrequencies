@@ -816,6 +816,22 @@ class ML::TriesWithFrequencies::Trie
     }
 
     ##=======================================================
+    ## Mention
+    ##=======================================================
+    ## AKA, "in pipeline mentioning" or "say within a pipeline".
+
+    method mention($pre = '', $post = '', :&func is copy = WhateverCode) {
+
+        if &func.isa(WhateverCode) { &func = { $_ ~~ Str ?? say $_ !! say $_.form; $_ } }
+
+        if $pre { &func($pre); }
+        &func(self);
+        if $post { &func($post); }
+
+        return self;
+    }
+
+    ##=======================================================
     ## Visualization functions
     ##=======================================================
 
