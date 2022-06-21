@@ -279,7 +279,11 @@ class ML::TriesWithFrequencies::Trie
     }
 
     #--------------------------------------------------------
-    method leaf-probabilities(:$ulp = Whatever --> Hash) is export {
+    method leaf-probabilities(:$ulp = Whatever, Bool :$normalize = True --> Hash) is export {
+
+        if self.value > 1 && $normalize {
+            return self.node-probabilities.leaf-probabilities(:$ulp);
+        }
 
         my $pobj;
         if ($ulp ~~ Numeric) {
@@ -288,6 +292,7 @@ class ML::TriesWithFrequencies::Trie
             $pobj = ML::TriesWithFrequencies::LeafProbabilitiesGatherer.new();
         }
 
+        $pobj.counts-trie = self.value > 1;
         $pobj.trie-trace(self)
     }
 
@@ -777,7 +782,9 @@ class ML::TriesWithFrequencies::Trie
     #------------------------------------------------------------
     proto method classify(@record, :$prop = 'Decision') is export {*}
 
-    multi method classify(@record, :$prop = 'Decision') {
+    multi method classify(@record, :$prop is copy = 'Decision') {
+
+        if $prop.isa(Whatever) { $prop = 'Values'; }
 
         if is-array-of-arrays(@record) {
             return @record.map({ self.classify($_, :$prop) });
@@ -789,14 +796,16 @@ class ML::TriesWithFrequencies::Trie
         }
 
         my ML::TriesWithFrequencies::Trie $trRes= self.retrieve(@record);
-        my %res = $trRes.leaf-probabilities.deepmap(* / $trRes.value);
+
+        my $normalize = ! ( $prop ~~ Str && $prop.lc (elem) <value values> );
+        my %res = $trRes.leaf-probabilities(:$normalize);
 
         my $sum = %res.values.sum;
         if $sum == 0e0 { $sum = 1; }
 
         given $prop {
-            when $_ ~~ Str && $_.lc eq 'decision' { return %res.pairs.sort(-*.value).sort(-*.value).head.key; }
-            when $_.isa(Whatever) || $_ ~~ Str && $_.lc (elem) <value values> { return %res; }
+            when $_ ~~ Str && $_.lc eq 'decision' { return %res.pairs.sort(-*.value).head.key; }
+            when $_ ~~ Str && $_.lc (elem) <value values> { return %res; }
             when $_ ~~ Str && $_.lc (elem) <probabilities probs> { return %res.deepmap({ $_ / $sum }); }
             when $_ ~~ Pair && $_.key.lc (elem) <probability prob> { return %res{$_.value}:exists ?? %res{$_.value} / $sum !! 0; }
             default {
