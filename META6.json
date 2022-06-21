@@ -1,7 +1,7 @@
 {
   "name": "ML::TriesWithFrequencies",
   "description": "Package with functions for creation and manipulation of tries (prefix trees) with frequencies.",
-  "version": "0.6.2",
+  "version": "0.6.3",
   "perl": "6.d",
   "authors": [
     "Anton Antonov"
