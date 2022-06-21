@@ -21,6 +21,22 @@ made mostly for comparison studies. (See the implementation notes below.)
 The package in this repository, `ML::TriesWithFrequencies`, is my *primary* 
 Tries-with-frequencies package.
 
+-------
+
+## Installation
+
+Via zef-ecosystem:
+
+```shell
+zef install ML::TriesWithFrequencies
+```
+
+From GitHub:
+
+```shell
+zef install https://github.com/antononcube/Raku-ML-TriesWithFrequencies
+```
+
 ------
 
 ## Usage 
@@ -98,6 +114,35 @@ trie-say(trie-retrieve($ptr, 'bar'.comb))
 # r => 0.75
 # ├─k => 0.3333333333333333
 # └─s => 0.3333333333333333
+```
+
+Here is a "dot-pipeline" that combines the steps above: 
+
+```perl6
+<bar bark bars balm cert cell>.&trie-create-by-split
+.node-probabilities
+.shrink
+.retrieve(<ba r>)        
+.form
+```
+```
+# r => 0.75
+# ├─k => 0.3333333333333333
+# └─s => 0.3333333333333333
+```
+
+**Remark:** In the pipeline above we retrieve with `<ba r>`, not with `<b a r>`, 
+because the trie is already shrunk.
+
+
+The package provides a fair amount of functions in order to facilitate ML applications. 
+In support of that statement, here are the methods of `ML::TriesWithFrequencies::Trie`:
+
+```perl6
+ML::TriesWithFrequencies::Trie.^method_names
+```
+```
+# (clone make merge insert create create-by-split node-probabilities leaf-probabilities leafQ position retrieve has-complete-match contains is-key shrink node-counts remove-by-threshold remove-by-pareto-fraction remove-by-regex select-by-threshold select-by-pareto-fraction select-by-regex root-to-leaf-paths words words-with-probabilities classify mention form trieRootLabel trieValueLabel getKey getValue getChildren setKey setValue setChildren toMapFormat hash WL toWLFormatRec XML toXMLFormatRec JSON toJSONFormatRec Str gist new key value children BUILDALL)
 ```
 
 ------
@@ -194,18 +239,18 @@ say $tr0.XML;
 #   <TRIEVALUE>2</TRIEVALUE>
 #   <e>
 #    <TRIEVALUE>2</TRIEVALUE>
-#    <s>
-#     <TRIEVALUE>1</TRIEVALUE>
-#     <t>
-#      <TRIEVALUE>1</TRIEVALUE>
-#     </t>
-#    </s>
 #    <l>
 #     <TRIEVALUE>1</TRIEVALUE>
 #     <l>
 #      <TRIEVALUE>1</TRIEVALUE>
 #     </l>
 #    </l>
+#    <s>
+#     <TRIEVALUE>1</TRIEVALUE>
+#     <t>
+#      <TRIEVALUE>1</TRIEVALUE>
+#     </t>
+#    </s>
 #   </e>
 #  </b>
 # </TRIEROOT>
@@ -284,10 +329,10 @@ The package also supports "dot pipelining" through chaining of methods:
 
 ```perl6
 @words2.&trie-create-by-split
-.merge(@words3.&trie-create-by-split)
-.node-probabilities
-.shrink
-.form
+        .merge(@words3.&trie-create-by-split)
+        .node-probabilities
+        .shrink
+        .form
 ```
 ```
 # TRIEROOT => 1
@@ -312,15 +357,40 @@ Here is the previous pipeline re-written to use only methods of `ML::TriesWithFr
 
 ```{perl6, eval=FALSE}
 ML::TriesWithFrequencies::Trie.create-by-split(@words2)
-.merge(ML::TriesWithFrequencies::Trie.create-by-split(@words3))
-.node-probabilities        
-.shrink
-.form
+        .merge(ML::TriesWithFrequencies::Trie.create-by-split(@words3))
+        .node-probabilities
+        .shrink
+        .form
 ```
 
 ------
 
 ## Implementation notes
+
+### UML diagram
+
+Here is a UML diagram that shows package's structure:
+
+![](./resources/class-diagram.png)
+
+
+The
+[PlantUML spec](./resources/class-diagram.puml)
+and
+[diagram](./resources/class-diagram.png)
+were obtained with the CLI script `to-uml-spec` of the package "UML::Translators", [AAp7].
+
+Here we get the [PlantUML spec](./resources/class-diagram.puml):
+
+```shell
+to-uml-spec ML::TriesWithFrequencies > ./resources/class-diagram.puml
+```
+
+Here get the [diagram](./resources/class-diagram.png):
+
+```shell
+to-uml-spec ML::TriesWithFrequencies | java -jar ~/PlantUML/plantuml-1.2022.5.jar -pipe > ./resources/class-diagram.png
+```
 
 ### Performance
 
@@ -507,6 +577,10 @@ In the following list the most important items are placed first.
 (2021),
 [GitHub/antononcube](https://github.com/antononcube).
 
+[AAp7] Anton Antonov,
+[UML::Translators Raku package](https://raku.land/zef:antononcube/UML::Translators),
+(2022),
+[GitHub/antononcube](https://github.com/antononcube).
 
 ### Videos
 

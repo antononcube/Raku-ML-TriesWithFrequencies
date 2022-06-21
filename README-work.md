@@ -21,6 +21,22 @@ made mostly for comparison studies. (See the implementation notes below.)
 The package in this repository, `ML::TriesWithFrequencies`, is my *primary* 
 Tries-with-frequencies package.
 
+-------
+
+## Installation
+
+Via zef-ecosystem:
+
+```shell
+zef install ML::TriesWithFrequencies
+```
+
+From GitHub:
+
+```shell
+zef install https://github.com/antononcube/Raku-ML-TriesWithFrequencies
+```
+
 ------
 
 ## Usage 
@@ -50,6 +66,27 @@ Here we retrieve a sub-trie with a key:
 
 ```perl6
 trie-say(trie-retrieve($ptr, 'bar'.comb))
+```
+
+Here is a "dot-pipeline" that combines the steps above: 
+
+```perl6
+<bar bark bars balm cert cell>.&trie-create-by-split
+.node-probabilities
+.shrink
+.retrieve(<ba r>)        
+.form
+```
+
+**Remark:** In the pipeline above we retrieve with `<ba r>`, not with `<b a r>`, 
+because the trie is already shrunk.
+
+
+The package provides a fair amount of functions in order to facilitate ML applications. 
+In support of that statement, here are the methods of `ML::TriesWithFrequencies::Trie`:
+
+```perl6
+ML::TriesWithFrequencies::Trie.^method_names
 ```
 
 ------
@@ -153,10 +190,10 @@ The package also supports "dot pipelining" through chaining of methods:
 
 ```perl6
 @words2.&trie-create-by-split
-.merge(@words3.&trie-create-by-split)
-.node-probabilities
-.shrink
-.form
+        .merge(@words3.&trie-create-by-split)
+        .node-probabilities
+        .shrink
+        .form
 ```
 
 **Remark:** The `trie-*` functions are implemented through the methods of `ML::TriesWithFrequencies::Trie`.
@@ -167,15 +204,40 @@ Here is the previous pipeline re-written to use only methods of `ML::TriesWithFr
 
 ```{perl6, eval=FALSE}
 ML::TriesWithFrequencies::Trie.create-by-split(@words2)
-.merge(ML::TriesWithFrequencies::Trie.create-by-split(@words3))
-.node-probabilities        
-.shrink
-.form
+        .merge(ML::TriesWithFrequencies::Trie.create-by-split(@words3))
+        .node-probabilities
+        .shrink
+        .form
 ```
 
 ------
 
 ## Implementation notes
+
+### UML diagram
+
+Here is a UML diagram that shows package's structure:
+
+![](./resources/class-diagram.png)
+
+
+The
+[PlantUML spec](./resources/class-diagram.puml)
+and
+[diagram](./resources/class-diagram.png)
+were obtained with the CLI script `to-uml-spec` of the package "UML::Translators", [AAp7].
+
+Here we get the [PlantUML spec](./resources/class-diagram.puml):
+
+```shell
+to-uml-spec ML::TriesWithFrequencies > ./resources/class-diagram.puml
+```
+
+Here get the [diagram](./resources/class-diagram.png):
+
+```shell
+to-uml-spec ML::TriesWithFrequencies | java -jar ~/PlantUML/plantuml-1.2022.5.jar -pipe > ./resources/class-diagram.png
+```
 
 ### Performance
 
@@ -362,6 +424,10 @@ In the following list the most important items are placed first.
 (2021),
 [GitHub/antononcube](https://github.com/antononcube).
 
+[AAp7] Anton Antonov,
+[UML::Translators Raku package](https://raku.land/zef:antononcube/UML::Translators),
+(2022),
+[GitHub/antononcube](https://github.com/antononcube).
 
 ### Videos
 
