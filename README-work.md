@@ -152,16 +152,26 @@ trie-say
 The package also supports "dot pipelining" through chaining of methods:
 
 ```perl6
-ML::TriesWithFrequencies::Trie.create-by-split(@words2)
-.merge(ML::TriesWithFrequencies::Trie.create-by-split(@words3))
-.node-probabilities        
+@words2.&trie-create-by-split
+.merge(@words3.&trie-create-by-split)
+.node-probabilities
 .shrink
-.say
+.form
 ```
 
 **Remark:** The `trie-*` functions are implemented through the methods of `ML::TriesWithFrequencies::Trie`.
 Given the method the corresponding function is derived by adding the prefix `trie-`. 
 (For example, `$tr.shrink` vs `trie-shrink($tr)`.) 
+
+Here is the previous pipeline re-written to use only methods of `ML::TriesWithFrequencies::Trie`:
+
+```{perl6, eval=FALSE}
+ML::TriesWithFrequencies::Trie.create-by-split(@words2)
+.merge(ML::TriesWithFrequencies::Trie.create-by-split(@words3))
+.node-probabilities        
+.shrink
+.form
+```
 
 ------
 
@@ -272,7 +282,7 @@ In the following list the most important items are placed first.
     
 - [ ] TODO Implement `trie-prune` function.
 
-- [ ] TODO Implement Trie-based classification.
+- [X] TODO Implement Trie-based classification.
 
 - [ ] TODO Investigate faster implementations.
  
