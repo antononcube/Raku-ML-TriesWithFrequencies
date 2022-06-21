@@ -816,17 +816,30 @@ class ML::TriesWithFrequencies::Trie
     }
 
     ##=======================================================
-    ## Mention
+    ## Echo
     ##=======================================================
-    ## AKA, "in pipeline mentioning" or "say within a pipeline".
+    ## AKA, "in pipeline echoing" or "say within a pipeline".
 
-    method mention($pre = '', $post = '', :&func is copy = WhateverCode) {
+    method echo($pre = '', $post = '', :&f is copy = WhateverCode) {
+
+        if &f.isa(WhateverCode) { &f = { $_ ~~ Str ?? say $_ !! say $_.form; $_ } }
+
+        if $pre { &f($pre); }
+        &f(self);
+        if $post { &f($post); }
+
+        return self;
+    }
+
+    ##=======================================================
+    ## Echo function
+    ##=======================================================
+    
+    method echo-function(&func is copy = WhateverCode) {
 
         if &func.isa(WhateverCode) { &func = { $_ ~~ Str ?? say $_ !! say $_.form; $_ } }
 
-        if $pre { &func($pre); }
         &func(self);
-        if $post { &func($post); }
 
         return self;
     }
