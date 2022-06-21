@@ -6,12 +6,13 @@ use lib './lib';
 use ML::TriesWithFrequencies;
 use ML::TriesWithFrequencies::Trie;
 
-plan 5;
+plan 6;
 
 ## 1
 my @words1 = ['bar' xx 6].append('bark' xx 3).append('bare' xx 2).append('cam' xx 3).append('came').append('camelia' xx 4);
 
-my $tr1 = ML::TriesWithFrequencies::Trie.create-by-split(@words1).node-probabilities;
+my $tr0 = ML::TriesWithFrequencies::Trie.create-by-split(@words1);
+my $tr1 = $tr0.node-probabilities;
 
 is
         $tr1.classify('bar'.comb) ∈ <r e>,
@@ -32,8 +33,8 @@ is-deeply
 
 ## 4
 is-deeply
-        $tr1.classify('bar'.comb, prop => 'Values'),
-        {e => 0.18181818181818182e0, k => 0.2727272727272727e0, r => 0.5454545454545454e0},
+        $tr0.classify('bar'.comb, prop => 'Values'),
+        {e => 2e0, k => 3e0, r => 6e0},
         'Classify and give non-normalized values';
 
 
@@ -41,7 +42,12 @@ is-deeply
 is-deeply
         $tr1.classify(<bar cam ca>>>.comb>>.List),
         <r a a>,
-        'Classify and give non-normalized values';
+        'Classify a list of records';
 
+## 6
+is-deeply
+        $tr0.classify(<bar cam ca>>>.comb>>.List, prop=> 'Values'),
+        ({e => 2e0, k => 3e0, r => 6e0}, {a => 4e0, e => 1e0, m => 3e0}, {a => 4e0, e => 1e0, m => 3e0}),
+        'Classify a list of records and give non-normalized values';
 
 done-testing;
