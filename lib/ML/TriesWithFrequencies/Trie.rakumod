@@ -790,21 +790,22 @@ class ML::TriesWithFrequencies::Trie
             return @record.map({ self.classify($_, :$prop) });
         }
 
+        my %res = %();
         if !self.is-key(@record) {
             warn "The first argument {@record} is not key in the trie.";
-            return Nil;
+        } else {
+
+            my ML::TriesWithFrequencies::Trie $trRes = self.retrieve(@record);
+
+            my $normalize = !($prop ~~ Str && $prop.lc (elem) <value values>);
+            %res = $trRes.leaf-probabilities(:$normalize);
         }
-
-        my ML::TriesWithFrequencies::Trie $trRes= self.retrieve(@record);
-
-        my $normalize = ! ( $prop ~~ Str && $prop.lc (elem) <value values> );
-        my %res = $trRes.leaf-probabilities(:$normalize);
 
         my $sum = %res.values.sum;
         if $sum == 0e0 { $sum = 1; }
 
         given $prop {
-            when $_ ~~ Str && $_.lc eq 'decision' { return %res.pairs.sort(-*.value).head.key; }
+            when $_ ~~ Str && $_.lc eq 'decision' { return %res ?? %res.pairs.sort(-*.value).head.key !! Whatever; }
             when $_ ~~ Str && $_.lc (elem) <value values> { return %res; }
             when $_ ~~ Str && $_.lc (elem) <probabilities probs> { return %res.deepmap({ $_ / $sum }); }
             when $_ ~~ Pair && $_.key.lc (elem) <probability prob> { return %res{$_.value}:exists ?? %res{$_.value} / $sum !! 0; }
