@@ -142,7 +142,7 @@ In support of that statement, here are the methods of `ML::TriesWithFrequencies:
 ML::TriesWithFrequencies::Trie.^method_names
 ```
 ```
-# (clone make merge insert create create-by-split node-probabilities leaf-probabilities leafQ position retrieve has-complete-match contains is-key shrink node-counts remove-by-threshold remove-by-pareto-fraction remove-by-regex select-by-threshold select-by-pareto-fraction select-by-regex root-to-leaf-paths words words-with-probabilities classify mention form trieRootLabel trieValueLabel getKey getValue getChildren setKey setValue setChildren toMapFormat hash WL toWLFormatRec XML toXMLFormatRec JSON toJSONFormatRec Str gist new key value children BUILDALL)
+# (clone make merge insert create create-by-split node-probabilities leaf-probabilities leafQ position retrieve has-complete-match contains is-key shrink node-counts remove-by-threshold remove-by-pareto-fraction remove-by-regex select-by-threshold select-by-pareto-fraction select-by-regex root-to-leaf-paths words words-with-probabilities classify echo echo-function form trieRootLabel trieValueLabel getKey getValue getChildren setKey setValue setChildren toMapFormat hash WL toWLFormatRec XML toXMLFormatRec JSON toJSONFormatRec Str gist new key value children BUILDALL)
 ```
 
 ------
@@ -181,7 +181,7 @@ representation with `ML::TriesWithFrequencies::Trie`:
 say $tr.JSON;
 ```
 ```
-# {"key":"TRIEROOT", "value":2, "children":[{"key":"cor", "value":2, "children":[{"key":"t", "value":1, "children":[]}, {"key":"e", "value":1, "children":[]}]}]}
+# {"key":"TRIEROOT", "value":2, "children":[{"key":"cor", "value":2, "children":[{"key":"e", "value":1, "children":[]}, {"key":"t", "value":1, "children":[]}]}]}
 ```
 
 ### XML
@@ -197,12 +197,12 @@ say $tr.XML;
 #  <TRIEVALUE>2</TRIEVALUE>
 #  <cor>
 #   <TRIEVALUE>2</TRIEVALUE>
-#   <t>
-#    <TRIEVALUE>1</TRIEVALUE>
-#   </t>
 #   <e>
 #    <TRIEVALUE>1</TRIEVALUE>
 #   </e>
+#   <t>
+#    <TRIEVALUE>1</TRIEVALUE>
+#   </t>
 #  </cor>
 # </TRIEROOT>
 ```
@@ -239,18 +239,18 @@ say $tr0.XML;
 #   <TRIEVALUE>2</TRIEVALUE>
 #   <e>
 #    <TRIEVALUE>2</TRIEVALUE>
-#    <l>
-#     <TRIEVALUE>1</TRIEVALUE>
-#     <l>
-#      <TRIEVALUE>1</TRIEVALUE>
-#     </l>
-#    </l>
 #    <s>
 #     <TRIEVALUE>1</TRIEVALUE>
 #     <t>
 #      <TRIEVALUE>1</TRIEVALUE>
 #     </t>
 #    </s>
+#    <l>
+#     <TRIEVALUE>1</TRIEVALUE>
+#     <l>
+#      <TRIEVALUE>1</TRIEVALUE>
+#     </l>
+#    </l>
 #   </e>
 #  </b>
 # </TRIEROOT>
@@ -279,7 +279,7 @@ Hence, such WL format is provided by the Raku package:
 say $tr.WL;
 ```
 ```
-# <|$TrieRoot -> <|$TrieValue -> 2, "cor" -> <|$TrieValue -> 2, "t" -> <|$TrieValue -> 1|>, "e" -> <|$TrieValue -> 1|>|>|>|>
+# <|$TrieRoot -> <|$TrieValue -> 2, "cor" -> <|$TrieValue -> 2, "e" -> <|$TrieValue -> 1|>, "t" -> <|$TrieValue -> 1|>|>|>|>
 ```
 
 ------
@@ -497,7 +497,7 @@ In the following list the most important items are placed first.
     
 - [ ] TODO Implement `trie-prune` function.
 
-- [X] TODO Implement Trie-based classification.
+- [X] DONE Implement Trie-based classification.
 
 - [ ] TODO Investigate faster implementations.
  
@@ -506,10 +506,13 @@ In the following list the most important items are placed first.
      - See [AAp6].
   
   - [ ] TODO Make a C or C++ implementation and hook it up to Raku.  
-    
-- [ ] TODO Document examples of doing Trie-based text mining or data-mining.
+  
+- [X] DONE Program a trie-form visualization that is "wide", i.e. places the children nodes horizontally.
+  
+     - Using "Pretty::Table". 
+     - Using the function `to-pretty-table` of "Data::Reshapers". (Also based on "Pretty::Table".) 
 
-- [ ] TODO Program a trie-form visualization that is "wide", i.e. places the children nodes horizontally.
+- [ ] TODO Document examples of doing Trie-based text mining or data-mining.
 
 ------
 

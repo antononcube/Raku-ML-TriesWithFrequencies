@@ -344,7 +344,7 @@ In the following list the most important items are placed first.
     
 - [ ] TODO Implement `trie-prune` function.
 
-- [X] TODO Implement Trie-based classification.
+- [X] DONE Implement Trie-based classification.
 
 - [ ] TODO Investigate faster implementations.
  
@@ -353,10 +353,13 @@ In the following list the most important items are placed first.
      - See [AAp6].
   
   - [ ] TODO Make a C or C++ implementation and hook it up to Raku.  
-    
-- [ ] TODO Document examples of doing Trie-based text mining or data-mining.
+  
+- [X] DONE Program a trie-form visualization that is "wide", i.e. places the children nodes horizontally.
+  
+     - Using "Pretty::Table". 
+     - Using the function `to-pretty-table` of "Data::Reshapers". (Also based on "Pretty::Table".) 
 
-- [ ] TODO Program a trie-form visualization that is "wide", i.e. places the children nodes horizontally.
+- [ ] TODO Document examples of doing Trie-based text mining or data-mining.
 
 ------
 
