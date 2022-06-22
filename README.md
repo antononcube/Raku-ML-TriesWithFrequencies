@@ -12,7 +12,9 @@ not "just" a Trie data structure.
 
 This Raku implementation closely follows the Java implementation [AAp3].
 
-The system of function names follows the one used in the Mathematica package [AAp2].
+The subset of functions with the prefix "trie-" follows the one used in the Mathematica package [AAp2].
+That is the "top-level" sub-system of function names; the sub-system is follows the typical Object-Oriented Programming (OOP)
+Raku style.
 
 **Remark:** Below Mathematica and Wolfram Language (WL) are used as synonyms.
 
@@ -181,7 +183,7 @@ representation with `ML::TriesWithFrequencies::Trie`:
 say $tr.JSON;
 ```
 ```
-# {"key":"TRIEROOT", "value":2, "children":[{"key":"cor", "value":2, "children":[{"key":"e", "value":1, "children":[]}, {"key":"t", "value":1, "children":[]}]}]}
+# {"key":"TRIEROOT", "value":2, "children":[{"key":"cor", "value":2, "children":[{"key":"t", "value":1, "children":[]}, {"key":"e", "value":1, "children":[]}]}]}
 ```
 
 ### XML
@@ -197,12 +199,12 @@ say $tr.XML;
 #  <TRIEVALUE>2</TRIEVALUE>
 #  <cor>
 #   <TRIEVALUE>2</TRIEVALUE>
-#   <e>
-#    <TRIEVALUE>1</TRIEVALUE>
-#   </e>
 #   <t>
 #    <TRIEVALUE>1</TRIEVALUE>
 #   </t>
+#   <e>
+#    <TRIEVALUE>1</TRIEVALUE>
+#   </e>
 #  </cor>
 # </TRIEROOT>
 ```
@@ -239,18 +241,18 @@ say $tr0.XML;
 #   <TRIEVALUE>2</TRIEVALUE>
 #   <e>
 #    <TRIEVALUE>2</TRIEVALUE>
-#    <s>
-#     <TRIEVALUE>1</TRIEVALUE>
-#     <t>
-#      <TRIEVALUE>1</TRIEVALUE>
-#     </t>
-#    </s>
 #    <l>
 #     <TRIEVALUE>1</TRIEVALUE>
 #     <l>
 #      <TRIEVALUE>1</TRIEVALUE>
 #     </l>
 #    </l>
+#    <s>
+#     <TRIEVALUE>1</TRIEVALUE>
+#     <t>
+#      <TRIEVALUE>1</TRIEVALUE>
+#     </t>
+#    </s>
 #   </e>
 #  </b>
 # </TRIEROOT>
@@ -279,7 +281,7 @@ Hence, such WL format is provided by the Raku package:
 say $tr.WL;
 ```
 ```
-# <|$TrieRoot -> <|$TrieValue -> 2, "cor" -> <|$TrieValue -> 2, "e" -> <|$TrieValue -> 1|>, "t" -> <|$TrieValue -> 1|>|>|>|>
+# <|$TrieRoot -> <|$TrieValue -> 2, "cor" -> <|$TrieValue -> 2, "t" -> <|$TrieValue -> 1|>, "e" -> <|$TrieValue -> 1|>|>|>|>
 ```
 
 ------
@@ -435,8 +437,8 @@ The initial versions of the package -- up to version 0.5.0 -- had exported funct
 in the namespace `ML::TriesWithFrequencies` with the prefix `trie-`. 
 Those functions came from a purely Functional Programming (FP) design.
 
-In order to get chains of Object Oriented Programming (OOP) methods application that 
-are typical in Raku programming the package versions after version 0.6.0 have trie 
+In order to get chains of OOP methods application that 
+are typical in Raku programming the package versions after version 0.6.0 and later have trie 
 manipulation transformation methods in the class `ML::TriesWithFrequencies::Trie`. 
 
 In order to get trie-class methods a fairly fundamental code refactoring was required. 
