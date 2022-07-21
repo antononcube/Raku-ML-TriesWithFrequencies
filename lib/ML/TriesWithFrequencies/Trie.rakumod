@@ -780,19 +780,19 @@ class ML::TriesWithFrequencies::Trie
     }
 
     #------------------------------------------------------------
-    proto method classify(@record, :$prop = 'Decision') is export {*}
+    proto method classify(@record, :$prop = 'Decision', :$default = Nil, Bool :$verify-key-existence = True) is export {*}
 
-    multi method classify(@record, :$prop is copy = 'Decision') {
+    multi method classify(@record, :$prop is copy = 'Decision', :$default = Empty, Bool :$verify-key-existence = True) {
 
         if $prop.isa(Whatever) { $prop = 'Values'; }
 
         if is-array-of-arrays(@record) {
-            return @record.map({ self.classify($_, :$prop) });
+            return @record.map({ self.classify($_, :$prop, :$default, :$verify-key-existence) });
         }
 
         my %res = %();
-        if !self.is-key(@record) {
-            warn "The first argument {@record} is not key in the trie.";
+        if $verify-key-existence && !self.is-key(@record) {
+            warn "The first argument {@record.raku} is not key in the trie.";
         } else {
 
             my ML::TriesWithFrequencies::Trie $trRes = self.retrieve(@record);
@@ -807,7 +807,7 @@ class ML::TriesWithFrequencies::Trie
         given $prop {
             when $_ ~~ Str && $_.lc eq 'decision' { return %res ?? %res.pairs.sort(-*.value).head.key !! Whatever; }
             when $_ ~~ Str && $_.lc (elem) <value values> { return %res; }
-            when $_ ~~ Str && $_.lc (elem) <probabilities probs> { return %res.deepmap({ $_ / $sum }); }
+            when $_ ~~ Str && $_.lc (elem) <probabilities probs> { return %res ?? %res.deepmap({ $_ / $sum }) !! { $default.Str => 0 }; }
             when $_ ~~ Pair && $_.key.lc (elem) <probability prob> { return %res{$_.value}:exists ?? %res{$_.value} / $sum !! 0; }
             default {
                 warn "Unknown property specification $prop.";

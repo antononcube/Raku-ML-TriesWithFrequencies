@@ -409,9 +409,10 @@ sub trie-select-by-regex (
 
 #--------------------------------------------------------
 #| Classify record(s).
-#| C<prop> takes the values C<[Whatever, "Decision", "Probabilities" 'Values"]>, or C<Probability => <some-label>>.
+#| C<$prop> takes the values C<[Whatever, "Decision", "Probabilities" 'Values"]>, or C<Probability => <some-label>>.
 #| "Probs" and "Prob" can be used instead of "Probabilities" and "Probability" respectively;
 #| "Value" can be used instead of "Values".
+#|  C<$verify-key-existence> Should the key existence be verified or not?
 sub trie-classify (
 #| Trie
         ML::TriesWithFrequencies::Trie $tr,
@@ -420,9 +421,15 @@ sub trie-classify (
         $records,
 
 #| Property
-        Str :$prop
+        Str :$prop,
+
+#| Default value
+        :$default = Nil,
+
+#| Verify key existence
+        Bool :$verify-key-existence = True
                    ) is export {
-    return $tr.classify($records, :$prop);
+    return $tr.classify($records, :$prop, :$default, :$verify-key-existence);
 }
 
 
