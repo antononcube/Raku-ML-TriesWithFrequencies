@@ -348,6 +348,8 @@ In the following list the most important items are placed first.
 
 - [X] DONE Implement Trie-based classification.
 
+- [X] DONE Create trie from hash representation.
+
 - [ ] TODO Investigate faster implementations.
  
   - [X] DONE Re-implement the Trie functionalities using hash representation (instead of a tree of Trie-node objects.)
