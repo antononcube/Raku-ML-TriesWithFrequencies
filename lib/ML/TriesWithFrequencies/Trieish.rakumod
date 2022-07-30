@@ -52,12 +52,12 @@ role ML::TriesWithFrequencies::Trieish {
 
     #--------------------------------------------------------
     #| To Map/Hash format
-    method toMapFormat( --> Hash ) {
+    method to-map-format( --> Hash ) {
         my %chMap = %();
 
         with %!children {
             for %!children.kv -> $k, $v {
-                %chMap.push: ( $v.toMapFormat() )
+                %chMap.push: ( $v.to-map-format() )
             }
         }
 
@@ -68,7 +68,7 @@ role ML::TriesWithFrequencies::Trieish {
     #--------------------------------------------------------
     #| As Hash
     method hash( --> Hash) {
-       self.toMapFormat()
+       self.to-map-format()
     }
 
     #--------------------------------------------------------
@@ -151,6 +151,6 @@ role ML::TriesWithFrequencies::Trieish {
 
     #| To gist
     method gist( --> Str ) {
-        self.toMapFormat().gist
+        self.to-map-format().gist
     }
 }

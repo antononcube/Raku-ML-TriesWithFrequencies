@@ -887,7 +887,7 @@ class ML::TriesWithFrequencies::Trie
         if (%tr<key>:exists) && (%tr<value>:exists) && (%tr<children>:exists) {
 
             if %tr<children> !~~ Positional {
-                die 'The values of the "children" are expected to be Positional objects.';
+                die 'The values of the key \'children\' are expected to be Positional objects.';
             }
 
             if %tr<children> {
@@ -903,8 +903,6 @@ class ML::TriesWithFrequencies::Trie
 
             self.setKey(%tr<key>);
             self.setValue(%tr<value>.Num);
-
-            return self;
 
         } else {
             die 'Cannot find the keys ' ~ <key value children>.raku ~ '.';
@@ -929,7 +927,7 @@ class ML::TriesWithFrequencies::Trie
 
     #| Should key-value nodes be used not?
             Bool :$key-value-nodes = True) is export {
-        my $res = visualize-tree(self.toMapFormat.first, *.key, *.value.List, :$lb, :$sep, :$rb, :$key-value-nodes, trieValueLabel => self.trieValueLabel);
+        my $res = visualize-tree(self.to-map-format.first, *.key, *.value.List, :$lb, :$sep, :$rb, :$key-value-nodes, trieValueLabel => self.trieValueLabel);
         return $res.join("\n");
     }
 

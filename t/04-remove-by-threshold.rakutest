@@ -51,7 +51,7 @@ plan 4;
 #       └─t => 1
 
 is-deeply
-        trie-remove-by-threshold($ptr0, 0.21, postfix => 'REMOVED').toMapFormat,
+        trie-remove-by-threshold($ptr0, 0.21, postfix => 'REMOVED').to-map-format,
         { :TRIEROOT(${ :TRIEVALUE(1e0), :b(${ :TRIEVALUE(1e0), :a(${ :REMOVED(${ :TRIEVALUE(0.16666666666666666e0) }),
                                                                      :TRIEVALUE(0.75e0), :r(${
             :REMOVED(${ :TRIEVALUE(0.4e0) }), :TRIEVALUE(0.8333333333333334e0) }) }), :e(${ :TRIEVALUE(0.25e0), :l(${
@@ -73,7 +73,7 @@ is-deeply
 #     └─s => 0.5
 #       └─t => 1
 is-deeply
-        trie-remove-by-threshold($ptr0, 0.21, postfix => '').toMapFormat,
+        trie-remove-by-threshold($ptr0, 0.21, postfix => '').to-map-format,
         { :TRIEROOT(${ :TRIEVALUE(1e0), :b(${ :TRIEVALUE(1e0), :a(${ :TRIEVALUE(0.75e0),
                                                                      :r(${ :TRIEVALUE(0.8333333333333334e0) }) }), :e(${
             :TRIEVALUE(0.25e0), :l(${ :TRIEVALUE(0.5e0), :l(${ :TRIEVALUE(1e0) }) }), :s(${ :TRIEVALUE(0.5e0),
@@ -82,14 +82,14 @@ is-deeply
 
 ## 3
 is-deeply
-        trie-select-by-threshold($ptr0, 0.21, postfix => '').toMapFormat,
-        trie-remove-by-threshold($ptr0, 0.21, postfix => '').toMapFormat,
+        trie-select-by-threshold($ptr0, 0.21, postfix => '').to-map-format,
+        trie-remove-by-threshold($ptr0, 0.21, postfix => '').to-map-format,
         "remove and select equivalence 1";
 
 ## 4
 is-deeply
-        trie-select-by-threshold($ptr0, 0.21, postfix => 'REM').toMapFormat,
-        trie-remove-by-threshold($ptr0, 0.21, postfix => 'REM').toMapFormat,
+        trie-select-by-threshold($ptr0, 0.21, postfix => 'REM').to-map-format,
+        trie-remove-by-threshold($ptr0, 0.21, postfix => 'REM').to-map-format,
         "remove and select equivalence 2";
 
 done-testing;

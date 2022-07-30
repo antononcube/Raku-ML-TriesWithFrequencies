@@ -55,8 +55,8 @@ plan 3;
 ## 1
 my $res1 = trie-remove-by-pareto-fraction($ptr, 0.6, postfix => 'BOTTOM');
 is-deeply
-        trie-retrieve($res1, 'BOTTOM').toMapFormat<BOTTOM><TRIEVALUE>,
-        trie-retrieve($ptr, 'c').toMapFormat<c><TRIEVALUE>,
+        trie-retrieve($res1, 'BOTTOM').to-map-format<BOTTOM><TRIEVALUE>,
+        trie-retrieve($ptr, 'c').to-map-format<c><TRIEVALUE>,
         'remove by Pareto fraction 0.6';
 
 

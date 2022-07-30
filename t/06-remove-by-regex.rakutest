@@ -42,7 +42,7 @@ plan 5;
 ## 1
 # This only removes
 is-deeply
-        [trie-retrieve($tr1, <b a sk>).toMapFormat, trie-retrieve($tr1, <ca st>).toMapFormat],
+        [trie-retrieve($tr1, <b a sk>).to-map-format, trie-retrieve($tr1, <ca st>).to-map-format],
         [{ :sk(${ :TRIEVALUE(1e0) }) }, { :st(${ :TRIEVALUE(1e0) }) }],
         'expected retrieval sub-tries';
 
@@ -68,7 +68,7 @@ is-deeply
 #     └─st => 1
 my $res1 = trie-remove-by-regex($tr1, / ^ 'ca' .* /, postfix => 'REGREMOVED');
 is-deeply
-        trie-retrieve($res1, <REGREMOVED>).toMapFormat,
+        trie-retrieve($res1, <REGREMOVED>).to-map-format,
         { :REGREMOVED(${ :TRIEVALUE(3e0) }) },
         "remove by regex / ^ 'ca' .* /";
 
@@ -92,8 +92,8 @@ is-deeply
 #     └─rst => 1
 my $res2 = trie-remove-by-regex($tr1, / ^ 's' .* /, postfix => '');
 is-deeply
-        trie-retrieve($res2, <b a sk>).toMapFormat,
-        trie-retrieve($res2, <b a>).toMapFormat,
+        trie-retrieve($res2, <b a sk>).to-map-format,
+        trie-retrieve($res2, <b a>).to-map-format,
         "remove by regex / ^ 's' .* /";
 
 ## 4

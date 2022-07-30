@@ -57,7 +57,7 @@ class ML::TriesWithFrequencies::Trie  {
   {method} setValue
   {method} shrink
   {method} toJSONFormatRec
-  {method} toMapFormat
+  {method} to-map-format
   {method} toWLFormatRec
   {method} toXMLFormatRec
   {method} trieRootLabel
@@ -145,7 +145,7 @@ class ML::TriesWithFrequencies::Trieish <<role>> {
   {method} setKey
   {method} setValue
   {method} toJSONFormatRec
-  {method} toMapFormat
+  {method} to-map-format
   {method} toWLFormatRec
   {method} toXMLFormatRec
   {method} trieRootLabel

@@ -144,7 +144,7 @@ In support of that statement, here are the methods of `ML::TriesWithFrequencies:
 ML::TriesWithFrequencies::Trie.^method_names
 ```
 ```
-# (clone make merge insert create create-by-split node-probabilities leaf-probabilities leafQ position retrieve has-complete-match contains is-key shrink node-counts remove-by-threshold remove-by-pareto-fraction remove-by-regex select-by-threshold select-by-pareto-fraction select-by-regex root-to-leaf-paths words words-with-probabilities classify echo echo-function form trieRootLabel trieValueLabel getKey getValue getChildren setKey setValue setChildren toMapFormat hash WL toWLFormatRec XML toXMLFormatRec JSON toJSONFormatRec Str gist new fromMapFormat key value children BUILDALL)
+# (clone make merge insert create create-by-split node-probabilities leaf-probabilities leafQ position retrieve has-complete-match contains is-key shrink node-counts remove-by-threshold remove-by-pareto-fraction remove-by-regex select-by-threshold select-by-pareto-fraction select-by-regex root-to-leaf-paths words words-with-probabilities classify echo echo-function form trieRootLabel trieValueLabel getKey getValue getChildren setKey setValue setChildren to-map-format hash WL toWLFormatRec XML toXMLFormatRec JSON toJSONFormatRec Str gist new fromMapFormat key value children BUILDALL)
 ```
 
 ------
