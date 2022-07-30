@@ -846,6 +846,72 @@ class ML::TriesWithFrequencies::Trie
     }
 
     ##=======================================================
+    ## Representation functions
+    ##=======================================================
+
+    #--------------------------------------------------------
+    #| From Map/Hash format
+    multi method fromMapFormat( %tr --> ML::TriesWithFrequencies::Trie ) {
+        if %tr{$.trieRootLabel}:exists {
+            return self.fromMapFormat(%tr{$.trieRootLabel}:p)
+        } else {
+            die "Cannot find {$.trieRootLabel}."
+        }
+    }
+
+    multi method fromMapFormat( Pair $trBody --> ML::TriesWithFrequencies::Trie ) {
+
+        if $trBody.key ~~ Str {
+            self.setKey($trBody.key);
+            if $trBody.value{$.trieValueLabel}:exists {
+                self.setValue($trBody.value{$.trieValueLabel});
+                if $trBody.value.elems > 1 {
+                    %!children = $trBody.value.grep({ $_.key ne $.trieValueLabel }).map({
+                        my ML::TriesWithFrequencies::Trie $ch .= new;
+                        $_.key => $ch.fromMapFormat($_)
+                    })
+                }
+            } else {
+                die "Cannot find {$.trieValueLabel}."
+            }
+        } else {
+            die "Cannot use non-string trie key."
+        }
+
+        return self;
+    }
+
+    #--------------------------------------------------------
+    #| From JSON-Map format
+    multi method fromJSONMapFormat( %tr --> ML::TriesWithFrequencies::Trie ) {
+        if (%tr<key>:exists) && (%tr<value>:exists) && (%tr<children>:exists) {
+
+            if %tr<children> !~~ Positional {
+                die 'The values of the "children" are expected to be Positional objects.';
+            }
+
+            if %tr<children> {
+
+                my %children = %tr<children>.map(-> $c {
+                    my ML::TriesWithFrequencies::Trie $node .= new;
+                    $node.fromJSONMapFormat($c);
+                    $node.getKey => $node
+                }).Hash;
+
+                self.setChildren(%children);
+            }
+
+            self.setKey(%tr<key>);
+            self.setValue(%tr<value>.Num);
+
+            return self;
+
+        } else {
+            die 'Cannot find the keys ' ~ <key value children>.raku ~ '.';
+        }
+    }
+
+    ##=======================================================
     ## Visualization functions
     ##=======================================================
 

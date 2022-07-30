@@ -66,38 +66,6 @@ role ML::TriesWithFrequencies::Trieish {
     }
 
     #--------------------------------------------------------
-    #| From Map/Hash format
-    multi method fromMapFormat( %tr --> ML::TriesWithFrequencies::Trieish ) {
-        if %tr{$.trieRootLabel}:exists {
-            return self.fromMapFormat(%tr{$.trieRootLabel}:p)
-        } else {
-            die "Cannot find {$.trieRootLabel}."
-        }
-    }
-
-    multi method fromMapFormat( Pair $trBody --> ML::TriesWithFrequencies::Trieish ) {
-
-        if $trBody.key ~~ Str {
-            $!key = $trBody.key;
-            if $trBody.value{$.trieValueLabel}:exists {
-                $!value = $trBody.value{$.trieValueLabel};
-                if $trBody.value.elems > 1 {
-                    %!children = $trBody.value.grep({ $_.key ne $.trieValueLabel }).map({
-                        my ML::TriesWithFrequencies::Trieish $ch .= new;
-                        $_.key => $ch.fromMapFormat($_)
-                    })
-                }
-            } else {
-                die "Cannot find {$.trieValueLabel}."
-            }
-        } else {
-            die "Cannot use non-string trie key."
-        }
-
-        return self;
-    }
-
-    #--------------------------------------------------------
     #| As Hash
     method hash( --> Hash) {
        self.toMapFormat()
