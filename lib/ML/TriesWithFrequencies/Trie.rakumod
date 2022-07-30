@@ -563,7 +563,18 @@ class ML::TriesWithFrequencies::Trie
 
             for $tr.children.values -> $chTr {
                 my ML::TriesWithFrequencies::Trie $nTr = shrinkRec($chTr, $sep, $threshold, $internalOnly, $n + 1);
-                %recChildren.push: ($nTr.key => $nTr);
+
+                # This line is not sufficient:
+                #  %recChildren.push: ($nTr.key => $nTr);
+                # It might happen that we have branches that produce the same shrunk keys (with the given separator.)
+                # For example, a -> b -> c -> 3 and a -> bc -> 1 .
+                # Hence the following use trie meriging.
+
+                if %recChildren{$nTr.key}:exists {
+                    %recChildren{$nTr.key} = %recChildren{$nTr.key}.merge($nTr);
+                } else {
+                    %recChildren{$nTr.key} = $nTr;
+                }
             }
 
             $trRes.setKey($tr.key);
@@ -895,7 +906,7 @@ class ML::TriesWithFrequencies::Trie
                 my %children = %tr<children>.map(-> $c {
                     my ML::TriesWithFrequencies::Trie $node .= new;
                     $node.from-json-map-format($c);
-                    $node.getKey => $node
+                    $node.getKey.Str => $node
                 }).Hash;
 
                 self.setChildren(%children);
