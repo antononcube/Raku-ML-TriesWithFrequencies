@@ -23,7 +23,7 @@ my $tr0 = trie-create-by-split(@words);
 ## With node counts:
 # {Internal => 6, Leaves => 1, Total => 7}
 
-plan 4;
+plan 5;
 
 ## 1
 my Str $wlFormat =
@@ -82,6 +82,25 @@ my ML::TriesWithFrequencies::Trie $tr4 .= new;
 is-deeply
         $tr4.fromMapFormat($tr0.hash).hash,
         $tr0.hash,
+        'Hash conversions from-to equivalence.';
+
+## 5
+my @words5 = ['bar' xx 6].append('bark' xx 3).append('cam' xx 3).append('came');
+my $tr5 = trie-create-by-split(@words5);
+
+# %repr5 was derived with:
+#
+# use JSON::Fast;
+# my $repr5 = from-json($tr5.JSON);
+#
+# I did not want to make a dependency on JSON::Fast.
+
+my %repr5 =${:children($[{:children($[{:children($[{:children($[{:children($[]), :key("e"), :value(1)},]), :key("m"), :value(4)},]), :key("a"), :value(4)},]), :key("c"), :value(4)}, {:children($[{:children($[{:children($[{:children($[]), :key("k"), :value(3)},]), :key("r"), :value(9)},]), :key("a"), :value(9)},]), :key("b"), :value(9)}]), :key("TRIEROOT"), :value(13)};
+
+my ML::TriesWithFrequencies::Trie $tr5New .= new;
+is-deeply
+        $tr5New.fromJSONMapFormat(%repr5).hash,
+        $tr5.hash,
         'Hash conversions from-to equivalence.';
 
 done-testing;
