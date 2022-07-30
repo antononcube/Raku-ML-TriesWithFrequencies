@@ -851,15 +851,15 @@ class ML::TriesWithFrequencies::Trie
 
     #--------------------------------------------------------
     #| From Map/Hash format
-    multi method fromMapFormat( %tr --> ML::TriesWithFrequencies::Trie ) {
+    multi method from-map-format( %tr --> ML::TriesWithFrequencies::Trie ) {
         if %tr{$.trieRootLabel}:exists {
-            return self.fromMapFormat(%tr{$.trieRootLabel}:p)
+            return self.from-map-format(%tr{$.trieRootLabel}:p)
         } else {
             die "Cannot find {$.trieRootLabel}."
         }
     }
 
-    multi method fromMapFormat( Pair $trBody --> ML::TriesWithFrequencies::Trie ) {
+    multi method from-map-format( Pair $trBody --> ML::TriesWithFrequencies::Trie ) {
 
         if $trBody.key ~~ Str {
             self.setKey($trBody.key);
@@ -868,7 +868,7 @@ class ML::TriesWithFrequencies::Trie
                 if $trBody.value.elems > 1 {
                     %!children = $trBody.value.grep({ $_.key ne $.trieValueLabel }).map({
                         my ML::TriesWithFrequencies::Trie $ch .= new;
-                        $_.key => $ch.fromMapFormat($_)
+                        $_.key => $ch.from-map-format($_)
                     })
                 }
             } else {
@@ -883,7 +883,7 @@ class ML::TriesWithFrequencies::Trie
 
     #--------------------------------------------------------
     #| From JSON-Map format
-    multi method fromJSONMapFormat( %tr --> ML::TriesWithFrequencies::Trie ) {
+    multi method from-json-map-format( %tr --> ML::TriesWithFrequencies::Trie ) {
         if (%tr<key>:exists) && (%tr<value>:exists) && (%tr<children>:exists) {
 
             if %tr<children> !~~ Positional {
@@ -894,7 +894,7 @@ class ML::TriesWithFrequencies::Trie
 
                 my %children = %tr<children>.map(-> $c {
                     my ML::TriesWithFrequencies::Trie $node .= new;
-                    $node.fromJSONMapFormat($c);
+                    $node.from-json-map-format($c);
                     $node.getKey => $node
                 }).Hash;
 

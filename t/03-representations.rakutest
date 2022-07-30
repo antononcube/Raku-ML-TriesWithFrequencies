@@ -80,7 +80,7 @@ is-deeply
 ## 4
 my ML::TriesWithFrequencies::Trie $tr4 .= new;
 is-deeply
-        $tr4.fromMapFormat($tr0.hash).hash,
+        $tr4.from-map-format($tr0.hash).hash,
         $tr0.hash,
         'Hash conversions from-to equivalence.';
 
@@ -99,7 +99,7 @@ my %repr5 =${:children($[{:children($[{:children($[{:children($[{:children($[]),
 
 my ML::TriesWithFrequencies::Trie $tr5New .= new;
 is-deeply
-        $tr5New.fromJSONMapFormat(%repr5).hash,
+        $tr5New.from-json-map-format(%repr5).hash,
         $tr5.hash,
         'Hash conversions from-to equivalence.';
 
