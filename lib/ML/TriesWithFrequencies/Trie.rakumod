@@ -1,5 +1,6 @@
 use v6.d;
 
+use ML::TriesWithFrequencies::ChildRandomChooser;
 use ML::TriesWithFrequencies::LeafProbabilitiesGatherer;
 use ML::TriesWithFrequencies::ParetoBasedRemover;
 use ML::TriesWithFrequencies::PathsGatherer;
@@ -784,6 +785,24 @@ class ML::TriesWithFrequencies::Trie
     }
 
     ##=======================================================
+    ## Random choice
+    ##=======================================================
+    multi method random-choice(Bool :$weighted = True, :$ulp = Whatever --> Positional) is export {
+        return self.random-choice(1, :$ulp)[0];
+    }
+
+    multi method random-choice(UInt $n = 1, Bool :$weighted = True, :$ulp = Whatever --> Positional) {
+        my $pobj;
+        if ($ulp ~~ Numeric) {
+            $pobj = ML::TriesWithFrequencies::ChildRandomChooser.new(:$weighted, :$ulp);
+        } else {
+            $pobj = ML::TriesWithFrequencies::ChildRandomChooser.new(:$weighted);
+        }
+
+        $pobj.trie-trace(self)
+    }
+
+    ##=======================================================
     ## Classification
     ##=======================================================
     sub is-array-of-arrays($obj) is export {
@@ -846,7 +865,7 @@ class ML::TriesWithFrequencies::Trie
     ##=======================================================
     ## Echo function
     ##=======================================================
-    
+
     method echo-function(&func is copy = WhateverCode) {
 
         if &func.isa(WhateverCode) { &func = { $_ ~~ Str ?? say $_ !! say $_.form; $_ } }

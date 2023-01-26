@@ -468,6 +468,26 @@ sub trie-words-with-probabilities(ML::TriesWithFrequencies::Trie $tr, :$sep = Wh
     return $tr.words-with-probabilities(:$sep);
 }
 
+
+##=======================================================
+## Random choice
+##=======================================================
+
+##-------------------------------------------------------
+#| @description Generates random "words" using trie tr.
+#| @param tr a trie object
+#| @param n number of words
+proto trie-random-choice(ML::TriesWithFrequencies::Trie $tr, |) is export {*}
+
+multi trie-random-choice(ML::TriesWithFrequencies::Trie $tr) {
+    return $tr.random-choice(1)[0];
+}
+
+multi trie-random-choice(ML::TriesWithFrequencies::Trie $tr, UInt $n = 1) {
+    return $tr.random-choice($n);
+}
+
+
 ##=======================================================
 ## Visualization functions
 ##=======================================================
