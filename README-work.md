@@ -29,13 +29,13 @@ Tries-with-frequencies package.
 
 Via zef-ecosystem:
 
-```shell
+```
 zef install ML::TriesWithFrequencies
 ```
 
 From GitHub:
 
-```shell
+```
 zef install https://github.com/antononcube/Raku-ML-TriesWithFrequencies
 ```
 
@@ -90,6 +90,23 @@ In support of that statement, here are the methods of `ML::TriesWithFrequencies:
 ```perl6
 ML::TriesWithFrequencies::Trie.^method_names
 ```
+
+Generate random words using trie, make a new trie, and visualize it:
+
+```perl6
+my @randomWords = $ptr.random-choice.tail(*-1) xx 200;
+my $ptrRandom = trie-create(@randomWords).node-probabilities;
+$ptrRandom.form;
+```
+
+Compare with the original one:
+
+```perl6
+$ptr.form
+```
+
+**Remark:** It is expected with large numbers of generated words to get frequencies 
+very close to those of the original trie.
 
 ------
 

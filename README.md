@@ -29,13 +29,13 @@ Tries-with-frequencies package.
 
 Via zef-ecosystem:
 
-```shell
+```
 zef install ML::TriesWithFrequencies
 ```
 
 From GitHub:
 
-```shell
+```
 zef install https://github.com/antononcube/Raku-ML-TriesWithFrequencies
 ```
 
@@ -144,8 +144,57 @@ In support of that statement, here are the methods of `ML::TriesWithFrequencies:
 ML::TriesWithFrequencies::Trie.^method_names
 ```
 ```
-# (clone make merge insert create create-by-split node-probabilities leaf-probabilities leafQ position retrieve has-complete-match contains is-key shrink node-counts remove-by-threshold remove-by-pareto-fraction remove-by-regex select-by-threshold select-by-pareto-fraction select-by-regex root-to-leaf-paths words words-with-probabilities classify echo echo-function form trieRootLabel trieValueLabel getKey getValue getChildren setKey setValue setChildren to-map-format hash WL toWLFormatRec XML toXMLFormatRec JSON toJSONFormatRec Str gist new fromMapFormat key value children BUILDALL)
+# (clone make merge insert create create-by-split node-probabilities leaf-probabilities leafQ position retrieve has-complete-match contains is-key shrink node-counts remove-by-threshold remove-by-pareto-fraction remove-by-regex select-by-threshold select-by-pareto-fraction select-by-regex root-to-leaf-paths words words-with-probabilities classify echo echo-function form trieRootLabel trieValueLabel getKey getValue getChildren setKey setValue setChildren to-map-format hash WL toWLFormatRec XML toXMLFormatRec JSON toJSONFormatRec Str gist random-choice from-map-format from-json-map-format new key value children BUILDALL)
 ```
+
+Generate random words using trie, make a new trie, and visualize it:
+
+```perl6
+my @randomWords = $ptr.random-choice.tail(*-1) xx 200;
+my $ptrRandom = trie-create(@randomWords).node-probabilities;
+$ptrRandom.form;
+```
+```
+# TRIEROOT => 1
+# ├─b => 0.61
+# │ └─a => 1
+# │   ├─l => 0.32786885245901637
+# │   │ └─m => 1
+# │   └─r => 0.6721311475409836
+# │     ├─k => 0.3780487804878049
+# │     └─s => 0.524390243902439
+# └─c => 0.39
+#   └─e => 1
+#     ├─l => 0.4358974358974359
+#     │ └─l => 1
+#     └─r => 0.5641025641025641
+#       └─t => 1
+```
+
+Compare with the original one:
+
+```perl6
+$ptr.form
+```
+```
+# TRIEROOT => 1
+# ├─b => 0.6666666666666666
+# │ └─a => 1
+# │   ├─l => 0.25
+# │   │ └─m => 1
+# │   └─r => 0.75
+# │     ├─k => 0.3333333333333333
+# │     └─s => 0.3333333333333333
+# └─c => 0.3333333333333333
+#   └─e => 1
+#     ├─l => 0.5
+#     │ └─l => 1
+#     └─r => 0.5
+#       └─t => 1
+```
+
+**Remark:** It is expected with large numbers of generated words to get frequencies 
+very close to those of the original trie.
 
 ------
 
@@ -241,18 +290,18 @@ say $tr0.XML;
 #   <TRIEVALUE>2</TRIEVALUE>
 #   <e>
 #    <TRIEVALUE>2</TRIEVALUE>
-#    <l>
-#     <TRIEVALUE>1</TRIEVALUE>
-#     <l>
-#      <TRIEVALUE>1</TRIEVALUE>
-#     </l>
-#    </l>
 #    <s>
 #     <TRIEVALUE>1</TRIEVALUE>
 #     <t>
 #      <TRIEVALUE>1</TRIEVALUE>
 #     </t>
 #    </s>
+#    <l>
+#     <TRIEVALUE>1</TRIEVALUE>
+#     <l>
+#      <TRIEVALUE>1</TRIEVALUE>
+#     </l>
+#    </l>
 #   </e>
 #  </b>
 # </TRIEROOT>
@@ -387,11 +436,17 @@ Here we get the [PlantUML spec](./resources/class-diagram.puml):
 ```shell
 to-uml-spec ML::TriesWithFrequencies > ./resources/class-diagram.puml
 ```
+```
+# 
+```
 
 Here get the [diagram](./resources/class-diagram.png):
 
 ```shell
 to-uml-spec ML::TriesWithFrequencies | java -jar ~/PlantUML/plantuml-1.2022.5.jar -pipe > ./resources/class-diagram.png
+```
+```
+# 
 ```
 
 ### Performance
