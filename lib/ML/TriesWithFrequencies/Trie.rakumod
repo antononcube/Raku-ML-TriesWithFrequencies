@@ -787,11 +787,11 @@ class ML::TriesWithFrequencies::Trie
     ##=======================================================
     ## Random choice
     ##=======================================================
-    multi method random-choice(Bool :$weighted = True, :$ulp = Whatever --> Positional) is export {
-        return self.random-choice(1, :$ulp).head;
+    multi method random-choice(Bool :$drop-root = False, Bool :$weighted = True, :$ulp = Whatever --> Positional) is export {
+        return self.random-choice(1, :$drop-root, :$weighted, :$ulp).head;
     }
 
-    multi method random-choice(UInt $n = 1, Bool :$weighted = True, :$ulp = Whatever --> Positional) {
+    multi method random-choice(UInt $n, Bool :$drop-root = False, Bool :$weighted = True, :$ulp = Whatever --> Positional) {
         my $pobj;
         if ($ulp ~~ Numeric) {
             $pobj = ML::TriesWithFrequencies::ChildRandomChooser.new(:$weighted, :$ulp);
@@ -799,7 +799,11 @@ class ML::TriesWithFrequencies::Trie
             $pobj = ML::TriesWithFrequencies::ChildRandomChooser.new(:$weighted);
         }
 
-        return ($pobj.trie-trace(self).head xx $n).List;
+        return do if $drop-root {
+            ($pobj.trie-trace(self).head.tail(*-1) xx $n).List;
+        } else {
+            ($pobj.trie-trace(self).head xx $n).List;
+        };
     }
 
     ##=======================================================

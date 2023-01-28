@@ -479,12 +479,12 @@ sub trie-words-with-probabilities(ML::TriesWithFrequencies::Trie $tr, :$sep = Wh
 #| @param n number of words
 proto trie-random-choice(ML::TriesWithFrequencies::Trie $tr, |) is export {*}
 
-multi trie-random-choice(ML::TriesWithFrequencies::Trie $tr) {
-    return $tr.random-choice(1)[0];
+multi trie-random-choice(ML::TriesWithFrequencies::Trie $tr, Bool :$drop-root = False, Bool :$weighted = True, :$ulp = Whatever) {
+    return $tr.random-choice(:$drop-root, :$weighted, :$ulp);
 }
 
-multi trie-random-choice(ML::TriesWithFrequencies::Trie $tr, UInt $n = 1) {
-    return $tr.random-choice($n);
+multi trie-random-choice(ML::TriesWithFrequencies::Trie $tr, UInt $n, Bool :$drop-root = False, Bool :$weighted = True, :$ulp = Whatever) {
+    return $tr.random-choice($n, :$drop-root, :$weighted, :$ulp);
 }
 
 
