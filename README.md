@@ -150,25 +150,26 @@ ML::TriesWithFrequencies::Trie.^method_names
 Generate random words using trie, make a new trie, and visualize it:
 
 ```perl6
-my @randomWords = $ptr.random-choice.tail(*-1) xx 200;
+my @randomWords = $ptr.random-choice(200):drop-root;
 my $ptrRandom = trie-create(@randomWords).node-probabilities;
 $ptrRandom.form;
 ```
 ```
 # TRIEROOT => 1
-# ├─b => 0.61
-# │ └─a => 1
-# │   ├─l => 0.32786885245901637
-# │   │ └─m => 1
-# │   └─r => 0.6721311475409836
-# │     ├─k => 0.3780487804878049
-# │     └─s => 0.524390243902439
-# └─c => 0.39
-#   └─e => 1
-#     ├─l => 0.4358974358974359
-#     │ └─l => 1
-#     └─r => 0.5641025641025641
-#       └─t => 1
+# └─TRIEROOT => 1
+#   ├─b => 0.645
+#   │ └─a => 1
+#   │   ├─l => 0.17054263565891473
+#   │   │ └─m => 1
+#   │   └─r => 0.8294573643410853
+#   │     ├─k => 0.48598130841121495
+#   │     └─s => 0.3925233644859813
+#   └─c => 0.355
+#     └─e => 1
+#       ├─l => 0.5915492957746479
+#       │ └─l => 1
+#       └─r => 0.4084507042253521
+#         └─t => 1
 ```
 
 Compare with the original one:
@@ -232,7 +233,7 @@ representation with `ML::TriesWithFrequencies::Trie`:
 say $tr.JSON;
 ```
 ```
-# {"key":"TRIEROOT", "value":2, "children":[{"key":"cor", "value":2, "children":[{"key":"t", "value":1, "children":[]}, {"key":"e", "value":1, "children":[]}]}]}
+# {"key":"TRIEROOT", "value":2, "children":[{"key":"cor", "value":2, "children":[{"key":"e", "value":1, "children":[]}, {"key":"t", "value":1, "children":[]}]}]}
 ```
 
 ### XML
@@ -248,12 +249,12 @@ say $tr.XML;
 #  <TRIEVALUE>2</TRIEVALUE>
 #  <cor>
 #   <TRIEVALUE>2</TRIEVALUE>
-#   <t>
-#    <TRIEVALUE>1</TRIEVALUE>
-#   </t>
 #   <e>
 #    <TRIEVALUE>1</TRIEVALUE>
 #   </e>
+#   <t>
+#    <TRIEVALUE>1</TRIEVALUE>
+#   </t>
 #  </cor>
 # </TRIEROOT>
 ```
@@ -290,18 +291,18 @@ say $tr0.XML;
 #   <TRIEVALUE>2</TRIEVALUE>
 #   <e>
 #    <TRIEVALUE>2</TRIEVALUE>
-#    <s>
-#     <TRIEVALUE>1</TRIEVALUE>
-#     <t>
-#      <TRIEVALUE>1</TRIEVALUE>
-#     </t>
-#    </s>
 #    <l>
 #     <TRIEVALUE>1</TRIEVALUE>
 #     <l>
 #      <TRIEVALUE>1</TRIEVALUE>
 #     </l>
 #    </l>
+#    <s>
+#     <TRIEVALUE>1</TRIEVALUE>
+#     <t>
+#      <TRIEVALUE>1</TRIEVALUE>
+#     </t>
+#    </s>
 #   </e>
 #  </b>
 # </TRIEROOT>
@@ -330,7 +331,7 @@ Hence, such WL format is provided by the Raku package:
 say $tr.WL;
 ```
 ```
-# <|$TrieRoot -> <|$TrieValue -> 2, "cor" -> <|$TrieValue -> 2, "t" -> <|$TrieValue -> 1|>, "e" -> <|$TrieValue -> 1|>|>|>|>
+# <|$TrieRoot -> <|$TrieValue -> 2, "cor" -> <|$TrieValue -> 2, "e" -> <|$TrieValue -> 1|>, "t" -> <|$TrieValue -> 1|>|>|>|>
 ```
 
 ------

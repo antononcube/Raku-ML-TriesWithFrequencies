@@ -94,7 +94,7 @@ ML::TriesWithFrequencies::Trie.^method_names
 Generate random words using trie, make a new trie, and visualize it:
 
 ```perl6
-my @randomWords = $ptr.random-choice.tail(*-1) xx 200;
+my @randomWords = $ptr.random-choice(200):drop-root;
 my $ptrRandom = trie-create(@randomWords).node-probabilities;
 $ptrRandom.form;
 ```
