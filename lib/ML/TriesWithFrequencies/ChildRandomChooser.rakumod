@@ -61,6 +61,7 @@ class ML::TriesWithFrequencies::ChildRandomChooser {
 
     #--------------------------------------------------------
     method trie-trace(ML::TriesWithFrequencies::Trieish $tr) {
+        @!tracedPaths = [];
         self.trace($tr, []);
         @!tracedPaths>>.key
     }

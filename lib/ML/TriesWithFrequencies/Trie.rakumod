@@ -788,7 +788,7 @@ class ML::TriesWithFrequencies::Trie
     ## Random choice
     ##=======================================================
     multi method random-choice(Bool :$weighted = True, :$ulp = Whatever --> Positional) is export {
-        return self.random-choice(1, :$ulp)[0];
+        return self.random-choice(1, :$ulp).head;
     }
 
     multi method random-choice(UInt $n = 1, Bool :$weighted = True, :$ulp = Whatever --> Positional) {
@@ -799,7 +799,7 @@ class ML::TriesWithFrequencies::Trie
             $pobj = ML::TriesWithFrequencies::ChildRandomChooser.new(:$weighted);
         }
 
-        $pobj.trie-trace(self)
+        return ($pobj.trie-trace(self).head xx $n).List;
     }
 
     ##=======================================================
