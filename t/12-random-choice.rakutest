@@ -6,7 +6,7 @@ use lib './lib';
 use ML::TriesWithFrequencies;
 use ML::TriesWithFrequencies::Trie;
 
-plan 6;
+plan 8;
 
 ## 1
 my @words1 = ['bar' xx 6].append('bark' xx 3).append('bare' xx 2).append('cam' xx 3).append('came').append('camelia' xx 4);
@@ -50,6 +50,12 @@ is ([&&] %diffs5.map({ abs($_.value) ≤ 0.6 })),
         'Leaf probabilities of a trie based on random-choice words';
 
 ## 6
+isa-ok $tr1.random-choice(20), List, 'With number of words argument';
+
+## 7
 ok trie-random-choice($tr1), 'Routine signature';
+
+## 8
+ok trie-random-choice($tr1, 20), 'Routine signature 2';
 
 done-testing;
