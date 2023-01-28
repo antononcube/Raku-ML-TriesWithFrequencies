@@ -1,0 +1,55 @@
+use Test;
+
+use lib '.';
+use lib './lib';
+
+use ML::TriesWithFrequencies;
+use ML::TriesWithFrequencies::Trie;
+
+plan 6;
+
+## 1
+my @words1 = ['bar' xx 6].append('bark' xx 3).append('bare' xx 2).append('cam' xx 3).append('came').append('camelia' xx 4);
+
+my $tr1 = ML::TriesWithFrequencies::Trie.create-by-split(@words1);
+my $ptr1 = $tr1.node-probabilities;
+
+ok $tr1.random-choice, 'Simple random choice call on freqs trie';
+
+## 2
+ok $ptr1.random-choice, 'Simple random choice call on probs trie';
+
+## 3
+isa-ok $ptr1.random-choice.tail(*-1) xx 120, Seq, 'Array of random choices';
+
+## 4
+my @words4 = $ptr1.random-choice.tail(*-1) xx 120;
+my $trRandom = trie-create(@words4);
+my $ptrRandom = $trRandom.node-probabilities;
+
+my %probs4 = $ptr1.leaf-probabilities;
+my %rprobs4 = $ptrRandom.leaf-probabilities;
+
+my %diffs4 = do for %probs4.keys -> $k {
+        $k => %probs4{$k} - %rprobs4{$k}
+}
+
+is ([&&] %diffs4.map({ abs($_.value) ≤ 0.6 })),
+        True,
+        'Leaf probabilities of a trie based on random-choice words';
+
+## 5
+my %rprobs5 = trie-create($ptr1.random-choice.tail(*-1) xx 120).leaf-probabilities;
+
+my %diffs5 = do for %probs4.keys -> $k {
+        $k => %probs4{$k} - %rprobs5{$k}
+}
+
+is ([&&] %diffs5.map({ abs($_.value) ≤ 0.6 })),
+        True,
+        'Leaf probabilities of a trie based on random-choice words';
+
+## 6
+ok trie-random-choice($tr1), 'Routine signature';
+
+done-testing;
