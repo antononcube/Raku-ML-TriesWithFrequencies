@@ -27,10 +27,4 @@ jobs:
           zef install --/test --deps-only .
           zef install --/test App::Prove6
       - name: Run Tests
-        run: |
-          raku -I. t/01-creation.rakutest
-          raku -I. t/02-basic-use.rakutest
-          raku -I. t/03-representation.rakutest
-          raku -I. t/04-remove-by-threshold.rakutest
-          raku -I. t/05-remove-by-pareto.rakutest
         run: prove6 -l t
