@@ -1,5 +1,8 @@
 # Raku ML::TriesWithFrequencies
-
+  
+[![MacOS](https://github.com/antononcube/Raku-ML-TriesWithFrequencies/actions/workflows/macos.yml/badge.svg)](https://github.com/antononcube/Raku-ML-TriesWithFrequencies/actions/workflows/macos.yml)
+[![Linux](https://github.com/antononcube/Raku-ML-TriesWithFrequencies/actions/workflows/linux.yml/badge.svg)](https://github.com/antononcube/Raku-ML-TriesWithFrequencies/actions/workflows/linux.yml)
+[![Win64](https://github.com/antononcube/Raku-ML-TriesWithFrequencies/actions/workflows/windows.yml/badge.svg)](https://github.com/antononcube/Raku-ML-TriesWithFrequencies/actions/workflows/windows.yml)
 [![SparkyCI](https://ci.sparrowhub.io/project/gh-antononcube-Raku-ML-TriesWithFrequencies/badge)](https://ci.sparrowhub.io)
 [![License: Artistic-2.0](https://img.shields.io/badge/License-Artistic%202.0-0298c3.svg)](https://opensource.org/licenses/Artistic-2.0)
 
@@ -248,13 +251,13 @@ were obtained with the CLI script `to-uml-spec` of the package "UML::Translators
 
 Here we get the [PlantUML spec](./resources/class-diagram.puml):
 
-```shell
+```
 to-uml-spec ML::TriesWithFrequencies > ./resources/class-diagram.puml
 ```
 
 Here get the [diagram](./resources/class-diagram.png):
 
-```shell
+```
 to-uml-spec ML::TriesWithFrequencies | java -jar ~/PlantUML/plantuml-1.2022.5.jar -pipe > ./resources/class-diagram.png
 ```
 

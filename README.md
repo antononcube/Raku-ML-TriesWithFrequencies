@@ -1,5 +1,8 @@
 # Raku ML::TriesWithFrequencies
 
+[![MacOS](https://github.com/antononcube/Raku-ML-TriesWithFrequencies/actions/workflows/macos.yml/badge.svg)](https://github.com/antononcube/Raku-ML-TriesWithFrequencies/actions/workflows/macos.yml)
+[![Linux](https://github.com/antononcube/Raku-ML-TriesWithFrequencies/actions/workflows/linux.yml/badge.svg)](https://github.com/antononcube/Raku-ML-TriesWithFrequencies/actions/workflows/linux.yml)
+[![Win64](https://github.com/antononcube/Raku-ML-TriesWithFrequencies/actions/workflows/windows.yml/badge.svg)](https://github.com/antononcube/Raku-ML-TriesWithFrequencies/actions/workflows/windows.yml)
 [![SparkyCI](https://ci.sparrowhub.io/project/gh-antononcube-Raku-ML-TriesWithFrequencies/badge)](https://ci.sparrowhub.io)
 [![License: Artistic-2.0](https://img.shields.io/badge/License-Artistic%202.0-0298c3.svg)](https://opensource.org/licenses/Artistic-2.0)
 
@@ -156,20 +159,19 @@ $ptrRandom.form;
 ```
 ```
 # TRIEROOT => 1
-# └─TRIEROOT => 1
-#   ├─b => 0.645
-#   │ └─a => 1
-#   │   ├─l => 0.17054263565891473
-#   │   │ └─m => 1
-#   │   └─r => 0.8294573643410853
-#   │     ├─k => 0.48598130841121495
-#   │     └─s => 0.3925233644859813
-#   └─c => 0.355
-#     └─e => 1
-#       ├─l => 0.5915492957746479
-#       │ └─l => 1
-#       └─r => 0.4084507042253521
-#         └─t => 1
+# ├─b => 0.695
+# │ └─a => 1
+# │   ├─l => 0.2733812949640288
+# │   │ └─m => 1
+# │   └─r => 0.7266187050359713
+# │     ├─k => 0.42574257425742573
+# │     └─s => 0.42574257425742573
+# └─c => 0.305
+#   └─e => 1
+#     ├─l => 0.6065573770491803
+#     │ └─l => 1
+#     └─r => 0.39344262295081966
+#       └─t => 1
 ```
 
 Compare with the original one:
@@ -233,7 +235,7 @@ representation with `ML::TriesWithFrequencies::Trie`:
 say $tr.JSON;
 ```
 ```
-# {"key":"TRIEROOT", "value":2, "children":[{"key":"cor", "value":2, "children":[{"key":"e", "value":1, "children":[]}, {"key":"t", "value":1, "children":[]}]}]}
+# {"key":"TRIEROOT", "value":2, "children":[{"key":"cor", "value":2, "children":[{"key":"t", "value":1, "children":[]}, {"key":"e", "value":1, "children":[]}]}]}
 ```
 
 ### XML
@@ -249,12 +251,12 @@ say $tr.XML;
 #  <TRIEVALUE>2</TRIEVALUE>
 #  <cor>
 #   <TRIEVALUE>2</TRIEVALUE>
-#   <e>
-#    <TRIEVALUE>1</TRIEVALUE>
-#   </e>
 #   <t>
 #    <TRIEVALUE>1</TRIEVALUE>
 #   </t>
+#   <e>
+#    <TRIEVALUE>1</TRIEVALUE>
+#   </e>
 #  </cor>
 # </TRIEROOT>
 ```
@@ -271,13 +273,15 @@ my $tr0 = trie-create-by-split(<bell best>);
 trie-say($tr0);
 ```
 ```
-# TRIEROOT => 2
-# └─b => 2
-#   └─e => 2
-#     ├─l => 1
-#     │ └─l => 1
-#     └─s => 1
-#       └─t => 1
+#ERROR: Could not find XML::XPath in:
+#ERROR:     /Users/antonov/.raku
+#ERROR:     /Users/antonov/.rakubrew/versions/moar-2023.12/share/perl6/site
+#ERROR:     /Users/antonov/.rakubrew/versions/moar-2023.12/share/perl6/vendor
+#ERROR:     /Users/antonov/.rakubrew/versions/moar-2023.12/share/perl6/core
+#ERROR:     CompUnit::Repository::AbsolutePath<6339901615792>
+#ERROR:     CompUnit::Repository::NQP<6339876907184>
+#ERROR:     CompUnit::Repository::Perl5<6339876907224>
+# Nil
 ```
 Convert to XML:
 
@@ -285,27 +289,8 @@ Convert to XML:
 say $tr0.XML;
 ```
 ```
-# <TRIEROOT>
-#  <TRIEVALUE>2</TRIEVALUE>
-#  <b>
-#   <TRIEVALUE>2</TRIEVALUE>
-#   <e>
-#    <TRIEVALUE>2</TRIEVALUE>
-#    <l>
-#     <TRIEVALUE>1</TRIEVALUE>
-#     <l>
-#      <TRIEVALUE>1</TRIEVALUE>
-#     </l>
-#    </l>
-#    <s>
-#     <TRIEVALUE>1</TRIEVALUE>
-#     <t>
-#      <TRIEVALUE>1</TRIEVALUE>
-#     </t>
-#    </s>
-#   </e>
-#  </b>
-# </TRIEROOT>
+#ERROR: Variable '$tr0' is not declared.  Did you mean '$tr'?
+# Nil
 ```
 
 Search for `<b e l>`:
@@ -314,12 +299,8 @@ Search for `<b e l>`:
 say XML::XPath.new(xml=>$tr0.XML).find('//b/e/l');
 ```
 ```
-# <l>
-#     <TRIEVALUE>1</TRIEVALUE> 
-#     <l>
-#      <TRIEVALUE>1</TRIEVALUE> 
-#     </l> 
-#    </l>
+#ERROR: Variable '$tr0' is not declared.  Did you mean '$tr'?
+# Nil
 ```
 
 ### WL
@@ -331,7 +312,7 @@ Hence, such WL format is provided by the Raku package:
 say $tr.WL;
 ```
 ```
-# <|$TrieRoot -> <|$TrieValue -> 2, "cor" -> <|$TrieValue -> 2, "e" -> <|$TrieValue -> 1|>, "t" -> <|$TrieValue -> 1|>|>|>|>
+# <|$TrieRoot -> <|$TrieValue -> 2, "cor" -> <|$TrieValue -> 2, "t" -> <|$TrieValue -> 1|>, "e" -> <|$TrieValue -> 1|>|>|>|>
 ```
 
 ------
@@ -434,20 +415,14 @@ were obtained with the CLI script `to-uml-spec` of the package "UML::Translators
 
 Here we get the [PlantUML spec](./resources/class-diagram.puml):
 
-```shell
+```
 to-uml-spec ML::TriesWithFrequencies > ./resources/class-diagram.puml
-```
-```
-# 
 ```
 
 Here get the [diagram](./resources/class-diagram.png):
 
-```shell
+```
 to-uml-spec ML::TriesWithFrequencies | java -jar ~/PlantUML/plantuml-1.2022.5.jar -pipe > ./resources/class-diagram.png
-```
-```
-# 
 ```
 
 ### Performance
