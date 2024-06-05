@@ -79,7 +79,7 @@ role ML::TriesWithFrequencies::Trieish {
     }
 
     #| To WL-Association format recursion
-    method toWLFormatRec( --> Str ) {
+    method !toWLFormatRec( --> Str ) {
         my @chMap;
 
         with %!children {
@@ -100,7 +100,7 @@ role ML::TriesWithFrequencies::Trieish {
     }
 
     #| To XML format recursion
-    method toXMLFormatRec( UInt $n --> Str ) {
+    method !toXMLFormatRec( UInt $n --> Str ) {
         my Str $offset = ' ' x $n;
         my Str $offset1 = $offset ~ ' ';
         my @chMap;
@@ -127,7 +127,7 @@ role ML::TriesWithFrequencies::Trieish {
     }
 
     #| To JSON format recursion
-    method toJSONFormatRec( UInt $n --> Str ) {
+    method !toJSONFormatRec( UInt $n --> Str ) {
         my Str $offset = ' ' x $n;
         my Str $offset1 = $offset ~ ' ';
         my @chMap;
