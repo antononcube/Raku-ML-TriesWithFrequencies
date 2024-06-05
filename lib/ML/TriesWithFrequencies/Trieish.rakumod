@@ -150,7 +150,7 @@ role ML::TriesWithFrequencies::Trieish {
     }
 
     #| To gist
-    method gist( --> Str ) {
+    multi method gist(::?CLASS:D:-->Str) {
         self.to-map-format().gist
     }
 }
