@@ -754,20 +754,29 @@ class ML::TriesWithFrequencies::Trie
     ##-------------------------------------------------------
     proto method words(| --> Positional) is export {*};
 
-    #| @description Finds all words in the trie tr that start with the word searchWord.
-    #| @param sw a list of strings
-    #| @param sep is a separator
-    multi method words($sw, :$sep = Whatever --> Positional) {
-        return self.retrieve($sw).words(:$sep);
+    #| @description Finds all words in the trie tr that start with the word sw.
+    #| @param $sw a list of strings
+    #| @param $sep is a separator
+    multi method words($sw, :$sep = Whatever, Bool :c(:$complete) = False --> Positional) {
+        my $res = self.retrieve($sw).words(:$sep);
+        return do if $complete {
+            if $sep ~~ Str:D {
+                $res.map({ $sw.head(*-1).join($sep) ~ $sep ~ $_ }).Array
+            } else {
+                $res.map({ [|$sw.head(*-1), |$_] }).Array
+            }
+        } else {
+            $res.Array
+        }
     }
 
     #| @description Finds all words in the trie tr that start with the word searchWord.
-    #| @param sep is a separator
+    #| @param $sep is a separator
     multi method words(:$sep = Whatever --> Positional) {
 
         my $res = self.root-to-leaf-paths(:$sep).map({ $_».key.grep({ $_ ne self.trieRootLabel }) });
 
-        if $sep.isa(Str) { $res».join($sep).List }
+        if $sep ~~ Str:D { $res».join($sep).List }
         else { $res.List>>.List }
     }
 
