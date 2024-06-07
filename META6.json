@@ -22,10 +22,7 @@
     "ML::TriesWithFrequencies::TrieTraverse": "lib/ML/TriesWithFrequencies/TrieTraverse.rakumod",
     "ML::TriesWithFrequencies::Trieish": "lib/ML/TriesWithFrequencies/Trieish.rakumod"
   },
-  "resources": [
-    "class-diagram.puml",
-    "class-diagram.png"
-  ],
+  "resources": [],
   "license": "Artistic-2.0",
   "tags": [
     "data mining",
