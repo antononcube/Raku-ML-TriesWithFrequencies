@@ -74,7 +74,7 @@ role ML::TriesWithFrequencies::Trieish {
     #--------------------------------------------------------
     #| To WL-Association format
     method WL( --> Str ) {
-        my $res = '<|' ~ self.toWLFormatRec().subst(:g, '"' ~ $.trieRootLabel ~ '"', '$TrieRoot') ~ '|>';
+        my $res = '<|' ~ self!toWLFormatRec().subst(:g, '"' ~ $.trieRootLabel ~ '"', '$TrieRoot') ~ '|>';
         $res.subst(:g, $.trieValueLabel, '$TrieValue')
     }
 
@@ -84,7 +84,7 @@ role ML::TriesWithFrequencies::Trieish {
 
         with %!children {
             for %!children.kv -> $k, $v {
-                @chMap.append: [ $v.toWLFormatRec() ];
+                @chMap.append: [ $v!toWLFormatRec() ];
             }
         }
 
@@ -96,7 +96,7 @@ role ML::TriesWithFrequencies::Trieish {
     #--------------------------------------------------------
     #| To XML format
     method XML( --> Str ) {
-        self.toXMLFormatRec(0)
+        self!toXMLFormatRec(0)
     }
 
     #| To XML format recursion
@@ -107,7 +107,7 @@ role ML::TriesWithFrequencies::Trieish {
 
         with %!children {
             for %!children.kv -> $k, $v {
-                @chMap.append: [ $v.toXMLFormatRec($n + 1) ];
+                @chMap.append: [ $v!toXMLFormatRec($n + 1) ];
             }
             @chMap.map({ $offset1 ~ $_ })
         }
@@ -123,7 +123,7 @@ role ML::TriesWithFrequencies::Trieish {
 
     #| To JSON format
     method JSON( --> Str ) {
-        self.toJSONFormatRec(0)
+        self!toJSONFormatRec(0)
     }
 
     #| To JSON format recursion
@@ -134,7 +134,7 @@ role ML::TriesWithFrequencies::Trieish {
 
         with %!children {
             for %!children.kv -> $k, $v {
-                @chMap.append: [ $v.toJSONFormatRec($n + 1) ];
+                @chMap.append: [ $v!toJSONFormatRec($n + 1) ];
             }
             @chMap.map({ $offset1 ~ $_ })
         }
