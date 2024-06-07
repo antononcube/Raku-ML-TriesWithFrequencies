@@ -1,10 +1,11 @@
 # Raku ML::TriesWithFrequencies
-
+  
 [![MacOS](https://github.com/antononcube/Raku-ML-TriesWithFrequencies/actions/workflows/macos.yml/badge.svg)](https://github.com/antononcube/Raku-ML-TriesWithFrequencies/actions/workflows/macos.yml)
 [![Linux](https://github.com/antononcube/Raku-ML-TriesWithFrequencies/actions/workflows/linux.yml/badge.svg)](https://github.com/antononcube/Raku-ML-TriesWithFrequencies/actions/workflows/linux.yml)
 [![Win64](https://github.com/antononcube/Raku-ML-TriesWithFrequencies/actions/workflows/windows.yml/badge.svg)](https://github.com/antononcube/Raku-ML-TriesWithFrequencies/actions/workflows/windows.yml)
-[![SparkyCI](https://ci.sparrowhub.io/project/gh-antononcube-Raku-ML-TriesWithFrequencies/badge)](https://ci.sparrowhub.io)
 [![License: Artistic-2.0](https://img.shields.io/badge/License-Artistic%202.0-0298c3.svg)](https://opensource.org/licenses/Artistic-2.0)
+[![https://raku.land/zef:antononcube/ML::TriesWithFrequencies](https://raku.land/zef:antononcube/ML::TriesWithFrequencies/badges/version)](https://raku.land/zef:antononcube/ML::TriesWithFrequencies)
+[![https://raku.land/zef:antononcube/ML::TriesWithFrequencies](https://raku.land/zef:antononcube/ML::TriesWithFrequencies/badges/downloads)](https://raku.land/zef:antononcube/ML::TriesWithFrequencies)
 
 This Raku package has functions for creation and manipulation of 
 [Tries (Prefix trees)](https://en.wikipedia.org/wiki/Trie) 
@@ -147,7 +148,7 @@ In support of that statement, here are the methods of `ML::TriesWithFrequencies:
 ML::TriesWithFrequencies::Trie.^method_names
 ```
 ```
-# (clone make merge insert create create-by-split node-probabilities leaf-probabilities leafQ position retrieve has-complete-match contains is-key shrink node-counts remove-by-threshold remove-by-pareto-fraction remove-by-regex select-by-threshold select-by-pareto-fraction select-by-regex root-to-leaf-paths words words-with-probabilities classify echo echo-function form trieRootLabel trieValueLabel getKey getValue getChildren setKey setValue setChildren to-map-format hash WL toWLFormatRec XML toXMLFormatRec JSON toJSONFormatRec Str gist random-choice from-map-format from-json-map-format new key value children BUILDALL)
+# (clone make merge insert create create-by-split node-probabilities leaf-probabilities leafQ position retrieve has-complete-match contains is-key shrink node-counts remove-by-threshold remove-by-pareto-fraction remove-by-regex select-by-threshold select-by-pareto-fraction select-by-regex root-to-leaf-paths words words-with-probabilities classify echo echo-function form trieRootLabel trieValueLabel getKey getValue getChildren setKey setValue setChildren to-map-format hash WL XML JSON Str random-choice from-map-format from-json-map-format new gist key value children BUILDALL)
 ```
 
 Generate random words using trie, make a new trie, and visualize it:
@@ -159,18 +160,18 @@ $ptrRandom.form;
 ```
 ```
 # TRIEROOT => 1
-# ├─b => 0.695
+# ├─b => 0.675
 # │ └─a => 1
-# │   ├─l => 0.2733812949640288
+# │   ├─l => 0.2
 # │   │ └─m => 1
-# │   └─r => 0.7266187050359713
-# │     ├─k => 0.42574257425742573
-# │     └─s => 0.42574257425742573
-# └─c => 0.305
+# │   └─r => 0.8
+# │     ├─k => 0.4351851851851852
+# │     └─s => 0.46296296296296297
+# └─c => 0.325
 #   └─e => 1
-#     ├─l => 0.6065573770491803
+#     ├─l => 0.5384615384615384
 #     │ └─l => 1
-#     └─r => 0.39344262295081966
+#     └─r => 0.46153846153846156
 #       └─t => 1
 ```
 
@@ -235,7 +236,7 @@ representation with `ML::TriesWithFrequencies::Trie`:
 say $tr.JSON;
 ```
 ```
-# {"key":"TRIEROOT", "value":2, "children":[{"key":"cor", "value":2, "children":[{"key":"t", "value":1, "children":[]}, {"key":"e", "value":1, "children":[]}]}]}
+# {"key":"TRIEROOT", "value":2, "children":[{"key":"cor", "value":2, "children":[{"key":"e", "value":1, "children":[]}, {"key":"t", "value":1, "children":[]}]}]}
 ```
 
 ### XML
@@ -251,12 +252,12 @@ say $tr.XML;
 #  <TRIEVALUE>2</TRIEVALUE>
 #  <cor>
 #   <TRIEVALUE>2</TRIEVALUE>
-#   <t>
-#    <TRIEVALUE>1</TRIEVALUE>
-#   </t>
 #   <e>
 #    <TRIEVALUE>1</TRIEVALUE>
 #   </e>
+#   <t>
+#    <TRIEVALUE>1</TRIEVALUE>
+#   </t>
 #  </cor>
 # </TRIEROOT>
 ```
@@ -273,15 +274,13 @@ my $tr0 = trie-create-by-split(<bell best>);
 trie-say($tr0);
 ```
 ```
-#ERROR: Could not find XML::XPath in:
-#ERROR:     /Users/antonov/.raku
-#ERROR:     /Users/antonov/.rakubrew/versions/moar-2023.12/share/perl6/site
-#ERROR:     /Users/antonov/.rakubrew/versions/moar-2023.12/share/perl6/vendor
-#ERROR:     /Users/antonov/.rakubrew/versions/moar-2023.12/share/perl6/core
-#ERROR:     CompUnit::Repository::AbsolutePath<6339901615792>
-#ERROR:     CompUnit::Repository::NQP<6339876907184>
-#ERROR:     CompUnit::Repository::Perl5<6339876907224>
-# Nil
+# TRIEROOT => 2
+# └─b => 2
+#   └─e => 2
+#     ├─l => 1
+#     │ └─l => 1
+#     └─s => 1
+#       └─t => 1
 ```
 Convert to XML:
 
@@ -289,8 +288,27 @@ Convert to XML:
 say $tr0.XML;
 ```
 ```
-#ERROR: Variable '$tr0' is not declared.  Did you mean '$tr'?
-# Nil
+# <TRIEROOT>
+#  <TRIEVALUE>2</TRIEVALUE>
+#  <b>
+#   <TRIEVALUE>2</TRIEVALUE>
+#   <e>
+#    <TRIEVALUE>2</TRIEVALUE>
+#    <l>
+#     <TRIEVALUE>1</TRIEVALUE>
+#     <l>
+#      <TRIEVALUE>1</TRIEVALUE>
+#     </l>
+#    </l>
+#    <s>
+#     <TRIEVALUE>1</TRIEVALUE>
+#     <t>
+#      <TRIEVALUE>1</TRIEVALUE>
+#     </t>
+#    </s>
+#   </e>
+#  </b>
+# </TRIEROOT>
 ```
 
 Search for `<b e l>`:
@@ -299,8 +317,12 @@ Search for `<b e l>`:
 say XML::XPath.new(xml=>$tr0.XML).find('//b/e/l');
 ```
 ```
-#ERROR: Variable '$tr0' is not declared.  Did you mean '$tr'?
-# Nil
+# <l>
+#     <TRIEVALUE>1</TRIEVALUE> 
+#     <l>
+#      <TRIEVALUE>1</TRIEVALUE> 
+#     </l> 
+#    </l>
 ```
 
 ### WL
@@ -312,7 +334,7 @@ Hence, such WL format is provided by the Raku package:
 say $tr.WL;
 ```
 ```
-# <|$TrieRoot -> <|$TrieValue -> 2, "cor" -> <|$TrieValue -> 2, "t" -> <|$TrieValue -> 1|>, "e" -> <|$TrieValue -> 1|>|>|>|>
+# <|$TrieRoot -> <|$TrieValue -> 2, "cor" -> <|$TrieValue -> 2, "e" -> <|$TrieValue -> 1|>, "t" -> <|$TrieValue -> 1|>|>|>|>
 ```
 
 ------
@@ -404,26 +426,200 @@ ML::TriesWithFrequencies::Trie.create-by-split(@words2)
 
 Here is a UML diagram that shows package's structure:
 
-![](./resources/class-diagram.png)
-
-
-The
-[PlantUML spec](./resources/class-diagram.puml)
-and
-[diagram](./resources/class-diagram.png)
-were obtained with the CLI script `to-uml-spec` of the package "UML::Translators", [AAp7].
-
-Here we get the [PlantUML spec](./resources/class-diagram.puml):
-
+```perl6, output.lang=mermaid, output.prompt=NONE
+use UML::Translators;
+to-uml-spec('ML::TriesWithFrequencies', format => 'mermaid')
 ```
-to-uml-spec ML::TriesWithFrequencies > ./resources/class-diagram.puml
+```mermaid
+classDiagram
+class ML_TriesWithFrequencies_PathsGatherer {
+  +$!ulp
+  +@!tracedPaths
+  +BUILDALL()
+  +new()
+  +trace()
+  +tracedPaths()
+  +trie-trace()
+  +ulp()
+}
+
+
+class TRIEROOT {
+  <<constant>>
+}
+TRIEROOT --|> Stringy
+
+
+class TRIEVALUE {
+  <<constant>>
+}
+TRIEVALUE --|> Stringy
+
+
+class ML_TriesWithFrequencies_ChildRandomChooser {
+  +$!ulp
+  +$!weighted
+  +@!tracedPaths
+  +BUILDALL()
+  +new()
+  +trace()
+  +tracedPaths()
+  +trie-trace()
+  +ulp()
+  +weighted()
+}
+
+
+class ML_TriesWithFrequencies_Trieish {
+  <<role>>
+  +$!key
+  +$!value
+  +%!children
+  +JSON()
+  +Str()
+  +WL()
+  +XML()
+  +clone()
+  +getChildren()
+  +getKey()
+  +getValue()
+  +hash()
+  +setChildren()
+  +setKey()
+  +setValue()
+  +to-map-format()
+  +trieRootLabel()
+  +trieValueLabel()
+}
+
+
+class ML_TriesWithFrequencies_ParetoBasedRemover {
+  +$!pareto-fraction
+  +$!postfix
+  +$!remove-bottom
+  +BUILDALL()
+  +new()
+  +pareto-fraction()
+  +postfix()
+  +remove()
+  +remove-bottom()
+  +trie-map()
+  +trie-pareto-remove()
+}
+ML_TriesWithFrequencies_ParetoBasedRemover --|> ML_TriesWithFrequencies_TrieTraverse
+
+
+class ML_TriesWithFrequencies_ThresholdBasedRemover {
+  +$!below-threshold
+  +$!postfix
+  +$!threshold
+  +BUILDALL()
+  +below-threshold()
+  +new()
+  +postfix()
+  +remove()
+  +threshold()
+  +trie-map()
+  +trie-threshold-remove()
+}
+ML_TriesWithFrequencies_ThresholdBasedRemover --|> ML_TriesWithFrequencies_TrieTraverse
+
+
+class ML_TriesWithFrequencies_RegexBasedRemover {
+  +$!invert
+  +$!key-pattern
+  +$!postfix
+  +BUILDALL()
+  +invert()
+  +key-pattern()
+  +new()
+  +postfix()
+  +remove()
+  +trie-map()
+  +trie-regex-remove()
+}
+ML_TriesWithFrequencies_RegexBasedRemover --|> ML_TriesWithFrequencies_TrieTraverse
+
+
+class ML_TriesWithFrequencies_TrieTraverse {
+  <<role>>
+}
+
+
+class ML_TriesWithFrequencies_Trie {
+  +$!key
+  +$!value
+  +%!children
+  +BUILDALL()
+  +JSON()
+  +Str()
+  +WL()
+  +XML()
+  +children()
+  +classify()
+  +clone()
+  +contains()
+  +create()
+  +create-by-split()
+  +echo()
+  +echo-function()
+  +form()
+  +from-json-map-format()
+  +from-map-format()
+  +getChildren()
+  +getKey()
+  +getValue()
+  +gist()
+  +has-complete-match()
+  +hash()
+  +insert()
+  +is-key()
+  +key()
+  +leaf-probabilities()
+  +leafQ()
+  +make()
+  +merge()
+  +new()
+  +node-counts()
+  +node-probabilities()
+  +position()
+  +random-choice()
+  +remove-by-pareto-fraction()
+  +remove-by-regex()
+  +remove-by-threshold()
+  +retrieve()
+  +root-to-leaf-paths()
+  +select-by-pareto-fraction()
+  +select-by-regex()
+  +select-by-threshold()
+  +setChildren()
+  +setKey()
+  +setValue()
+  +shrink()
+  +to-map-format()
+  +trieRootLabel()
+  +trieValueLabel()
+  +value()
+  +words()
+  +words-with-probabilities()
+}
+ML_TriesWithFrequencies_Trie --|> ML_TriesWithFrequencies_Trieish
+
+
+class ML_TriesWithFrequencies_LeafProbabilitiesGatherer {
+  +$!counts-trie
+  +$!ulp
+  +BUILDALL()
+  +counts-trie()
+  +new()
+  +trace()
+  +trie-trace()
+  +ulp()
+}
 ```
 
-Here get the [diagram](./resources/class-diagram.png):
+**Remark:** The function `to-uml-spec` is provided by the package ["UML::Translators"](https://raku.land/zef:antononcube/UML::Translators), [AAp7].
 
-```
-to-uml-spec ML::TriesWithFrequencies | java -jar ~/PlantUML/plantuml-1.2022.5.jar -pipe > ./resources/class-diagram.png
-```
 
 ### Performance
 

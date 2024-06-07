@@ -3,8 +3,9 @@
 [![MacOS](https://github.com/antononcube/Raku-ML-TriesWithFrequencies/actions/workflows/macos.yml/badge.svg)](https://github.com/antononcube/Raku-ML-TriesWithFrequencies/actions/workflows/macos.yml)
 [![Linux](https://github.com/antononcube/Raku-ML-TriesWithFrequencies/actions/workflows/linux.yml/badge.svg)](https://github.com/antononcube/Raku-ML-TriesWithFrequencies/actions/workflows/linux.yml)
 [![Win64](https://github.com/antononcube/Raku-ML-TriesWithFrequencies/actions/workflows/windows.yml/badge.svg)](https://github.com/antononcube/Raku-ML-TriesWithFrequencies/actions/workflows/windows.yml)
-[![SparkyCI](https://ci.sparrowhub.io/project/gh-antononcube-Raku-ML-TriesWithFrequencies/badge)](https://ci.sparrowhub.io)
 [![License: Artistic-2.0](https://img.shields.io/badge/License-Artistic%202.0-0298c3.svg)](https://opensource.org/licenses/Artistic-2.0)
+[![https://raku.land/zef:antononcube/ML::TriesWithFrequencies](https://raku.land/zef:antononcube/ML::TriesWithFrequencies/badges/version)](https://raku.land/zef:antononcube/ML::TriesWithFrequencies)
+[![https://raku.land/zef:antononcube/ML::TriesWithFrequencies](https://raku.land/zef:antononcube/ML::TriesWithFrequencies/badges/downloads)](https://raku.land/zef:antononcube/ML::TriesWithFrequencies)
 
 This Raku package has functions for creation and manipulation of 
 [Tries (Prefix trees)](https://en.wikipedia.org/wiki/Trie) 
@@ -240,26 +241,13 @@ ML::TriesWithFrequencies::Trie.create-by-split(@words2)
 
 Here is a UML diagram that shows package's structure:
 
-![](./resources/class-diagram.png)
-
-
-The
-[PlantUML spec](./resources/class-diagram.puml)
-and
-[diagram](./resources/class-diagram.png)
-were obtained with the CLI script `to-uml-spec` of the package "UML::Translators", [AAp7].
-
-Here we get the [PlantUML spec](./resources/class-diagram.puml):
-
-```
-to-uml-spec ML::TriesWithFrequencies > ./resources/class-diagram.puml
+```perl6, output.lang=mermaid, output.prompt=NONE
+use UML::Translators;
+to-uml-spec('ML::TriesWithFrequencies', format => 'mermaid')
 ```
 
-Here get the [diagram](./resources/class-diagram.png):
+**Remark:** The function `to-uml-spec` is provided by the package ["UML::Translators"](https://raku.land/zef:antononcube/UML::Translators), [AAp7].
 
-```
-to-uml-spec ML::TriesWithFrequencies | java -jar ~/PlantUML/plantuml-1.2022.5.jar -pipe > ./resources/class-diagram.png
-```
 
 ### Performance
 
