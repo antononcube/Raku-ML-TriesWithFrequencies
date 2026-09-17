@@ -904,7 +904,7 @@ class ML::TriesWithFrequencies::Trie
 
     multi method from-map-format( Pair $trBody --> ML::TriesWithFrequencies::Trie ) {
 
-        if $trBody.key ~~ Str {
+        if $trBody.key ~~ Str:D {
             self.setKey($trBody.key);
             if $trBody.value{$.trieValueLabel}:exists {
                 self.setValue($trBody.value{$.trieValueLabel});
