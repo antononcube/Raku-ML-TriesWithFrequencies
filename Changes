@@ -1,0 +1,8 @@
+Changes of the Raku package "ML::TriesWithFrequencies".
+
+0.6.8 2026-09-17
+    - Added lower case synonyms to the trie method .JSON, .WL, and .XML
+        - I.e. $trie.wl calls $trie.WL
+    - Added the method .eq
+    - Added the sub &trie-from-map-format
+    - Documentation update
