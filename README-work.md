@@ -195,11 +195,17 @@ Convert the trie to a hashmap:
 my %mtr = $tr0.to-map-format
 ```
 
-Convert the hashmap to trie and compare:  
+Convert the hashmap to trie and show it:  
 
 ```raku
 my $tr1 = trie-from-map-format(%mtr);
 trie-say(trie-shrink($tr1))
+```
+
+Compare the two tries:
+
+```raku
+say $tr0.eq($tr1)
 ```
 
 ------

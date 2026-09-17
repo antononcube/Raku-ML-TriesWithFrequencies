@@ -148,7 +148,7 @@ In support of that statement, here are the methods of `ML::TriesWithFrequencies:
 ML::TriesWithFrequencies::Trie.^method_names
 ```
 ```
-# (clone make merge insert create create-by-split node-probabilities leaf-probabilities leafQ position retrieve has-complete-match contains is-key shrink node-counts remove-by-threshold remove-by-pareto-fraction remove-by-regex select-by-threshold select-by-pareto-fraction select-by-regex root-to-leaf-paths words words-with-probabilities classify echo echo-function form trieRootLabel trieValueLabel getKey getValue getChildren setKey setValue setChildren to-map-format hash wl WL xml XML json JSON Str random-choice from-map-format from-json-map-format new gist key value children POPULATE)
+# (clone make merge insert create create-by-split node-probabilities leaf-probabilities leafQ position retrieve has-complete-match contains is-key shrink node-counts remove-by-threshold remove-by-pareto-fraction remove-by-regex select-by-threshold select-by-pareto-fraction select-by-regex root-to-leaf-paths words words-with-probabilities classify echo echo-function form trieRootLabel trieValueLabel getKey getValue getChildren setKey setValue setChildren to-map-format hash wl WL xml XML json JSON Str eq random-choice from-map-format from-json-map-format new gist key value children POPULATE)
 ```
 
 Generate random words using trie, make a new trie, and visualize it:
@@ -160,18 +160,18 @@ $ptrRandom.form;
 ```
 ```
 # TRIEROOT => 1
-# ├─b => 0.655
+# ├─b => 0.675
 # │ └─a => 1
-# │   ├─l => 0.21374045801526717
+# │   ├─l => 0.3037037037037037
 # │   │ └─m => 1
-# │   └─r => 0.7862595419847328
-# │     ├─k => 0.44660194174757284
-# │     └─s => 0.4854368932038835
-# └─c => 0.345
+# │   └─r => 0.6962962962962963
+# │     ├─k => 0.44680851063829785
+# │     └─s => 0.4787234042553192
+# └─c => 0.325
 #   └─e => 1
-#     ├─l => 0.5362318840579711
+#     ├─l => 0.46153846153846156
 #     │ └─l => 1
-#     └─r => 0.463768115942029
+#     └─r => 0.5384615384615384
 #       └─t => 1
 ```
 
@@ -294,18 +294,18 @@ say $tr0.XML;
 #   <TRIEVALUE>2</TRIEVALUE>
 #   <e>
 #    <TRIEVALUE>2</TRIEVALUE>
-#    <s>
-#     <TRIEVALUE>1</TRIEVALUE>
-#     <t>
-#      <TRIEVALUE>1</TRIEVALUE>
-#     </t>
-#    </s>
 #    <l>
 #     <TRIEVALUE>1</TRIEVALUE>
 #     <l>
 #      <TRIEVALUE>1</TRIEVALUE>
 #     </l>
 #    </l>
+#    <s>
+#     <TRIEVALUE>1</TRIEVALUE>
+#     <t>
+#      <TRIEVALUE>1</TRIEVALUE>
+#     </t>
+#    </s>
 #   </e>
 #  </b>
 # </TRIEROOT>
@@ -366,7 +366,7 @@ my %mtr = $tr0.to-map-format
 # {TRIEROOT => {TRIEVALUE => 5, b => {TRIEVALUE => 5, a => {TRIEVALUE => 1, r => {TRIEVALUE => 1}}, e => {TRIEVALUE => 2, l => {TRIEVALUE => 1, l => {TRIEVALUE => 1}}, s => {TRIEVALUE => 1, t => {TRIEVALUE => 1}}}, r => {TRIEVALUE => 2, i => {TRIEVALUE => 1, n => {TRIEVALUE => 1, g => {TRIEVALUE => 1}}}, o => {TRIEVALUE => 1, k => {TRIEVALUE => 1, e => {TRIEVALUE => 1}}}}}}}
 ```
 
-Convert the hashmap to trie and compare:  
+Convert the hashmap to trie and show it:  
 
 ```raku
 my $tr1 = trie-from-map-format(%mtr);
@@ -382,6 +382,15 @@ trie-say(trie-shrink($tr1))
 #   └─r => 2
 #     ├─ing => 1
 #     └─oke => 1
+```
+
+Compare the two tries:
+
+```raku
+say $tr0.eq($tr1)
+```
+```
+# True
 ```
 
 ------
@@ -479,15 +488,15 @@ to-uml-spec('ML::TriesWithFrequencies', format => 'mermaid')
 ```
 ```mermaid
 classDiagram
-class ML_TriesWithFrequencies_TrieTraverse {
-  <<role>>
-}
-
-
 class TRIEROOT {
   <<constant>>
 }
 TRIEROOT --|> Stringy
+
+
+class ML_TriesWithFrequencies_TrieTraverse {
+  <<role>>
+}
 
 
 class ML_TriesWithFrequencies_Trieish {
@@ -500,6 +509,7 @@ class ML_TriesWithFrequencies_Trieish {
   +WL()
   +XML()
   +clone()
+  +eq()
   +getChildren()
   +getKey()
   +getValue()
@@ -513,6 +523,48 @@ class ML_TriesWithFrequencies_Trieish {
   +trieValueLabel()
   +wl()
   +xml()
+}
+
+
+class ML_TriesWithFrequencies_ThresholdBasedRemover {
+  +$!below-threshold
+  +$!postfix
+  +$!threshold
+  +POPULATE()
+  +below-threshold()
+  +new()
+  +postfix()
+  +remove()
+  +threshold()
+  +trie-map()
+  +trie-threshold-remove()
+}
+ML_TriesWithFrequencies_ThresholdBasedRemover --|> ML_TriesWithFrequencies_TrieTraverse
+
+
+class ML_TriesWithFrequencies_ChildRandomChooser {
+  +$!ulp
+  +$!weighted
+  +@!tracedPaths
+  +POPULATE()
+  +new()
+  +trace()
+  +tracedPaths()
+  +trie-trace()
+  +ulp()
+  +weighted()
+}
+
+
+class ML_TriesWithFrequencies_PathsGatherer {
+  +$!ulp
+  +@!tracedPaths
+  +POPULATE()
+  +new()
+  +trace()
+  +tracedPaths()
+  +trie-trace()
+  +ulp()
 }
 
 
@@ -533,6 +585,7 @@ class ML_TriesWithFrequencies_Trie {
   +create-by-split()
   +echo()
   +echo-function()
+  +eq()
   +form()
   +from-json-map-format()
   +from-map-format()
@@ -579,6 +632,24 @@ class ML_TriesWithFrequencies_Trie {
 ML_TriesWithFrequencies_Trie --|> ML_TriesWithFrequencies_Trieish
 
 
+class ML_TriesWithFrequencies_LeafProbabilitiesGatherer {
+  +$!counts-trie
+  +$!ulp
+  +POPULATE()
+  +counts-trie()
+  +new()
+  +trace()
+  +trie-trace()
+  +ulp()
+}
+
+
+class TRIEVALUE {
+  <<constant>>
+}
+TRIEVALUE --|> Stringy
+
+
 class ML_TriesWithFrequencies_ParetoBasedRemover {
   +$!pareto-fraction
   +$!postfix
@@ -593,66 +664,6 @@ class ML_TriesWithFrequencies_ParetoBasedRemover {
   +trie-pareto-remove()
 }
 ML_TriesWithFrequencies_ParetoBasedRemover --|> ML_TriesWithFrequencies_TrieTraverse
-
-
-class ML_TriesWithFrequencies_PathsGatherer {
-  +$!ulp
-  +@!tracedPaths
-  +POPULATE()
-  +new()
-  +trace()
-  +tracedPaths()
-  +trie-trace()
-  +ulp()
-}
-
-
-class TRIEVALUE {
-  <<constant>>
-}
-TRIEVALUE --|> Stringy
-
-
-class ML_TriesWithFrequencies_ThresholdBasedRemover {
-  +$!below-threshold
-  +$!postfix
-  +$!threshold
-  +POPULATE()
-  +below-threshold()
-  +new()
-  +postfix()
-  +remove()
-  +threshold()
-  +trie-map()
-  +trie-threshold-remove()
-}
-ML_TriesWithFrequencies_ThresholdBasedRemover --|> ML_TriesWithFrequencies_TrieTraverse
-
-
-class ML_TriesWithFrequencies_ChildRandomChooser {
-  +$!ulp
-  +$!weighted
-  +@!tracedPaths
-  +POPULATE()
-  +new()
-  +trace()
-  +tracedPaths()
-  +trie-trace()
-  +ulp()
-  +weighted()
-}
-
-
-class ML_TriesWithFrequencies_LeafProbabilitiesGatherer {
-  +$!counts-trie
-  +$!ulp
-  +POPULATE()
-  +counts-trie()
-  +new()
-  +trace()
-  +trie-trace()
-  +ulp()
-}
 
 
 class ML_TriesWithFrequencies_RegexBasedRemover {
