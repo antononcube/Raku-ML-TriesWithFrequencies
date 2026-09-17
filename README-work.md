@@ -49,7 +49,7 @@ zef install https://github.com/antononcube/Raku-ML-TriesWithFrequencies
 
 Consider a trie (prefix tree) created over a list of words:
 
-```perl6
+```raku
 use ML::TriesWithFrequencies;
 my $tr = trie-create-by-split( <bar bark bars balm cert cell> );
 trie-say($tr);
@@ -57,26 +57,26 @@ trie-say($tr);
 
 Here we convert the trie with frequencies above into a trie with probabilities:
 
-```perl6
+```raku
 my $ptr = trie-node-probabilities( $tr );
 trie-say($ptr);
 ```
 
 Here we shrink the trie with probabilities above:
 
-```perl6
+```raku
 trie-say(trie-shrink($ptr));
 ```
 
 Here we retrieve a sub-trie with a key:
 
-```perl6
+```raku
 trie-say(trie-retrieve($ptr, 'bar'.comb))
 ```
 
 Here is a "dot-pipeline" that combines the steps above: 
 
-```perl6
+```raku
 <bar bark bars balm cert cell>.&trie-create-by-split
 .node-probabilities
 .shrink
@@ -91,13 +91,13 @@ because the trie is already shrunk.
 The package provides a fair amount of functions in order to facilitate ML applications. 
 In support of that statement, here are the methods of `ML::TriesWithFrequencies::Trie`:
 
-```perl6
+```raku
 ML::TriesWithFrequencies::Trie.^method_names
 ```
 
 Generate random words using trie, make a new trie, and visualize it:
 
-```perl6
+```raku
 my @randomWords = $ptr.random-choice(200):drop-root;
 my $ptrRandom = trie-create(@randomWords).node-probabilities;
 $ptrRandom.form;
@@ -105,7 +105,7 @@ $ptrRandom.form;
 
 Compare with the original one:
 
-```perl6
+```raku
 $ptr.form
 ```
 
@@ -117,16 +117,16 @@ very close to those of the original trie.
 ## Representation
 
 Each trie is a tree of objects of the class `ML::TriesWithFrequencies::Trie`.
-Such trees can be nicely represented as hash-maps. For example:
+Such trees can be nicely represented as hashmaps. For example:
 
-```perl6
+```raku
 my $tr = trie-shrink(trie-create-by-split(<core cort>));
 say $tr.gist;
 ```
 
 The function `trie-say` uses that Hash-representation:
 
-```perl6
+```raku
 trie-say($tr)
 ```
 
@@ -135,7 +135,7 @@ trie-say($tr)
 The JSON-representation follows the inherent object-tree
 representation with `ML::TriesWithFrequencies::Trie`:
 
-```perl6
+```raku
 say $tr.JSON;
 ```
 
@@ -144,7 +144,7 @@ say $tr.JSON;
 The XML-representation follows (resembles) the Hash-representation 
 (and output from `trie-say`):
 
-```perl6
+```raku
 say $tr.XML;
 ```
 
@@ -154,20 +154,20 @@ searches, say, using the package
 [`XML::XPath`](https://github.com/ufobat/p6-XML-XPath).
 Here is an example:
 
-```perl6
+```raku
 use XML::XPath;
 my $tr0 = trie-create-by-split(<bell best>);
 trie-say($tr0);
 ```
 Convert to XML:
 
-```perl6
+```raku
 say $tr0.XML;
 ```
 
 Search for `<b e l>`:
 
-```perl6
+```raku
 say XML::XPath.new(xml=>$tr0.XML).find('//b/e/l');
 ```
 
@@ -176,8 +176,30 @@ say XML::XPath.new(xml=>$tr0.XML).find('//b/e/l');
 The Hash-representation is used in the Mathematica package [AAp2].
 Hence, such WL format is provided by the Raku package:
 
-```perl6
+```raku
 say $tr.WL;
+```
+
+## From hashmap
+
+Here a trie:
+
+```raku
+my $tr0 = trie-create-by-split(<bell best bar broke bring>);
+trie-say(trie-shrink($tr0));
+```
+
+Convert the trie to a hashmap:  
+
+```raku
+my %mtr = $tr0.to-map-format
+```
+
+Convert the hashmap to trie and compare:  
+
+```raku
+my $tr1 = trie-from-map-format(%mtr);
+trie-say(trie-shrink($tr1))
 ```
 
 ------
@@ -198,7 +220,7 @@ of the Mathematica package [AAp2]. With that design and using the
 [feed operator `==>`](https://docs.raku.org/language/operators#infix_==%3E)
 we can construct pipelines like this one:
 
-```perl6
+```raku
 my @words2 = <bar barman bask bell belly>;
 my @words3 = <call car cast>;
 
@@ -211,7 +233,7 @@ trie-say
 
 The package also supports "dot pipelining" through chaining of methods:
 
-```perl6
+```raku
 @words2.&trie-create-by-split
         .merge(@words3.&trie-create-by-split)
         .node-probabilities
@@ -241,7 +263,7 @@ ML::TriesWithFrequencies::Trie.create-by-split(@words2)
 
 Here is a UML diagram that shows package's structure:
 
-```perl6, output.lang=mermaid, output.prompt=NONE
+```raku, output.lang=mermaid, output.prompt=NONE
 use UML::Translators;
 to-uml-spec('ML::TriesWithFrequencies', format => 'mermaid')
 ```

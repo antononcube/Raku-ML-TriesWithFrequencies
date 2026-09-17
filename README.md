@@ -49,7 +49,7 @@ zef install https://github.com/antononcube/Raku-ML-TriesWithFrequencies
 
 Consider a trie (prefix tree) created over a list of words:
 
-```perl6
+```raku
 use ML::TriesWithFrequencies;
 my $tr = trie-create-by-split( <bar bark bars balm cert cell> );
 trie-say($tr);
@@ -73,7 +73,7 @@ trie-say($tr);
 
 Here we convert the trie with frequencies above into a trie with probabilities:
 
-```perl6
+```raku
 my $ptr = trie-node-probabilities( $tr );
 trie-say($ptr);
 ```
@@ -96,7 +96,7 @@ trie-say($ptr);
 
 Here we shrink the trie with probabilities above:
 
-```perl6
+```raku
 trie-say(trie-shrink($ptr));
 ```
 ```
@@ -113,7 +113,7 @@ trie-say(trie-shrink($ptr));
 
 Here we retrieve a sub-trie with a key:
 
-```perl6
+```raku
 trie-say(trie-retrieve($ptr, 'bar'.comb))
 ```
 ```
@@ -124,7 +124,7 @@ trie-say(trie-retrieve($ptr, 'bar'.comb))
 
 Here is a "dot-pipeline" that combines the steps above: 
 
-```perl6
+```raku
 <bar bark bars balm cert cell>.&trie-create-by-split
 .node-probabilities
 .shrink
@@ -144,40 +144,40 @@ because the trie is already shrunk.
 The package provides a fair amount of functions in order to facilitate ML applications. 
 In support of that statement, here are the methods of `ML::TriesWithFrequencies::Trie`:
 
-```perl6
+```raku
 ML::TriesWithFrequencies::Trie.^method_names
 ```
 ```
-# (clone make merge insert create create-by-split node-probabilities leaf-probabilities leafQ position retrieve has-complete-match contains is-key shrink node-counts remove-by-threshold remove-by-pareto-fraction remove-by-regex select-by-threshold select-by-pareto-fraction select-by-regex root-to-leaf-paths words words-with-probabilities classify echo echo-function form trieRootLabel trieValueLabel getKey getValue getChildren setKey setValue setChildren to-map-format hash WL XML JSON Str random-choice from-map-format from-json-map-format new gist key value children BUILDALL)
+# (clone make merge insert create create-by-split node-probabilities leaf-probabilities leafQ position retrieve has-complete-match contains is-key shrink node-counts remove-by-threshold remove-by-pareto-fraction remove-by-regex select-by-threshold select-by-pareto-fraction select-by-regex root-to-leaf-paths words words-with-probabilities classify echo echo-function form trieRootLabel trieValueLabel getKey getValue getChildren setKey setValue setChildren to-map-format hash wl WL xml XML json JSON Str random-choice from-map-format from-json-map-format new gist key value children POPULATE)
 ```
 
 Generate random words using trie, make a new trie, and visualize it:
 
-```perl6
+```raku
 my @randomWords = $ptr.random-choice(200):drop-root;
 my $ptrRandom = trie-create(@randomWords).node-probabilities;
 $ptrRandom.form;
 ```
 ```
 # TRIEROOT => 1
-# ├─b => 0.675
+# ├─b => 0.655
 # │ └─a => 1
-# │   ├─l => 0.2
+# │   ├─l => 0.21374045801526717
 # │   │ └─m => 1
-# │   └─r => 0.8
-# │     ├─k => 0.4351851851851852
-# │     └─s => 0.46296296296296297
-# └─c => 0.325
+# │   └─r => 0.7862595419847328
+# │     ├─k => 0.44660194174757284
+# │     └─s => 0.4854368932038835
+# └─c => 0.345
 #   └─e => 1
-#     ├─l => 0.5384615384615384
+#     ├─l => 0.5362318840579711
 #     │ └─l => 1
-#     └─r => 0.46153846153846156
+#     └─r => 0.463768115942029
 #       └─t => 1
 ```
 
 Compare with the original one:
 
-```perl6
+```raku
 $ptr.form
 ```
 ```
@@ -205,9 +205,9 @@ very close to those of the original trie.
 ## Representation
 
 Each trie is a tree of objects of the class `ML::TriesWithFrequencies::Trie`.
-Such trees can be nicely represented as hash-maps. For example:
+Such trees can be nicely represented as hashmaps. For example:
 
-```perl6
+```raku
 my $tr = trie-shrink(trie-create-by-split(<core cort>));
 say $tr.gist;
 ```
@@ -217,7 +217,7 @@ say $tr.gist;
 
 The function `trie-say` uses that Hash-representation:
 
-```perl6
+```raku
 trie-say($tr)
 ```
 ```
@@ -232,7 +232,7 @@ trie-say($tr)
 The JSON-representation follows the inherent object-tree
 representation with `ML::TriesWithFrequencies::Trie`:
 
-```perl6
+```raku
 say $tr.JSON;
 ```
 ```
@@ -244,7 +244,7 @@ say $tr.JSON;
 The XML-representation follows (resembles) the Hash-representation 
 (and output from `trie-say`):
 
-```perl6
+```raku
 say $tr.XML;
 ```
 ```
@@ -268,7 +268,7 @@ searches, say, using the package
 [`XML::XPath`](https://github.com/ufobat/p6-XML-XPath).
 Here is an example:
 
-```perl6
+```raku
 use XML::XPath;
 my $tr0 = trie-create-by-split(<bell best>);
 trie-say($tr0);
@@ -284,7 +284,7 @@ trie-say($tr0);
 ```
 Convert to XML:
 
-```perl6
+```raku
 say $tr0.XML;
 ```
 ```
@@ -294,18 +294,18 @@ say $tr0.XML;
 #   <TRIEVALUE>2</TRIEVALUE>
 #   <e>
 #    <TRIEVALUE>2</TRIEVALUE>
-#    <l>
-#     <TRIEVALUE>1</TRIEVALUE>
-#     <l>
-#      <TRIEVALUE>1</TRIEVALUE>
-#     </l>
-#    </l>
 #    <s>
 #     <TRIEVALUE>1</TRIEVALUE>
 #     <t>
 #      <TRIEVALUE>1</TRIEVALUE>
 #     </t>
 #    </s>
+#    <l>
+#     <TRIEVALUE>1</TRIEVALUE>
+#     <l>
+#      <TRIEVALUE>1</TRIEVALUE>
+#     </l>
+#    </l>
 #   </e>
 #  </b>
 # </TRIEROOT>
@@ -313,7 +313,7 @@ say $tr0.XML;
 
 Search for `<b e l>`:
 
-```perl6
+```raku
 say XML::XPath.new(xml=>$tr0.XML).find('//b/e/l');
 ```
 ```
@@ -330,11 +330,58 @@ say XML::XPath.new(xml=>$tr0.XML).find('//b/e/l');
 The Hash-representation is used in the Mathematica package [AAp2].
 Hence, such WL format is provided by the Raku package:
 
-```perl6
+```raku
 say $tr.WL;
 ```
 ```
 # <|$TrieRoot -> <|$TrieValue -> 2, "cor" -> <|$TrieValue -> 2, "e" -> <|$TrieValue -> 1|>, "t" -> <|$TrieValue -> 1|>|>|>|>
+```
+
+## From hashmap
+
+Here a trie:
+
+```raku
+my $tr0 = trie-create-by-split(<bell best bar broke bring>);
+trie-say(trie-shrink($tr0));
+```
+```
+# TRIEROOT => 5
+# └─b => 5
+#   ├─ar => 1
+#   ├─e => 2
+#   │ ├─ll => 1
+#   │ └─st => 1
+#   └─r => 2
+#     ├─ing => 1
+#     └─oke => 1
+```
+
+Convert the trie to a hashmap:  
+
+```raku
+my %mtr = $tr0.to-map-format
+```
+```
+# {TRIEROOT => {TRIEVALUE => 5, b => {TRIEVALUE => 5, a => {TRIEVALUE => 1, r => {TRIEVALUE => 1}}, e => {TRIEVALUE => 2, l => {TRIEVALUE => 1, l => {TRIEVALUE => 1}}, s => {TRIEVALUE => 1, t => {TRIEVALUE => 1}}}, r => {TRIEVALUE => 2, i => {TRIEVALUE => 1, n => {TRIEVALUE => 1, g => {TRIEVALUE => 1}}}, o => {TRIEVALUE => 1, k => {TRIEVALUE => 1, e => {TRIEVALUE => 1}}}}}}}
+```
+
+Convert the hashmap to trie and compare:  
+
+```raku
+my $tr1 = trie-from-map-format(%mtr);
+trie-say(trie-shrink($tr1))
+```
+```
+# TRIEROOT => 5
+# └─b => 5
+#   ├─ar => 1
+#   ├─e => 2
+#   │ ├─ll => 1
+#   │ └─st => 1
+#   └─r => 2
+#     ├─ing => 1
+#     └─oke => 1
 ```
 
 ------
@@ -355,7 +402,7 @@ of the Mathematica package [AAp2]. With that design and using the
 [feed operator `==>`](https://docs.raku.org/language/operators#infix_==%3E)
 we can construct pipelines like this one:
 
-```perl6
+```raku
 my @words2 = <bar barman bask bell belly>;
 my @words3 = <call car cast>;
 
@@ -382,7 +429,7 @@ trie-say
 
 The package also supports "dot pipelining" through chaining of methods:
 
-```perl6
+```raku
 @words2.&trie-create-by-split
         .merge(@words3.&trie-create-by-split)
         .node-probabilities
@@ -426,21 +473,14 @@ ML::TriesWithFrequencies::Trie.create-by-split(@words2)
 
 Here is a UML diagram that shows package's structure:
 
-```perl6, output.lang=mermaid, output.prompt=NONE
+```raku, output.lang=mermaid, output.prompt=NONE
 use UML::Translators;
 to-uml-spec('ML::TriesWithFrequencies', format => 'mermaid')
 ```
 ```mermaid
 classDiagram
-class ML_TriesWithFrequencies_PathsGatherer {
-  +$!ulp
-  +@!tracedPaths
-  +BUILDALL()
-  +new()
-  +trace()
-  +tracedPaths()
-  +trie-trace()
-  +ulp()
+class ML_TriesWithFrequencies_TrieTraverse {
+  <<role>>
 }
 
 
@@ -448,26 +488,6 @@ class TRIEROOT {
   <<constant>>
 }
 TRIEROOT --|> Stringy
-
-
-class TRIEVALUE {
-  <<constant>>
-}
-TRIEVALUE --|> Stringy
-
-
-class ML_TriesWithFrequencies_ChildRandomChooser {
-  +$!ulp
-  +$!weighted
-  +@!tracedPaths
-  +BUILDALL()
-  +new()
-  +trace()
-  +tracedPaths()
-  +trie-trace()
-  +ulp()
-  +weighted()
-}
 
 
 class ML_TriesWithFrequencies_Trieish {
@@ -484,65 +504,15 @@ class ML_TriesWithFrequencies_Trieish {
   +getKey()
   +getValue()
   +hash()
+  +json()
   +setChildren()
   +setKey()
   +setValue()
   +to-map-format()
   +trieRootLabel()
   +trieValueLabel()
-}
-
-
-class ML_TriesWithFrequencies_ParetoBasedRemover {
-  +$!pareto-fraction
-  +$!postfix
-  +$!remove-bottom
-  +BUILDALL()
-  +new()
-  +pareto-fraction()
-  +postfix()
-  +remove()
-  +remove-bottom()
-  +trie-map()
-  +trie-pareto-remove()
-}
-ML_TriesWithFrequencies_ParetoBasedRemover --|> ML_TriesWithFrequencies_TrieTraverse
-
-
-class ML_TriesWithFrequencies_ThresholdBasedRemover {
-  +$!below-threshold
-  +$!postfix
-  +$!threshold
-  +BUILDALL()
-  +below-threshold()
-  +new()
-  +postfix()
-  +remove()
-  +threshold()
-  +trie-map()
-  +trie-threshold-remove()
-}
-ML_TriesWithFrequencies_ThresholdBasedRemover --|> ML_TriesWithFrequencies_TrieTraverse
-
-
-class ML_TriesWithFrequencies_RegexBasedRemover {
-  +$!invert
-  +$!key-pattern
-  +$!postfix
-  +BUILDALL()
-  +invert()
-  +key-pattern()
-  +new()
-  +postfix()
-  +remove()
-  +trie-map()
-  +trie-regex-remove()
-}
-ML_TriesWithFrequencies_RegexBasedRemover --|> ML_TriesWithFrequencies_TrieTraverse
-
-
-class ML_TriesWithFrequencies_TrieTraverse {
-  <<role>>
+  +wl()
+  +xml()
 }
 
 
@@ -550,8 +520,8 @@ class ML_TriesWithFrequencies_Trie {
   +$!key
   +$!value
   +%!children
-  +BUILDALL()
   +JSON()
+  +POPULATE()
   +Str()
   +WL()
   +XML()
@@ -574,6 +544,7 @@ class ML_TriesWithFrequencies_Trie {
   +hash()
   +insert()
   +is-key()
+  +json()
   +key()
   +leaf-probabilities()
   +leafQ()
@@ -600,22 +571,104 @@ class ML_TriesWithFrequencies_Trie {
   +trieRootLabel()
   +trieValueLabel()
   +value()
+  +wl()
   +words()
   +words-with-probabilities()
+  +xml()
 }
 ML_TriesWithFrequencies_Trie --|> ML_TriesWithFrequencies_Trieish
+
+
+class ML_TriesWithFrequencies_ParetoBasedRemover {
+  +$!pareto-fraction
+  +$!postfix
+  +$!remove-bottom
+  +POPULATE()
+  +new()
+  +pareto-fraction()
+  +postfix()
+  +remove()
+  +remove-bottom()
+  +trie-map()
+  +trie-pareto-remove()
+}
+ML_TriesWithFrequencies_ParetoBasedRemover --|> ML_TriesWithFrequencies_TrieTraverse
+
+
+class ML_TriesWithFrequencies_PathsGatherer {
+  +$!ulp
+  +@!tracedPaths
+  +POPULATE()
+  +new()
+  +trace()
+  +tracedPaths()
+  +trie-trace()
+  +ulp()
+}
+
+
+class TRIEVALUE {
+  <<constant>>
+}
+TRIEVALUE --|> Stringy
+
+
+class ML_TriesWithFrequencies_ThresholdBasedRemover {
+  +$!below-threshold
+  +$!postfix
+  +$!threshold
+  +POPULATE()
+  +below-threshold()
+  +new()
+  +postfix()
+  +remove()
+  +threshold()
+  +trie-map()
+  +trie-threshold-remove()
+}
+ML_TriesWithFrequencies_ThresholdBasedRemover --|> ML_TriesWithFrequencies_TrieTraverse
+
+
+class ML_TriesWithFrequencies_ChildRandomChooser {
+  +$!ulp
+  +$!weighted
+  +@!tracedPaths
+  +POPULATE()
+  +new()
+  +trace()
+  +tracedPaths()
+  +trie-trace()
+  +ulp()
+  +weighted()
+}
 
 
 class ML_TriesWithFrequencies_LeafProbabilitiesGatherer {
   +$!counts-trie
   +$!ulp
-  +BUILDALL()
+  +POPULATE()
   +counts-trie()
   +new()
   +trace()
   +trie-trace()
   +ulp()
 }
+
+
+class ML_TriesWithFrequencies_RegexBasedRemover {
+  +$!invert
+  +$!key-pattern
+  +$!postfix
+  +POPULATE()
+  +invert()
+  +key-pattern()
+  +new()
+  +postfix()
+  +remove()
+  +trie-map()
+  +trie-regex-remove()
+}
+ML_TriesWithFrequencies_RegexBasedRemover --|> ML_TriesWithFrequencies_TrieTraverse
 ```
 
 **Remark:** The function `to-uml-spec` is provided by the package ["UML::Translators"](https://raku.land/zef:antononcube/UML::Translators), [AAp7].
