@@ -1,38 +1,34 @@
 {
-  "name": "ML::TriesWithFrequencies",
-  "description": "Package with functions for creation and manipulation of tries (prefix trees) with frequencies.",
-  "version": "0.6.7",
-  "perl": "6.d",
-  "authors": [
-    "Anton Antonov"
-  ],
-  "auth": "zef:antononcube",
-  "depends": [],
-  "build-depends": [],
-  "test-depends": [],
-  "provides": {
-    "ML::TriesWithFrequencies": "lib/ML/TriesWithFrequencies.rakumod",
-    "ML::TriesWithFrequencies::ChildRandomChooser": "lib/ML/TriesWithFrequencies/ChildRandomChooser.rakumod",
-    "ML::TriesWithFrequencies::LeafProbabilitiesGatherer": "lib/ML/TriesWithFrequencies/LeafProbabilitiesGatherer.rakumod",
-    "ML::TriesWithFrequencies::ParetoBasedRemover": "lib/ML/TriesWithFrequencies/ParetoBasedRemover.rakumod",
-    "ML::TriesWithFrequencies::PathsGatherer": "lib/ML/TriesWithFrequencies/PathsGatherer.rakumod",
-    "ML::TriesWithFrequencies::RegexBasedRemover": "lib/ML/TriesWithFrequencies/RegexBasedRemover.rakumod",
-    "ML::TriesWithFrequencies::ThresholdBasedRemover": "lib/ML/TriesWithFrequencies/ThresholdBasedRemover.rakumod",
-    "ML::TriesWithFrequencies::Trie": "lib/ML/TriesWithFrequencies/Trie.rakumod",
-    "ML::TriesWithFrequencies::TrieTraverse": "lib/ML/TriesWithFrequencies/TrieTraverse.rakumod",
-    "ML::TriesWithFrequencies::Trieish": "lib/ML/TriesWithFrequencies/Trieish.rakumod"
-  },
-  "resources": [],
-  "license": "Artistic-2.0",
-  "tags": [
-    "data mining",
-    "prefix tree",
-    "prefix trees",
-    "sequence mining",
-    "trie",
-    "tries",
-    "tries with frequencies"
-  ],
-  "api": "2",
-  "source-url": "https://github.com/antononcube/Raku-ML-TriesWithFrequencies.git"
+    "name": "ML::TriesWithFrequencies",
+    "description": "Package with functions for creation and manipulation of tries (prefix trees) with frequencies.",
+    "version": "0.6.8",
+    "authors": [
+        "Anton Antonov"
+    ],
+    "auth": "zef:antononcube",
+    "build-depends": [],
+    "provides": {
+        "ML::TriesWithFrequencies": "lib/ML/TriesWithFrequencies.rakumod",
+        "ML::TriesWithFrequencies::ChildRandomChooser": "lib/ML/TriesWithFrequencies/ChildRandomChooser.rakumod",
+        "ML::TriesWithFrequencies::LeafProbabilitiesGatherer": "lib/ML/TriesWithFrequencies/LeafProbabilitiesGatherer.rakumod",
+        "ML::TriesWithFrequencies::ParetoBasedRemover": "lib/ML/TriesWithFrequencies/ParetoBasedRemover.rakumod",
+        "ML::TriesWithFrequencies::PathsGatherer": "lib/ML/TriesWithFrequencies/PathsGatherer.rakumod",
+        "ML::TriesWithFrequencies::RegexBasedRemover": "lib/ML/TriesWithFrequencies/RegexBasedRemover.rakumod",
+        "ML::TriesWithFrequencies::ThresholdBasedRemover": "lib/ML/TriesWithFrequencies/ThresholdBasedRemover.rakumod",
+        "ML::TriesWithFrequencies::Trie": "lib/ML/TriesWithFrequencies/Trie.rakumod",
+        "ML::TriesWithFrequencies::TrieTraverse": "lib/ML/TriesWithFrequencies/TrieTraverse.rakumod",
+        "ML::TriesWithFrequencies::Trieish": "lib/ML/TriesWithFrequencies/Trieish.rakumod"
+    },
+    "license": "Artistic-2.0",
+    "tags": [
+        "data mining",
+        "prefix tree",
+        "prefix trees",
+        "sequence mining",
+        "trie",
+        "tries",
+        "tries with frequencies"
+    ],
+    "api": "2",
+    "source-url": "https://github.com/antononcube/Raku-ML-TriesWithFrequencies.git"
 }
