@@ -6,7 +6,7 @@ use ML::TriesWithFrequencies;
 use ML::TriesWithFrequencies::Trie;
 
 
-plan 4;
+plan 5;
 
 ## 1
 my @words = <bar barman bask bell best>;
@@ -56,5 +56,15 @@ is-deeply
         trie-node-counts($tr1),
         trie-node-counts($tr0),
         'trie node counts are the same for tries with same words and different frequencies';
+
+## 5
+subtest {
+    my $tr0 = trie-create-by-split(<bell best bar broke bring>);
+    my $tr1 = trie-create-by-split(<bell best bar broke bring>.sort);
+
+    isa-ok $tr0.eq($tr1), Bool:D;
+    is $tr0.eq($tr1), True;
+
+}, "comparison";
 
 done-testing;
