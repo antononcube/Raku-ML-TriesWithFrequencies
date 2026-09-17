@@ -182,7 +182,7 @@ say $tr.WL;
 
 ## From hashmap
 
-Here a trie:
+Here is a trie:
 
 ```raku
 my $tr0 = trie-create-by-split(<bell best bar broke bring>);
@@ -195,7 +195,7 @@ Convert the trie to a hashmap:
 my %mtr = $tr0.to-map-format
 ```
 
-Convert the hashmap to trie and show it:  
+Convert the hashmap to a trie and show it:  
 
 ```raku
 my $tr1 = trie-from-map-format(%mtr);

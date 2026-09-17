@@ -160,18 +160,18 @@ $ptrRandom.form;
 ```
 ```
 # TRIEROOT => 1
-# ├─b => 0.675
+# ├─b => 0.685
 # │ └─a => 1
-# │   ├─l => 0.3037037037037037
+# │   ├─l => 0.18248175182481752
 # │   │ └─m => 1
-# │   └─r => 0.6962962962962963
-# │     ├─k => 0.44680851063829785
-# │     └─s => 0.4787234042553192
-# └─c => 0.325
+# │   └─r => 0.8175182481751825
+# │     ├─k => 0.4642857142857143
+# │     └─s => 0.4107142857142857
+# └─c => 0.315
 #   └─e => 1
-#     ├─l => 0.46153846153846156
+#     ├─l => 0.6349206349206349
 #     │ └─l => 1
-#     └─r => 0.5384615384615384
+#     └─r => 0.36507936507936506
 #       └─t => 1
 ```
 
@@ -236,7 +236,7 @@ representation with `ML::TriesWithFrequencies::Trie`:
 say $tr.JSON;
 ```
 ```
-# {"key":"TRIEROOT", "value":2, "children":[{"key":"cor", "value":2, "children":[{"key":"e", "value":1, "children":[]}, {"key":"t", "value":1, "children":[]}]}]}
+# {"key":"TRIEROOT", "value":2, "children":[{"key":"cor", "value":2, "children":[{"key":"t", "value":1, "children":[]}, {"key":"e", "value":1, "children":[]}]}]}
 ```
 
 ### XML
@@ -252,12 +252,12 @@ say $tr.XML;
 #  <TRIEVALUE>2</TRIEVALUE>
 #  <cor>
 #   <TRIEVALUE>2</TRIEVALUE>
-#   <e>
-#    <TRIEVALUE>1</TRIEVALUE>
-#   </e>
 #   <t>
 #    <TRIEVALUE>1</TRIEVALUE>
 #   </t>
+#   <e>
+#    <TRIEVALUE>1</TRIEVALUE>
+#   </e>
 #  </cor>
 # </TRIEROOT>
 ```
@@ -334,12 +334,12 @@ Hence, such WL format is provided by the Raku package:
 say $tr.WL;
 ```
 ```
-# <|$TrieRoot -> <|$TrieValue -> 2, "cor" -> <|$TrieValue -> 2, "e" -> <|$TrieValue -> 1|>, "t" -> <|$TrieValue -> 1|>|>|>|>
+# <|$TrieRoot -> <|$TrieValue -> 2, "cor" -> <|$TrieValue -> 2, "t" -> <|$TrieValue -> 1|>, "e" -> <|$TrieValue -> 1|>|>|>|>
 ```
 
 ## From hashmap
 
-Here a trie:
+Here is a trie:
 
 ```raku
 my $tr0 = trie-create-by-split(<bell best bar broke bring>);
@@ -366,7 +366,7 @@ my %mtr = $tr0.to-map-format
 # {TRIEROOT => {TRIEVALUE => 5, b => {TRIEVALUE => 5, a => {TRIEVALUE => 1, r => {TRIEVALUE => 1}}, e => {TRIEVALUE => 2, l => {TRIEVALUE => 1, l => {TRIEVALUE => 1}}, s => {TRIEVALUE => 1, t => {TRIEVALUE => 1}}}, r => {TRIEVALUE => 2, i => {TRIEVALUE => 1, n => {TRIEVALUE => 1, g => {TRIEVALUE => 1}}}, o => {TRIEVALUE => 1, k => {TRIEVALUE => 1, e => {TRIEVALUE => 1}}}}}}}
 ```
 
-Convert the hashmap to trie and show it:  
+Convert the hashmap to a trie and show it:  
 
 ```raku
 my $tr1 = trie-from-map-format(%mtr);
@@ -488,42 +488,20 @@ to-uml-spec('ML::TriesWithFrequencies', format => 'mermaid')
 ```
 ```mermaid
 classDiagram
-class TRIEROOT {
-  <<constant>>
+class ML_TriesWithFrequencies_RegexBasedRemover {
+  +$!invert
+  +$!key-pattern
+  +$!postfix
+  +POPULATE()
+  +invert()
+  +key-pattern()
+  +new()
+  +postfix()
+  +remove()
+  +trie-map()
+  +trie-regex-remove()
 }
-TRIEROOT --|> Stringy
-
-
-class ML_TriesWithFrequencies_TrieTraverse {
-  <<role>>
-}
-
-
-class ML_TriesWithFrequencies_Trieish {
-  <<role>>
-  +$!key
-  +$!value
-  +%!children
-  +JSON()
-  +Str()
-  +WL()
-  +XML()
-  +clone()
-  +eq()
-  +getChildren()
-  +getKey()
-  +getValue()
-  +hash()
-  +json()
-  +setChildren()
-  +setKey()
-  +setValue()
-  +to-map-format()
-  +trieRootLabel()
-  +trieValueLabel()
-  +wl()
-  +xml()
-}
+ML_TriesWithFrequencies_RegexBasedRemover --|> ML_TriesWithFrequencies_TrieTraverse
 
 
 class ML_TriesWithFrequencies_ThresholdBasedRemover {
@@ -540,6 +518,17 @@ class ML_TriesWithFrequencies_ThresholdBasedRemover {
   +trie-threshold-remove()
 }
 ML_TriesWithFrequencies_ThresholdBasedRemover --|> ML_TriesWithFrequencies_TrieTraverse
+
+
+class TRIEVALUE {
+  <<constant>>
+}
+TRIEVALUE --|> Stringy
+
+
+class ML_TriesWithFrequencies_TrieTraverse {
+  <<role>>
+}
 
 
 class ML_TriesWithFrequencies_ChildRandomChooser {
@@ -566,6 +555,22 @@ class ML_TriesWithFrequencies_PathsGatherer {
   +trie-trace()
   +ulp()
 }
+
+
+class ML_TriesWithFrequencies_ParetoBasedRemover {
+  +$!pareto-fraction
+  +$!postfix
+  +$!remove-bottom
+  +POPULATE()
+  +new()
+  +pareto-fraction()
+  +postfix()
+  +remove()
+  +remove-bottom()
+  +trie-map()
+  +trie-pareto-remove()
+}
+ML_TriesWithFrequencies_ParetoBasedRemover --|> ML_TriesWithFrequencies_TrieTraverse
 
 
 class ML_TriesWithFrequencies_Trie {
@@ -632,6 +637,39 @@ class ML_TriesWithFrequencies_Trie {
 ML_TriesWithFrequencies_Trie --|> ML_TriesWithFrequencies_Trieish
 
 
+class TRIEROOT {
+  <<constant>>
+}
+TRIEROOT --|> Stringy
+
+
+class ML_TriesWithFrequencies_Trieish {
+  <<role>>
+  +$!key
+  +$!value
+  +%!children
+  +JSON()
+  +Str()
+  +WL()
+  +XML()
+  +clone()
+  +eq()
+  +getChildren()
+  +getKey()
+  +getValue()
+  +hash()
+  +json()
+  +setChildren()
+  +setKey()
+  +setValue()
+  +to-map-format()
+  +trieRootLabel()
+  +trieValueLabel()
+  +wl()
+  +xml()
+}
+
+
 class ML_TriesWithFrequencies_LeafProbabilitiesGatherer {
   +$!counts-trie
   +$!ulp
@@ -642,44 +680,6 @@ class ML_TriesWithFrequencies_LeafProbabilitiesGatherer {
   +trie-trace()
   +ulp()
 }
-
-
-class TRIEVALUE {
-  <<constant>>
-}
-TRIEVALUE --|> Stringy
-
-
-class ML_TriesWithFrequencies_ParetoBasedRemover {
-  +$!pareto-fraction
-  +$!postfix
-  +$!remove-bottom
-  +POPULATE()
-  +new()
-  +pareto-fraction()
-  +postfix()
-  +remove()
-  +remove-bottom()
-  +trie-map()
-  +trie-pareto-remove()
-}
-ML_TriesWithFrequencies_ParetoBasedRemover --|> ML_TriesWithFrequencies_TrieTraverse
-
-
-class ML_TriesWithFrequencies_RegexBasedRemover {
-  +$!invert
-  +$!key-pattern
-  +$!postfix
-  +POPULATE()
-  +invert()
-  +key-pattern()
-  +new()
-  +postfix()
-  +remove()
-  +trie-map()
-  +trie-regex-remove()
-}
-ML_TriesWithFrequencies_RegexBasedRemover --|> ML_TriesWithFrequencies_TrieTraverse
 ```
 
 **Remark:** The function `to-uml-spec` is provided by the package ["UML::Translators"](https://raku.land/zef:antononcube/UML::Translators), [AAp7].
