@@ -487,6 +487,16 @@ multi trie-random-choice(ML::TriesWithFrequencies::Trie $tr, UInt $n, Bool :$dro
     return $tr.random-choice($n, :$drop-root, :$weighted, :$ulp);
 }
 
+##=======================================================
+## Conversion
+##=======================================================
+
+#| Convert to Trie object from Map representation
+sub trie-from-map-format(
+        %tr #= Map representing a trie
+                         ) is export {
+    return ML::TriesWithFrequencies::Trie.new.from-map-format(%tr)
+}
 
 ##=======================================================
 ## Visualization functions
