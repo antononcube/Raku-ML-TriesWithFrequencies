@@ -162,4 +162,20 @@ role ML::TriesWithFrequencies::Trieish {
     multi method gist(::?CLASS:D:-->Str) {
         self.to-map-format().gist
     }
+
+    #--------------------------------------------------------
+    #| Compare with another trie
+    method eq(ML::TriesWithFrequencies::Trieish $tr --> Bool:D) {
+
+        return False unless self.key eq $tr.key && self.value == $tr.value;
+        return False unless self.children.elems == $tr.children.elems;
+        return False unless self.children.keys.sort eq $tr.children.keys.sort;
+
+        do for self.children.keys -> $k {
+            my $b = self.children{$k}.eq($tr.children{$k});
+            return False unless $b
+        }
+
+        return True;
+    }
 }
