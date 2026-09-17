@@ -1,7 +1,6 @@
 use Test;
 
-use lib '.';
-use lib './lib';
+# use lib <. lib>;
 
 use ML::TriesWithFrequencies;
 use ML::TriesWithFrequencies::Trie;
