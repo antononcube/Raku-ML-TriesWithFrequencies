@@ -62,9 +62,10 @@ subtest {
     my $tr0 = trie-create-by-split(<bell best bar broke bring>);
     my $tr1 = trie-create-by-split(<bell best bar broke bring>.sort);
 
-    isa-ok $tr0.eq($tr1), Bool:D;
-    is $tr0.eq($tr1), True;
+    isa-ok $tr0.eq($tr1), Bool:D, 'calling .eq is ok';
+    is $tr0.eq($tr1), True, 'tries are equal';
 
+    is $tr0.shrink.eq($tr1.shrink), True, 'shrunk tries are equal';
 }, "comparison";
 
 done-testing;
