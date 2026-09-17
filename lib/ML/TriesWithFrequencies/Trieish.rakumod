@@ -72,6 +72,9 @@ role ML::TriesWithFrequencies::Trieish {
     }
 
     #--------------------------------------------------------
+    #| To WL-Association format (synonym of .WL)
+    method wl(-->Str) { self.WL }
+
     #| To WL-Association format
     method WL( --> Str ) {
         my $res = '<|' ~ self!toWLFormatRec().subst(:g, '"' ~ $.trieRootLabel ~ '"', '$TrieRoot') ~ '|>';
@@ -94,6 +97,9 @@ role ML::TriesWithFrequencies::Trieish {
     }
 
     #--------------------------------------------------------
+    #| To XML format (synonym of .XML)
+    method xml(-->Str) { self.XML }
+
     #| To XML format
     method XML( --> Str ) {
         self!toXMLFormatRec(0)
@@ -120,6 +126,9 @@ role ML::TriesWithFrequencies::Trieish {
     #--------------------------------------------------------
     # In order to minimize the dependencies to other libraries (e.g. JSON::Marshal)
     # JSON format is implemented below.
+
+    #| To JSON format (synonym of .JSON)
+    method json(-->Str) { self.JSON }
 
     #| To JSON format
     method JSON( --> Str ) {
