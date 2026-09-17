@@ -17,7 +17,7 @@ not "just" a Trie data structure.
 This Raku implementation closely follows the Java implementation [AAp3].
 
 The subset of functions with the prefix "trie-" follows the one used in the Mathematica package [AAp2].
-That is the "top-level" sub-system of function names; the sub-system is follows the typical Object-Oriented Programming (OOP)
+That is the "top-level" sub-system of function names; the sub-system follows the typical Object-Oriented Programming (OOP)
 Raku style.
 
 **Remark:** Below Mathematica and Wolfram Language (WL) are used as synonyms.
